@@ -1,57 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Break the Box</title>
+  <meta charset="UTF-8" />
+  <title>Dino Game Enhanced</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      margin: 0;
+      background-color: #f7f7f7;
+      font-family: sans-serif;
       overflow: hidden;
     }
-    #box {
-      width: 100px;
-      height: 100px;
-      background: red;
+    #game {
+      width: 100%;
+      height: 300px;
+      background: url('https://i.ibb.co/5xvQn9G/ground.png') repeat-x;
+      background-size: cover;
+      border-bottom: 3px solid #333;
+      position: relative;
+      overflow: hidden;
+    }
+    #dino {
       position: absolute;
-      cursor: pointer;
+      bottom: 0;
+      left: 50px;
+      width: 60px;
+      height: 60px;
+      background: url('https://i.ibb.co/FKhQfDf/dino-run.png') no-repeat;
+      background-size: cover;
+    }
+    .obstacle {
+      position: absolute;
+      bottom: 0;
+      width: 30px;
+      height: 50px;
+      background: url('https://i.ibb.co/fFdq4kz/cactus.png') no-repeat;
+      background-size: cover;
+      animation: obstacleMove 2s linear infinite;
+    }
+    @keyframes obstacleMove {
+      from { right: -30px; }
+      to { right: 100%; }
+    }
+    .jump {
+      animation: jumpAnim 0.5s ease-out;
+    }
+    @keyframes jumpAnim {
+      0% { bottom: 0; }
+      50% { bottom: 120px; }
+      100% { bottom: 0; }
     }
     #score {
-      position: fixed;
+      position: absolute;
       top: 10px;
       left: 10px;
-      font-size: 24px;
-      font-family: sans-serif;
-      background: rgba(255,255,255,0.7);
-      padding: 5px 10px;
-      border-radius: 8px;
+      font-size: 18px;
+      color: #222;
+    }
+    #game-over {
+      display: none;
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 32px;
+      color: red;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div id="score">Score: 0</div>
-  <div id="box" onclick="breakBox()"></div>
+  <div id="game">
+    <div id="dino"></div>
+    <div id="score">Score: 0</div>
+    <div id="game-over">GAME OVER</div>
+  </div>
+
+  <!-- Suara -->
+  <audio id="jumpSound" src="https://assets.mixkit.co/sfx/preview/mixkit-quick-jump-arcade-game-239.wav"></audio>
+  <audio id="gameOverSound" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.wav"></audio>
 
   <script>
-    const box = document.getElementById("box");
+    const dino = document.getElementById("dino");
+    const game = document.getElementById("game");
     const scoreDisplay = document.getElementById("score");
+    const gameOverText = document.getElementById("game-over");
+    const jumpSound = document.getElementById("jumpSound");
+    const gameOverSound = document.getElementById("gameOverSound");
+
+    let isJumping = false;
     let score = 0;
+    let gameRunning = true;
 
-    function breakBox() {
-      score++;
-      scoreDisplay.innerText = "Score: " + score;
-      moveBox();
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space" && !isJumping && gameRunning) {
+        isJumping = true;
+        dino.classList.add("jump");
+        jumpSound.play();
+        setTimeout(() => {
+          dino.classList.remove("jump");
+          isJumping = false;
+        }, 500);
+      }
+    });
+
+    function createObstacle() {
+      const obstacle = document.createElement("div");
+      obstacle.classList.add("obstacle");
+      obstacle.style.right = "-30px";
+      game.appendChild(obstacle);
+
+      const moveInterval = setInterval(() => {
+        if (!gameRunning) {
+          clearInterval(moveInterval);
+          return;
+        }
+
+        const dinoRect = dino.getBoundingClientRect();
+        const obsRect = obstacle.getBoundingClientRect();
+
+        if (
+          obsRect.left < dinoRect.right &&
+          obsRect.right > dinoRect.left &&
+          obsRect.bottom > dinoRect.top
+        ) {
+          gameOver();
+          clearInterval(moveInterval);
+        }
+      }, 10);
+
+      setTimeout(() => {
+        obstacle.remove();
+      }, 2500);
     }
 
-    function moveBox() {
-      const maxX = window.innerWidth - box.offsetWidth;
-      const maxY = window.innerHeight - box.offsetHeight;
-      const randomX = Math.floor(Math.random() * maxX);
-      const randomY = Math.floor(Math.random() * maxY);
-      box.style.left = randomX + "px";
-      box.style.top = randomY + "px";
+    function gameOver() {
+      gameRunning = false;
+      gameOverText.style.display = "block";
+      gameOverSound.play();
     }
 
-    // Pindah saat pertama kali tampil
-    moveBox();
+    // Score counter
+    const scoreInterval = setInterval(() => {
+      if (gameRunning) {
+        score++;
+        scoreDisplay.textContent = "Score: " + score;
+      }
+    }, 100);
+
+    // Spawn obstacles
+    setInterval(() => {
+      if (gameRunning) createObstacle();
+    }, 1500);
   </script>
 </body>
 </html>
