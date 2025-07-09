@@ -1,156 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>Dino Game Enhanced</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Install Panel Pterodactyl</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background-color: #f7f7f7;
-      font-family: sans-serif;
-      overflow: hidden;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f172a;
+      color: white;
     }
-    #game {
-      width: 100%;
-      height: 300px;
-      background: url('https://i.ibb.co/5xvQn9G/ground.png') repeat-x;
-      background-size: cover;
-      border-bottom: 3px solid #333;
-      position: relative;
-      overflow: hidden;
+
+    header {
+      background: #1e293b;
+      padding: 20px;
+      text-align: center;
     }
-    #dino {
-      position: absolute;
-      bottom: 0;
-      left: 50px;
-      width: 60px;
-      height: 60px;
-      background: url('https://i.ibb.co/FKhQfDf/dino-run.png') no-repeat;
-      background-size: cover;
+
+    header h1 {
+      margin: 0;
+      color: #38bdf8;
     }
-    .obstacle {
-      position: absolute;
-      bottom: 0;
-      width: 30px;
-      height: 50px;
-      background: url('https://i.ibb.co/fFdq4kz/cactus.png') no-repeat;
-      background-size: cover;
-      animation: obstacleMove 2s linear infinite;
+
+    .container {
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
     }
-    @keyframes obstacleMove {
-      from { right: -30px; }
-      to { right: 100%; }
+
+    .section {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
     }
-    .jump {
-      animation: jumpAnim 0.5s ease-out;
-    }
-    @keyframes jumpAnim {
-      0% { bottom: 0; }
-      50% { bottom: 120px; }
-      100% { bottom: 0; }
-    }
-    #score {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-size: 18px;
-      color: #222;
-    }
-    #game-over {
-      display: none;
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 32px;
-      color: red;
+
+    .btn {
+      display: inline-block;
+      background: #38bdf8;
+      color: black;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
       font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+      background: #1e293b;
+      margin-top: 30px;
+    }
+
+    ul {
+      padding-left: 20px;
     }
   </style>
 </head>
 <body>
-  <div id="game">
-    <div id="dino"></div>
-    <div id="score">Score: 0</div>
-    <div id="game-over">GAME OVER</div>
+
+  <header>
+    <h1>Install Panel Pterodactyl</h1>
+    <p>Layanan Instalasi Panel Hosting Game Paling Lengkap</p>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2>Apa Itu Pterodactyl?</h2>
+      <p>Pterodactyl adalah panel manajemen hosting game modern berbasis web yang memungkinkan Anda menjalankan server game seperti Minecraft, CS:GO, FiveM, dan lainnya dengan mudah.</p>
+    </div>
+
+    <div class="section">
+      <h2>Fitur Layanan Kami</h2>
+      <ul>
+        <li>Instalasi Pterodactyl Panel (Panel & Wings)</li>
+        <li>SSL (HTTPS) Otomatis</li>
+        <li>Setup Subdomain (jika ada)</li>
+        <li>Support Panel Versi Terbaru</li>
+        <li>Full Support Hingga Panel Siap Digunakan</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Harga</h2>
+      <p><strong>Rp 25.000 - 50.000</strong> tergantung server & kebutuhan.</p>
+    </div>
+
+    <div class="section">
+      <h2>Hubungi Kami</h2>
+      <p>Chat via WhatsApp untuk order atau konsultasi gratis:</p>
+      <a href="https://wa.me/6283160556330" class="btn">Chat WhatsApp</a>
+    </div>
+
+    <div class="section">
+      <h2>Contoh Tampilan Panel</h2>
+      <img src="https://i.ibb.co/nLMRC1v/pterodactyl-panel.png" alt="Panel Screenshot" style="width:100%; border-radius:10px;">
+    </div>
   </div>
 
-  <!-- Suara -->
-  <audio id="jumpSound" src="https://assets.mixkit.co/sfx/preview/mixkit-quick-jump-arcade-game-239.wav"></audio>
-  <audio id="gameOverSound" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.wav"></audio>
+  <footer>
+    &copy; 2025 Install Panel Pterodactyl - Layanan Instalasi oleh Ibnu
+  </footer>
 
-  <script>
-    const dino = document.getElementById("dino");
-    const game = document.getElementById("game");
-    const scoreDisplay = document.getElementById("score");
-    const gameOverText = document.getElementById("game-over");
-    const jumpSound = document.getElementById("jumpSound");
-    const gameOverSound = document.getElementById("gameOverSound");
-
-    let isJumping = false;
-    let score = 0;
-    let gameRunning = true;
-
-    document.addEventListener("keydown", (e) => {
-      if (e.code === "Space" && !isJumping && gameRunning) {
-        isJumping = true;
-        dino.classList.add("jump");
-        jumpSound.play();
-        setTimeout(() => {
-          dino.classList.remove("jump");
-          isJumping = false;
-        }, 500);
-      }
-    });
-
-    function createObstacle() {
-      const obstacle = document.createElement("div");
-      obstacle.classList.add("obstacle");
-      obstacle.style.right = "-30px";
-      game.appendChild(obstacle);
-
-      const moveInterval = setInterval(() => {
-        if (!gameRunning) {
-          clearInterval(moveInterval);
-          return;
-        }
-
-        const dinoRect = dino.getBoundingClientRect();
-        const obsRect = obstacle.getBoundingClientRect();
-
-        if (
-          obsRect.left < dinoRect.right &&
-          obsRect.right > dinoRect.left &&
-          obsRect.bottom > dinoRect.top
-        ) {
-          gameOver();
-          clearInterval(moveInterval);
-        }
-      }, 10);
-
-      setTimeout(() => {
-        obstacle.remove();
-      }, 2500);
-    }
-
-    function gameOver() {
-      gameRunning = false;
-      gameOverText.style.display = "block";
-      gameOverSound.play();
-    }
-
-    // Score counter
-    const scoreInterval = setInterval(() => {
-      if (gameRunning) {
-        score++;
-        scoreDisplay.textContent = "Score: " + score;
-      }
-    }, 100);
-
-    // Spawn obstacles
-    setInterval(() => {
-      if (gameRunning) createObstacle();
-    }, 1500);
-  </script>
 </body>
 </html>
