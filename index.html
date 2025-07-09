@@ -1,19 +1,57 @@
 <!DOCTYPE html>
 <html>
-<head><title>Break the Box</title></head>
-<body>
-  <h2>Break the Box!</h2>
-  <div onclick="breakBox(this)" style="width:100px;height:100px;background:red;"></div>
-  <p id="score">Score: 0</p>
-  <script>
-    let score = 0;
-    function breakBox(el) {
-      score++;
-      el.style.top = Math.random() * 300 + "px";
-      el.style.left = Math.random() * 300 + "px";
-      el.style.position = "absolute";
-      document.getElementById('score').innerText = "Score: " + score;
+<head>
+  <title>Break the Box</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
     }
+    #box {
+      width: 100px;
+      height: 100px;
+      background: red;
+      position: absolute;
+      cursor: pointer;
+    }
+    #score {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      font-family: sans-serif;
+      background: rgba(255,255,255,0.7);
+      padding: 5px 10px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="score">Score: 0</div>
+  <div id="box" onclick="breakBox()"></div>
+
+  <script>
+    const box = document.getElementById("box");
+    const scoreDisplay = document.getElementById("score");
+    let score = 0;
+
+    function breakBox() {
+      score++;
+      scoreDisplay.innerText = "Score: " + score;
+      moveBox();
+    }
+
+    function moveBox() {
+      const maxX = window.innerWidth - box.offsetWidth;
+      const maxY = window.innerHeight - box.offsetHeight;
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY);
+      box.style.left = randomX + "px";
+      box.style.top = randomY + "px";
+    }
+
+    // Pindah saat pertama kali tampil
+    moveBox();
   </script>
 </body>
 </html>
