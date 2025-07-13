@@ -2,108 +2,190 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Install Panel Pterodactyl</title>
+  <title>Waguri Run Anime</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0f172a;
-      color: white;
+      padding: 0;
+      overflow: hidden;
+      background: #111;
     }
-
-    header {
-      background: #1e293b;
-      padding: 20px;
-      text-align: center;
-    }
-
-    header h1 {
-      margin: 0;
-      color: #38bdf8;
-    }
-
-    .container {
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
-    }
-
-    .section {
-      background: #1e293b;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
-
-    .btn {
-      display: inline-block;
-      background: #38bdf8;
-      color: black;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    footer {
-      text-align: center;
-      padding: 15px;
-      font-size: 14px;
-      background: #1e293b;
-      margin-top: 30px;
-    }
-
-    ul {
-      padding-left: 20px;
+    canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   </style>
 </head>
 <body>
+<canvas id="gameCanvas"></canvas>
 
-  <header>
-    <h1>Install Panel Pterodactyl</h1>
-    <p>Layanan Instalasi Panel Hosting Game Paling Lengkap</p>
-  </header>
+<!-- Audio -->
+<audio id="jumpSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c86be0e3b6.mp3" preload="auto"></audio>
+<audio id="gameOverSound" src="https://cdn.pixabay.com/download/audio/2022/01/22/audio_649c43b99e.mp3" preload="auto"></audio>
+<audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2023/01/09/audio_f4379dcd25.mp3" preload="auto" loop></audio>
 
-  <div class="container">
-    <div class="section">
-      <h2>Apa Itu Pterodactyl?</h2>
-      <p>Pterodactyl adalah panel manajemen hosting game modern berbasis web yang memungkinkan Anda menjalankan server game seperti Minecraft, CS:GO, FiveM, dan lainnya dengan mudah.</p>
-    </div>
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-    <div class="section">
-      <h2>Fitur Layanan Kami</h2>
-      <ul>
-        <li>Instalasi Pterodactyl Panel (Panel & Wings)</li>
-        <li>SSL (HTTPS) Otomatis</li>
-        <li>Setup Subdomain (jika ada)</li>
-        <li>Support Panel Versi Terbaru</li>
-        <li>Full Support Hingga Panel Siap Digunakan</li>
-      </ul>
-    </div>
+// Fullscreen setup
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
-    <div class="section">
-      <h2>Harga</h2>
-      <p><strong>Rp 25.000 - 50.000</strong> tergantung server & kebutuhan.</p>
-    </div>
+// Audio
+const jumpSound = document.getElementById("jumpSound");
+const gameOverSound = document.getElementById("gameOverSound");
+const bgMusic = document.getElementById("bgMusic");
+bgMusic.volume = 0.5;
+bgMusic.play();
 
-    <div class="section">
-      <h2>Hubungi Kami</h2>
-      <p>Chat via WhatsApp untuk order atau konsultasi gratis:</p>
-      <a href="https://wa.me/6283160556330" class="btn">Chat WhatsApp</a>
-    </div>
+// Images
+const playerImg = new Image();
+playerImg.src = "https://i.imgur.com/43UuwEY.png"; // Waguri anime
 
-    <div class="section">
-      <h2>Contoh Tampilan Panel</h2>
-      <img src="https://i.ibb.co/nLMRC1v/pterodactyl-panel.png" alt="Panel Screenshot" style="width:100%; border-radius:10px;">
-    </div>
-  </div>
+const monsterImgs = [
+  "https://i.imgur.com/M59eU4M.png",
+  "https://i.imgur.com/OJrB3I1.png",
+  "https://i.imgur.com/bOyATan.png"
+].map(src => {
+  const img = new Image();
+  img.src = src;
+  return img;
+});
 
-  <footer>
-    &copy; 2025 Install Panel Pterodactyl - Layanan Instalasi oleh Ibnu
-  </footer>
+// Game objects
+let player = {
+  x: 80,
+  y: 0,
+  width: 80,
+  height: 100,
+  vy: 0,
+  onGround: false,
+  jumpCount: 0,
+  lives: 3
+};
 
+let gravity = 1.5;
+let obstacles = [];
+let score = 0;
+let gameOver = false;
+
+// Obstacle generation
+function spawnObstacle() {
+  const img = monsterImgs[Math.floor(Math.random() * monsterImgs.length)];
+  obstacles.push({
+    x: canvas.width,
+    y: canvas.height - 100,
+    width: 80,
+    height: 100,
+    img: img
+  });
+}
+setInterval(spawnObstacle, 2000);
+
+// Explosion effect
+function drawExplosion(x, y) {
+  ctx.beginPath();
+  ctx.arc(x + 40, y + 50, 40, 0, Math.PI * 2);
+  ctx.fillStyle = "red";
+  ctx.fill();
+}
+
+// Jump logic
+document.addEventListener("keydown", e => {
+  if ((e.code === "Space" || e.code === "ArrowUp") && player.jumpCount < 2 && !gameOver) {
+    player.vy = -18;
+    player.jumpCount++;
+    jumpSound.currentTime = 0;
+    jumpSound.play();
+  }
+});
+
+// Game loop
+function update() {
+  if (gameOver) return;
+
+  // Physics
+  player.vy += gravity;
+  player.y += player.vy;
+
+  if (player.y + player.height >= canvas.height) {
+    player.y = canvas.height - player.height;
+    player.vy = 0;
+    player.jumpCount = 0;
+  }
+
+  // Move obstacles
+  obstacles.forEach(obs => obs.x -= 6);
+
+  // Collision
+  obstacles.forEach((obs, i) => {
+    if (
+      player.x < obs.x + obs.width &&
+      player.x + player.width > obs.x &&
+      player.y < obs.y + obs.height &&
+      player.y + player.height > obs.y
+    ) {
+      drawExplosion(player.x, player.y);
+      obstacles.splice(i, 1);
+      player.lives--;
+      if (player.lives <= 0) {
+        endGame();
+      }
+    }
+  });
+
+  score++;
+}
+
+// Drawing
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Background
+  ctx.fillStyle = "#222";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Player
+  ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
+
+  // Obstacles
+  obstacles.forEach(obs => {
+    ctx.drawImage(obs.img, obs.x, obs.y, obs.width, obs.height);
+  });
+
+  // Score & lives
+  ctx.fillStyle = "white";
+  ctx.font = "24px Arial";
+  ctx.fillText("Skor: " + score, 20, 30);
+  ctx.fillText("❤️ Nyawa: " + player.lives, 20, 60);
+
+  if (gameOver) {
+    ctx.fillStyle = "red";
+    ctx.font = "48px Arial";
+    ctx.fillText("GAME OVER", canvas.width / 2 - 150, canvas.height / 2);
+  }
+}
+
+function endGame() {
+  gameOver = true;
+  gameOverSound.play();
+  bgMusic.pause();
+}
+
+// Loop
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
 </body>
 </html>
