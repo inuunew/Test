@@ -1,0 +1,15 @@
+<div class="player">
+  <img id="musicCover" class="music-cover" src="">
+  <div class="song-title" id="songTitle">-</div>
+  <div class="artist" id="artist">-</div>
+  <div id="lyricsContainer" class="lyrics"></div>
+  <div class="progress-container" onclick="setProgress(event)">
+    <div class="progress" id="musicProgress"></div>
+  </div>
+  <div class="controls">
+    <button onclick="prevSong()"><i class="fas fa-backward"></i></button>
+    <button onclick="togglePlay()"><i id="playPauseIcon" class="fas fa-play"></i></button>
+    <button onclick="nextSong()"><i class="fas fa-forward"></i></button>
+  </div>
+  <div class="playlist" id="playlist"></div>
+</div>

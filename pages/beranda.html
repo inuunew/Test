@@ -1,0 +1,32 @@
+<div class="banner-container">
+  <div class="slider">
+    <div class="slide active"><img src="https://files.catbox.moe/b629ct.png"></div>
+  </div>
+  <div class="info-box">
+    <div class="info-icon">📢</div>
+    <div class="info-text" data-text="Selamat datang di InuuMarket • Top Up Game Murah & Cepat • Promo Spesial Diskon Besar • Proses Otomatis 24 Jam"></div>
+  </div>
+  <div class="search-area" id="searchArea" style="display: none;">
+    <div class="search-box"><input type="text" id="searchGame" placeholder="Cari game..."></div>
+  </div>
+</div>
+
+<div class="game-title" id="titleLayanan" style="margin-top:0;">
+  <div class="title-bar"></div>
+  <div class="title-text"><h2>📋 Daftar Layanan</h2><p>Pilih kategori layanan yang tersedia</p></div>
+</div>
+<div class="menu-grid" id="menuGrid">
+  <div class="menu-card" onclick="openCategory('game')"><i class="fas fa-gamepad"></i><p>Top Up Games</p></div>
+  <div class="menu-card" onclick="openCategory('hosting')"><i class="fas fa-server"></i><p>Hosting Product</p></div>
+  <div class="menu-card" onclick="openCategory('other')"><i class="fas fa-box"></i><p>Lainnya</p></div>
+</div>
+<div id="backBtn" onclick="goBack()" style="display:none; padding:15px; cursor:pointer; font-weight:600;">← Kembali</div>
+
+<div class="game-title" id="titleGame"><div class="title-bar"></div><div class="title-text"><h2>Top Up Game</h2><p>Layanan 24 jam harga terjangkau dan aman🔥</p></div></div>
+<div class="game-grid" id="gameGrid"></div>
+
+<div class="game-title" id="titleHosting"><div class="title-bar"></div><div class="title-text"><h2>Hosting Area</h2><p>Layanan Hosting Panel Pterodactyl/VPS/Digital Ocean🌊</p></div></div>
+<div class="game-grid" id="panelGrid"></div>
+
+<div class="game-title" id="titleOther"><div class="title-bar"></div><div class="title-text"><h2>Produk Lain</h2><p>Random Produk dari Inuu</p></div></div>
+<div class="game-grid" id="otherGrid"></div>
