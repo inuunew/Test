@@ -1,345 +1,784 @@
-<div class="checkout-page">
-  <div class="header">
-    <div class="back" onclick="goBack()">←</div>
-    <div class="title">Detail Pesanan</div>
-  </div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <div class="card">
-    <div class="product">
-      <img id="gameImage" onerror="this.src='default.png'">
-      <div>
-        <div class="badge">GAMES</div>
-        <div id="itemName"></div>
-        <div class="price" id="price"></div>
-      </div>
-    </div>
-    <div class="action-menu">
-      <div class="action-item" onclick="openInfo()">ℹ️ Info</div>
-    </div>
-  </div>
+<title>Checkout</title>
 
-  <div id="confirmSheet" class="sheet">
-    <div class="sheet-content">
-      <div class="sheet-header">
-        <span>Detail Pembayaran</span>
-        <span onclick="closeSheet()">▼</span>
-      </div>
-      <div class="sheet-body">
-        <div style="display:flex;gap:10px;align-items:center;">
-          <img id="sheetImage" style="width:50px;border-radius:8px;">
-          <div>
-            <div id="sheetItem"></div>
-            <div id="sheetPrice" style="color:#555;"></div>
-          </div>
-        </div>
-        <hr style="margin:15px 0;">
-        <div class="row"><span>Tujuan :</span><span id="sheetUser" style="color:red;"></span></div>
-        <div class="row"><span>Harga :</span><span id="sheetHarga"></span></div>
-        <div style="margin-top:15px;background:#f3f4f6;padding:10px;border-radius:10px;">
-          Pastikan data sudah benar agar tidak terjadi kesalahan.<br>Melanjutkan Berarti Membeli! admin akan blacklist orang yang tidak bersungguh-sungguh
-        </div>
-        <button onclick="lanjutWA()" class="pay" style="width:100%;margin-top:15px;">Lanjutkan Pembelian</button>
-        <button onclick="closeSheet()" style="width:100%;margin-top:10px;padding:10px;border:none;border-radius:10px;">Kembali</button>
-      </div>
-    </div>
-  </div>
+<style>
+body{
+font-family: Arial, sans-serif;
+background:#f3f4f6;
+margin:0;
+padding:0;
+-webkit-tap-highlight-color: transparent;
+}
 
-  <div class="card" id="userIdBox">
-    <label class="label">USER ID</label>
-    <div class="input-group">
-      <input type="text" placeholder="Masukkan ID Player" id="userId">
-    </div>
-  </div>
+.header{
+display:flex;
+align-items:center;
+padding:15px;
+background:white;
+box-shadow:0 2px 5px rgba(0,0,0,0.05);
+}
 
-  <div class="card" id="usernameBox" style="display:none;">
-    <label class="label">USERNAME PANEL</label>
-    <div class="input-group">
-      <input type="text" placeholder="Masukkan Username" id="username">
-    </div>
-  </div>
+.back{
+font-size:22px;
+margin-right:10px;
+cursor:pointer;
+}
 
-  <div class="card" id="phoneBox" style="display:none;">
-    <label class="label">NOMOR TELEPON</label>
-    <div class="input-group">
-      <input type="tel" placeholder="Masukkan Nomor HP" id="phone">
-    </div>
-  </div>
+.title{
+font-weight:bold;
+font-size:18px;
+}
 
-  <div class="card" id="serverBox" style="display:none;">
-    <label class="label">SERVER</label>
-    <div class="input-group" id="mlServer" style="display:none;">
-      <input type="number" placeholder="Server ID" id="serverId">
-    </div>
-    <div class="input-group" id="genshinServer" style="display:none;">
-      <select id="serverRegion">
-        <option value="">Pilih Server</option>
-        <option>Asia</option>
-        <option>America</option>
-        <option>Europe</option>
-        <option>TW / HK / MO</option>
-      </select>
-    </div>
-  </div>
+.card{
+background:white;
+margin:15px;
+padding:15px;
+border-radius:14px;
+box-shadow:0 2px 6px rgba(0,0,0,0.06);
+}
 
-  <div class="card">
-    <h4>METODE PEMBAYARAN</h4>
-    <div class="payment-select" onclick="togglePayment()">
-      <div id="paymentSelected">Pilih Metode Pembayaran</div>
-      <div>▼</div>
-    </div>
-    <div class="payment-list" id="paymentList">
-      <div class="payment-item" data-method="qris-auto">QRIS Otomatis</div>
-      <div class="payment-item" data-method="qris-manual">QRIS Manual (Order Via WhatsApp)</div>
-    </div>
-  </div>
+.product{
+display:flex;
+align-items:center;
+gap:15px;
+}
 
-  <div class="card">
-    <h4>RINCIAN TRANSAKSI</h4>
-    <div class="row"><span>Subtotal</span><span id="subtotal"></span></div>
-    <hr>
-    <div class="row"><span>Total</span><span class="total" id="total"></span></div>
-  </div>
+.product img{
+width:60px;
+border-radius:10px;
+}
 
-  <div class="footer">
-    <div>
-      <div style="font-size:12px;color:#777;">TOTAL</div>
-      <div class="bill" id="bill"></div>
-    </div>
-    <button class="pay" onclick="bayar()">Bayar</button>
+.badge{
+background:#e6f7ed;
+color:#1ea55b;
+font-size:12px;
+padding:3px 8px;
+border-radius:6px;
+display:inline-block;
+margin-bottom:5px;
+}
+
+.price{
+color:#555;
+}
+
+.label{
+font-weight:bold;
+margin-bottom:6px;
+display:block;
+}
+
+.input-group{
+display:flex;
+align-items:center;
+border:1px solid #ddd;
+border-radius:10px;
+overflow:hidden;
+}
+
+.input-group input, .input-group select{
+flex:1;
+border:none;
+padding:12px;
+outline:none;
+}
+
+.search{
+background:#e8eef7;
+border:none;
+padding:12px 15px;
+cursor:pointer;
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+margin:8px 0;
+}
+
+.total{
+font-size:20px;
+color:#16a34a;
+font-weight:bold;
+}
+
+.footer{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:white;
+padding:15px;
+box-shadow:0 -2px 10px rgba(0,0,0,0.05);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.pay{
+background:#16a34a;
+color:white;
+border:none;
+padding:12px 30px;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+}
+
+.bill{
+color:#16a34a;
+font-weight:bold;
+font-size:18px;
+}
+
+.loading{
+font-size:13px;
+color:#555;
+margin-top:8px;
+}
+
+.payment-select{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border:1px solid #ddd;
+  padding:12px;
+  border-radius:10px;
+  cursor:pointer;
+  background:#fafafa;
+  position: relative;
+  z-index: 10;
+}
+
+.payment-list{
+  display:none;
+  margin-top:10px;
+  position: relative;
+  z-index: 9;
+}
+
+.payment-item{
+padding:10px;
+border:1px solid #eee;
+border-radius:10px;
+margin-bottom:8px;
+cursor:pointer;
+}
+
+.payment-item:hover{
+background:#f5f5f5;
+}
+
+.payment-item.disabled{
+  color: #999;
+  cursor: not-allowed;
+}
+/*modal info*/
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.modal-content{
+background:white;
+width:90%;
+max-width:400px;
+border-radius:14px;
+padding:15px;
+animation:popup .2s ease;
+}
+
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.close{
+cursor:pointer;
+font-size:18px;
+}
+
+.modal-body{
+font-size:14px;
+color:#555;
+line-height:1.5;
+}
+
+@keyframes popup{
+from{transform:scale(0.9);opacity:0;}
+to{transform:scale(1);opacity:1;}
+}
+.card > div:active{
+transform:scale(0.97);
+opacity:0.85;
+transition:0.1s;
+}
+/*open info*/
+.sheet{
+  position:fixed;
+  bottom:-100%;
+  left:0;
+  right:0;
+  background:white;
+  border-radius:20px 20px 0 0;
+  box-shadow:0 -5px 20px rgba(0,0,0,0.1);
+  transition:0.3s;
+  z-index:9999;
+}
+
+.sheet.show{
+  bottom:0;
+}
+
+.sheet-content{
+  padding:15px;
+}
+
+.sheet-header{
+  display:flex;
+  justify-content:space-between;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+/*warning popup*/
+.popup-warning{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.popup-box{
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  text-align:center;
+  width:85%;
+  max-width:350px;
+  animation:fadeIn 0.2s ease;
+}
+
+.popup-box .icon{
+  font-size:50px;
+  color:#f59e0b; /* warna kuning warning */
+  margin-bottom:10px;
+}
+
+.popup-box h3{
+  margin:5px 0;
+}
+
+.popup-box p{
+  font-size:14px;
+  color:#555;
+}
+
+.popup-box button{
+  margin-top:15px;
+  width:100%;
+  padding:10px;
+  border:none;
+  background:#f59e0b;
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+@keyframes fadeIn{
+  from{transform:scale(0.8);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
+/*loading*/
+.loading-popup{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.loading-box{
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  text-align:center;
+  width:80%;
+  max-width:250px;
+}
+
+.spinner{
+  width:40px;
+  height:40px;
+  border:4px solid #eee;
+  border-top:4px solid #5b7cff;
+  border-radius:50%;
+  margin:0 auto 10px;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
+}
+</style>
+</head>
+
+<body>
+<div id="loadingPopup" class="loading-popup">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <p>Generate Qris...</p>
+  </div>
+</div>
+<div id="warningPopup" class="popup-warning">
+  <div class="popup-box">
+    <div class="icon">❗</div>
+    <h3>Peringatan</h3>
+    <p id="warningText">Harap isi data terlebih dahulu!</p>
+    <button onclick="closeWarning()">Oke</button>
   </div>
 </div>
 
+<div id="infoModal" class="modal">
+  <div class="modal-content">
+    
+    <div class="modal-header">
+      <span>Detail Produk</span>
+      <span class="close" onclick="closeInfo()">✕</span>
+    </div>
+
+    <div id="modalBody" class="modal-body">
+      Loading...
+    </div>
+
+  </div>
+</div>
+
+<div class="header">
+<div class="back" onclick="goHome()">←</div>
+<div class="title">Detail Pesanan</div>
+</div>
+
+<div class="card">
+  <div class="product">
+    <img id="gameImage" onerror="this.src='default.png'">
+    
+    <div>
+      <div class="badge">GAMES</div>
+      <div id="itemName"></div>
+      <div class="price" id="price"></div>
+    </div>
+  </div>
+
+  <!-- MENU AKSI GLOBAL -->
+  <div class="action-menu">
+    <div class="action-item" onclick="openInfo()">ℹ️ Info</div>
+  </div>
+</div>
+
+<div id="confirmSheet" class="sheet">
+  <div class="sheet-content">
+
+    <div class="sheet-header">
+      <span>Detail Pembayaran</span>
+      <span onclick="closeSheet()">▼</span>
+    </div>
+
+    <div class="sheet-body">
+      <div style="display:flex;gap:10px;align-items:center;">
+        <img id="sheetImage" style="width:50px;border-radius:8px;">
+        <div>
+          <div id="sheetItem"></div>
+          <div id="sheetPrice" style="color:#555;"></div>
+        </div>
+      </div>
+
+      <hr style="margin:15px 0;">
+
+      <div class="row">
+        <span>Tujuan :</span>
+        <span id="sheetUser" style="color:red;"></span>
+      </div>
+
+      <div class="row">
+        <span>Harga :</span>
+        <span id="sheetHarga"></span>
+      </div>
+
+      <div style="margin-top:15px;background:#f3f4f6;padding:10px;border-radius:10px;">
+        Pastikan data sudah benar agar tidak terjadi kesalahan.<br>Melanjutkan Berarti Membeli! admin akan blacklist orang yang tidak bersungguh-sungguh
+      </div>
+
+      <button onclick="lanjutWA()" class="pay" style="width:100%;margin-top:15px;">
+        Lanjutkan Pembelian
+      </button>
+
+      <button onclick="closeSheet()" style="width:100%;margin-top:10px;padding:10px;border:none;border-radius:10px;">
+        Kembali
+      </button>
+    </div>
+
+  </div>
+
+  </div>
+</div>
+<div class="card" id="userIdBox">
+<label class="label">USER ID</label>
+<div class="input-group">
+<input type="text" placeholder="Masukkan ID Player" id="userId">
+</div>
+</div>
+
+<div class="card" id="usernameBox" style="display:none;">
+
+<div style="display:flex; justify-content:space-between; align-items:center;">
+<label class="label">USERNAME PANEL</label>
+</div>
+
+
+<div class="input-group">
+<input type="text" placeholder="Masukkan Username" id="username">
+</div>
+
+</div>
+
+<div class="card" id="phoneBox" style="display:none;">
+<label class="label">NOMOR TELEPON</label>
+<div class="input-group">
+<input type="tel" placeholder="Masukkan Nomor HP" id="phone">
+</div>
+</div>
+
+<div class="card" id="serverBox" style="display:none;">
+<label class="label">SERVER</label>
+<div class="input-group" id="mlServer" style="display:none;">
+<input type="number" placeholder="Server ID" id="serverId">
+</div>
+<div class="input-group" id="genshinServer" style="display:none;">
+<select id="serverRegion">
+<option value="">Pilih Server</option>
+<option>Asia</option>
+<option>America</option>
+<option>Europe</option>
+<option>TW / HK / MO</option>
+</select>
+</div>
+</div>
+
+<div class="card">
+<h4>METODE PEMBAYARAN</h4>
+
+<div class="payment-select" onclick="togglePayment()">
+<div id="paymentSelected">Pilih Metode Pembayaran</div>
+<div>▼</div>
+</div>
+
+<div class="payment-list" id="paymentList">
+  <div class="payment-item" onclick="selectPayment('QRIS Otomatis')">QRIS Otomatis</div>
+  <div class="payment-item" onclick="selectPayment('QRIS Manual')">QRIS Manual (Order Via WhatsApp)</div>
+</div>
+</div>
+
+<div class="card">
+<h4>RINCIAN TRANSAKSI</h4>
+<div class="row"><span>Subtotal</span><span id="subtotal"></span></div>
+<hr>
+<div class="row"><span>Total</span><span class="total" id="total"></span></div>
+</div>
+
+<div class="footer">
+<div>
+<div style="font-size:12px;color:#777;">TOTAL</div>
+<div class="bill" id="bill"></div>
+</div>
+<button class="pay" onclick="bayar()">Bayar</button>
+</div>
+
+<script src="database.js"></script>
 <script>
-(function() {
-  // Ambil parameter dari URL (window.location.search masih berfungsi)
-  const params = new URLSearchParams(window.location.search);
-  const key = params.get("key");
-  const game = params.get("game") || "";
-  const item = params.get("item") || "";
-  const price = Number(params.get("price")) || 0;
-  const image = params.get("image") || "default.png";
-  const type = params.get("type") || "";
+function showLoading(){
+  document.getElementById("loadingPopup").style.display = "flex";
+}
+function showWarning(text){
+  document.getElementById("warningText").innerText = text;
+  document.getElementById("warningPopup").style.display = "flex";
+}
 
-  let produk = {};
-  if (typeof database !== 'undefined') produk = database[key] || {};
-  if (typeof databaseOther !== 'undefined' && !produk.name) produk = databaseOther[key] || {};
-  if (typeof databasePanel !== 'undefined' && !produk.name) produk = databasePanel[key] || {};
+function closeWarning(){
+  document.getElementById("warningPopup").style.display = "none";
+}
+function openConfirm(){
+  document.getElementById("confirmModal").style.display = "flex";
+}
 
-  const required = produk.require || [];
+function closeConfirm(){
+  document.getElementById("confirmModal").style.display = "none";
+}
 
-  // Tampilkan data produk
-  document.getElementById("itemName").innerText = game + " " + item;
-  document.getElementById("price").innerText = "Rp " + price.toLocaleString("id-ID");
-  document.getElementById("subtotal").innerText = "Rp " + price.toLocaleString("id-ID");
-  document.getElementById("total").innerText = "Rp " + price.toLocaleString("id-ID");
-  document.getElementById("bill").innerText = "Rp " + price.toLocaleString("id-ID");
-  document.getElementById("gameImage").src = image;
+function goHome() {
+  window.location.href = "index.html"; // arahkan kembali ke halaman utama
+}
 
-  // Tampilkan input sesuai required
-  document.getElementById("userIdBox").style.display = required.includes("userId") ? "block" : "none";
-  document.getElementById("usernameBox").style.display = required.includes("username") ? "block" : "none";
-  document.getElementById("phoneBox").style.display = required.includes("phone") ? "block" : "none";
-  document.getElementById("serverBox").style.display = required.includes("server") ? "block" : "none";
+const params = new URLSearchParams(window.location.search);
+const key = params.get("key");
+let produk = database[key] || databaseOther[key] || databasePanel[key] || {};
+let required = produk.require || [];
 
-  if (required.includes("server")) {
-    const mlServer = document.getElementById("mlServer");
-    const genshinServer = document.getElementById("genshinServer");
-    if (produk.serverType === "id") {
-      mlServer.style.display = "flex";
-      genshinServer.style.display = "none";
-    } else if (produk.serverType === "region") {
-      mlServer.style.display = "none";
-      genshinServer.style.display = "flex";
+const userIdBox = document.getElementById("userIdBox");
+const usernameBox = document.getElementById("usernameBox");
+const phoneBox = document.getElementById("phoneBox");
+const serverBox = document.getElementById("serverBox");
+const mlServer = document.getElementById("mlServer");
+const genshinServer = document.getElementById("genshinServer");
+
+const game = params.get("game") || "";
+const item = params.get("item") || "";
+const price = Number(params.get("price")) || 0;
+const image = params.get("image") || "default.png";
+const type = params.get("type") || "";
+
+document.getElementById("itemName").innerText = game + " " + item;
+document.getElementById("price").innerText = "Rp " + price.toLocaleString("id-ID");
+document.getElementById("subtotal").innerText = "Rp " + price.toLocaleString("id-ID");
+document.getElementById("total").innerText = "Rp " + price.toLocaleString("id-ID");
+document.getElementById("bill").innerText = "Rp " + price.toLocaleString("id-ID");
+document.getElementById("gameImage").src = image;
+
+// tampilkan input sesuai required
+userIdBox.style.display = required.includes("userId") ? "block" : "none";
+usernameBox.style.display = required.includes("username") ? "block" : "none";
+phoneBox.style.display = required.includes("phone") ? "block" : "none";
+serverBox.style.display = required.includes("server") ? "block" : "none";
+
+// server input sesuai tipe
+if(required.includes("server")){
+  if(produk.serverType==="id"){ 
+    mlServer.style.display="flex"; 
+    genshinServer.style.display="none"; 
+  } else if(produk.serverType==="region"){ 
+    mlServer.style.display="none"; 
+    genshinServer.style.display="flex"; 
+  }
+}
+
+let selectedPayment = "";
+let isManualQRIS = false;
+
+function togglePayment() {
+  const list = document.getElementById("paymentList");
+  list.style.display = list.style.display === "block" ? "none" : "block";
+}
+
+function selectPayment(name){
+  const paymentSelected = document.getElementById("paymentSelected");
+  if(name === "QRIS Otomatis" && !produk.qris){
+    alert("QRIS otomatis sedang error, silakan pilih metode lain!");
+    return;
+  }
+  selectedPayment = name;
+  paymentSelected.innerText = name;
+  document.getElementById("paymentList").style.display = "none";
+  isManualQRIS = (name === "QRIS Manual");
+}
+
+// disable QRIS otomatis jika produk.qris=false
+document.addEventListener("DOMContentLoaded", () => {
+  const qrisItem = Array.from(document.querySelectorAll(".payment-item"))
+                        .find(el => el.innerText.includes("QRIS Otomatis"));
+  if(qrisItem){
+    if(!produk.qris){
+      qrisItem.innerText = "QRIS Otomatis (sedang error)";
+      qrisItem.classList.add("disabled");
+      qrisItem.addEventListener("click", () => alert("QRIS otomatis sedang error, silakan pilih metode lain!"));
+    } else {
+      qrisItem.innerText = "QRIS Otomatis";
+      qrisItem.addEventListener("click", () => selectPayment("QRIS Otomatis"));
     }
   }
+});
 
-  let selectedPayment = "";
-  let isManualQRIS = false;
+const btn = document.querySelector(".pay");
+btn.disabled = false;
+btn.style.opacity = "1";
+btn.innerHTML = "Bayar";
+// checkout
+function bayar(){
+  const btn = document.querySelector(".pay");
 
-  window.togglePayment = function() {
-    const list = document.getElementById("paymentList");
-    list.style.display = list.style.display === "block" ? "none" : "block";
-  };
-
-  window.selectPayment = function(name, isManual) {
-    if (name === "QRIS Otomatis" && !produk.qris) {
-      alert("QRIS otomatis sedang error, silakan pilih metode lain!");
-      return;
-    }
-    selectedPayment = name;
-    isManualQRIS = isManual;
-    document.getElementById("paymentSelected").innerText = name;
-    document.getElementById("paymentList").style.display = "none";
-  };
-
-  // Pasang event listener ke payment items
-  const autoItem = document.querySelector('.payment-item[data-method="qris-auto"]');
-  const manualItem = document.querySelector('.payment-item[data-method="qris-manual"]');
-  if (autoItem) {
-    if (!produk.qris) {
-      autoItem.innerText = "QRIS Otomatis (sedang error)";
-      autoItem.classList.add("disabled");
-      autoItem.onclick = () => alert("QRIS otomatis sedang error, silakan pilih metode lain!");
-    } else {
-      autoItem.onclick = () => selectPayment("QRIS Otomatis", false);
-    }
-  }
-  if (manualItem) {
-    manualItem.onclick = () => selectPayment("QRIS Manual", true);
+  let serverValue = "";
+  if(required.includes("server")){
+    serverValue = (produk.serverType==="id") 
+      ? document.getElementById("serverId").value 
+      : document.getElementById("serverRegion").value;
   }
 
-  // Fungsi global yang dipanggil dari tombol
-  window.goBack = function() {
-    if (typeof loadPage !== 'undefined') {
-      loadPage('beranda');
-    } else {
-      window.location.href = 'index.html';
-    }
-  };
+  function resetBtn(){
+  btn.innerHTML="Bayar";
+  btn.disabled=false;
+  btn.style.opacity="1";
+  document.getElementById("loadingPopup").style.display = "none"; // ← INI TAMBAHAN PENTING
+}
 
-  window.showLoading = function() {
-    const popup = document.getElementById("loadingPopup");
-    if (popup) popup.style.display = "flex";
-  };
-  window.closeWarning = function() {
-    document.getElementById("warningPopup").style.display = "none";
-  };
-  window.showWarning = function(text) {
-    document.getElementById("warningText").innerText = text;
-    document.getElementById("warningPopup").style.display = "flex";
-  };
-  window.openSheet = function() {
-    document.getElementById("confirmSheet").classList.add("show");
-    document.getElementById("sheetImage").src = image;
-    document.getElementById("sheetItem").innerText = game + " " + item;
-    document.getElementById("sheetPrice").innerText = "Rp " + price.toLocaleString("id-ID");
-    document.getElementById("sheetHarga").innerText = "Rp " + price.toLocaleString("id-ID");
-    let userVal = document.getElementById("userId")?.value ||
-                  document.getElementById("username")?.value ||
-                  document.getElementById("phone")?.value || "-";
-    document.getElementById("sheetUser").innerText = userVal;
-  };
-  window.closeSheet = function() {
-    document.getElementById("confirmSheet").classList.remove("show");
-  };
-  window.lanjutWA = function() {
-    closeSheet();
-    const waNumber = "6283160556330";
-    let serverValue = "";
-    if (required.includes("server")) {
-      serverValue = (produk.serverType === "id") 
-        ? document.getElementById("serverId").value 
-        : document.getElementById("serverRegion").value;
-    }
-    const message = encodeURIComponent(
-      `Halo, saya ingin melakukan pembayaran memakai qris manual untuk:\n`+
-      `Game: ${game}\nItem: ${item}\nHarga: Rp ${price.toLocaleString("id-ID")}\n`+
-      `UserID: ${document.getElementById("userId")?.value || ''}\n`+
-      `Username: ${document.getElementById("username")?.value || ''}\n`+
-      `Phone: ${document.getElementById("phone")?.value || ''}\n`+
-      `Server: ${serverValue}`
-    );
-    window.open(`https://wa.me/${waNumber}?text=${message}`, '_blank');
-  };
+  // VALIDASI DULU
+  if(required.includes("username") && !document.getElementById("username").value){
+    showWarning("Masukkan username terlebih dahulu!");
+    return;
+  }
 
-  window.bayar = function() {
-    const btn = document.querySelector(".pay");
-    let serverValue = "";
-    if (required.includes("server")) {
-      serverValue = (produk.serverType === "id") 
-        ? document.getElementById("serverId").value 
-        : document.getElementById("serverRegion").value;
-    }
+  if(required.includes("userId") && !document.getElementById("userId").value){
+    showWarning("Masukkan ID terlebih dahulu!");
+    return;
+  }
 
-    if (required.includes("username") && !document.getElementById("username").value) {
-      showWarning("Masukkan username terlebih dahulu!");
-      return;
-    }
-    if (required.includes("userId") && !document.getElementById("userId").value) {
-      showWarning("Masukkan ID terlebih dahulu!");
-      return;
-    }
-    if (required.includes("server") && !serverValue) {
-      showWarning("Masukkan server terlebih dahulu!");
-      return;
-    }
-    if (!selectedPayment) {
-      showWarning("Pilih metode pembayaran!");
-      return;
-    }
-    if (isManualQRIS) {
-      openSheet();
-      return;
-    }
+  if(required.includes("server") && !serverValue){
+    showWarning("Masukkan server terlebih dahulu!");
+    return;
+  }
 
-    // QRIS Otomatis
-    btn.innerHTML = "⏳ Memproses...";
-    btn.disabled = true;
-    btn.style.opacity = "0.7";
-    showLoading();
+  if(!selectedPayment){
+    showWarning("Pilih metode pembayaran!");
+    return;
+  }
 
-    const invoiceUrl = "invoice.html?" +
-      "key=" + encodeURIComponent(key) +
-      "&game=" + encodeURIComponent(game) +
-      "&item=" + encodeURIComponent(item) +
-      "&price=" + encodeURIComponent(price) +
-      "&type=" + encodeURIComponent(type) +
-      "&userId=" + encodeURIComponent(document.getElementById("userId")?.value || '') +
-      "&username=" + encodeURIComponent(document.getElementById("username")?.value || '') +
-      "&phone=" + encodeURIComponent(document.getElementById("phone")?.value || '') +
-      "&server=" + encodeURIComponent(serverValue) +
-      "&payment=" + encodeURIComponent(selectedPayment);
+  if(isManualQRIS){
+    openSheet();
+    return;
+  }
 
-    setTimeout(() => {
-      window.location.href = invoiceUrl;
-    }, 1200);
-  };
+  // BARU LOADING SETELAH VALIDASI LOLOS
+  btn.innerHTML="⏳ Memproses...";
+  btn.disabled=true;
+  btn.style.opacity="0.7";
+  showLoading();
 
-  window.openInfo = function() {
-    const modal = document.getElementById("infoModal");
-    const body = document.getElementById("modalBody");
-    let found = (typeof databasePanel !== 'undefined' && databasePanel[key]) ||
-                (typeof database !== 'undefined' && database[key]) ||
-                (typeof databaseOther !== 'undefined' && databaseOther[key]);
-    if (found) {
-      body.innerHTML = `
-        <img src="${image}" style="width:100%;border-radius:10px;margin-bottom:10px;">
-        <h3>${found.name}</h3>
-        <p>${found.desc || '-'}</p>
-        <hr><p>${found.detail || '-'}</p>
-      `;
-    } else {
-      body.innerHTML = `
-        <h3>${game} - ${item}</h3>
-        <p style="margin-top:10px;">
-          ✅ Proses otomatis 1-30 detik<br>
-          ✅ Tanpa login akun<br>
-          ✅ Aman & terpercaya<br>
-          ✅ Layanan 24 jam
-        </p>
-        <hr>
-        <p style="margin-top:10px;color:#16a34a;">
-          Pastikan data yang kamu input sudah benar sebelum checkout.
-          Kesalahan input bukan tanggung jawab admin.
-        </p>
-      `;
-    }
-    modal.style.display = "flex";
-  };
-  window.closeInfo = function() {
-    document.getElementById("infoModal").style.display = "none";
-  };
+  // redirect
+  const invoiceUrl = "invoice.html?" +
+    "key="+encodeURIComponent(key)+
+    "&game="+encodeURIComponent(game)+
+    "&item="+encodeURIComponent(item)+
+    "&price="+encodeURIComponent(price)+
+    "&type="+encodeURIComponent(type)+
+    "&userId="+encodeURIComponent(document.getElementById("userId").value || '')+
+    "&username="+encodeURIComponent(document.getElementById("username").value || '')+
+    "&phone="+encodeURIComponent(document.getElementById("phone").value || '')+
+    "&server="+encodeURIComponent(serverValue || '')+
+    "&payment="+encodeURIComponent(selectedPayment);
 
-  // Tutup popup loading jika ada
-  window.addEventListener("pageshow", () => {
-    const btn = document.querySelector(".pay");
-    if (btn) {
-      btn.disabled = false;
-      btn.style.opacity = "1";
-      btn.innerHTML = "Bayar";
-    }
-    const loadingPopup = document.getElementById("loadingPopup");
-    if (loadingPopup) loadingPopup.style.display = "none";
-  });
-})();
+  setTimeout(() => {
+    window.location.href = invoiceUrl;
+  }, 1200);
+}
+
+// modal info
+function openInfo(){
+  const modal = document.getElementById("infoModal");
+  const body = document.getElementById("modalBody");
+  let found = databasePanel[key] || database[key] || databaseOther[key];
+
+  if(found){
+    body.innerHTML = `
+      <img src="${image}" style="width:100%;border-radius:10px;margin-bottom:10px;">
+      <h3>${found.name}</h3>
+      <p>${found.desc || '-'}</p>
+      <hr>
+      <p>${found.detail || '-'}</p>
+    `;
+  } else {
+    body.innerHTML = `
+      <h3>${game} - ${item}</h3>
+      <p style="margin-top:10px;">
+        ✅ Proses otomatis 1-30 detik<br>
+        ✅ Tanpa login akun<br>
+        ✅ Aman & terpercaya<br>
+        ✅ Layanan 24 jam
+      </p>
+      <hr>
+      <p style="margin-top:10px;color:#16a34a;">
+        Pastikan data yang kamu input sudah benar sebelum checkout.
+        Kesalahan input bukan tanggung jawab admin.
+      </p>
+    `;
+  }
+  modal.style.display="flex";
+}
+function closeInfo(){ document.getElementById("infoModal").style.display="none"; }
+// Tampilkan server sesuai tipe
+if(required.includes("server")){
+  serverBox.style.display="block"
+  if(produk.serverType==="id"){ mlServer.style.display="flex"; genshinServer.style.display="none" }
+  else if(produk.serverType==="region"){ mlServer.style.display="none"; genshinServer.style.display="flex" }
+}
+
+window.addEventListener("pageshow", () => {
+  const btn = document.querySelector(".pay");
+  btn.disabled = false;
+  btn.style.opacity = "1";
+  btn.innerHTML = "Bayar";
+});
+
+function openSheet(){
+  document.getElementById("confirmSheet").classList.add("show");
+
+  document.getElementById("sheetImage").src = image;
+  document.getElementById("sheetItem").innerText = game + " " + item;
+  document.getElementById("sheetPrice").innerText = "Rp " + price.toLocaleString("id-ID");
+  document.getElementById("sheetHarga").innerText = "Rp " + price.toLocaleString("id-ID");
+
+  document.getElementById("sheetUser").innerText =
+    document.getElementById("userId")?.value ||
+    document.getElementById("username")?.value ||
+    document.getElementById("phone")?.value || "-";
+}
+
+function closeSheet(){
+  document.getElementById("confirmSheet").classList.remove("show");
+}
+
+function lanjutWA(){
+  closeSheet();
+
+  const waNumber = "6283160556330";
+  const message = encodeURIComponent(
+    `Halo, saya ingin melakukan pembayaran memakai qris manual untuk:\n`+
+    `Game: ${game}\nItem: ${item}\nHarga: Rp ${price.toLocaleString("id-ID")}\n`+
+    `UserID: ${document.getElementById("userId").value || ''}\n`+
+    `Username: ${document.getElementById("username").value || ''}\n`+
+    `Phone: ${document.getElementById("phone").value || ''}\n`+
+    `Server: ${required.includes("server") ? 
+      (produk.serverType==="id" ? document.getElementById("serverId").value : document.getElementById("serverRegion").value)
+      : ''
+    }`
+  );
+
+  window.location.href = `https://wa.me/${waNumber}?text=${message}`;
+}
 </script>
+</body>
+</html>
