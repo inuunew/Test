@@ -188,7 +188,7 @@ background:#f5f5f5;
   color: #999;
   cursor: not-allowed;
 }
-/* MODAL INFO dengan UI mirip screenshot */
+/* MODAL INFO dengan gaya persis screenshot */
 .modal{
 position:fixed;
 top:0;
@@ -205,9 +205,11 @@ z-index:999;
 .modal-content{
 background:white;
 width:90%;
-max-width:400px;
-border-radius:14px;
-padding:15px;
+max-width:420px;
+max-height:85%;
+overflow-y:auto;
+border-radius:20px;
+padding:0;
 animation:popup .2s ease;
 }
 
@@ -215,57 +217,96 @@ animation:popup .2s ease;
 display:flex;
 justify-content:space-between;
 align-items:center;
+padding:15px;
+border-bottom:1px solid #eee;
 font-weight:bold;
-margin-bottom:10px;
 }
 
 .close{
 cursor:pointer;
-font-size:18px;
+font-size:20px;
 }
 
 .modal-body{
+padding:15px;
 font-size:14px;
 color:#333;
 line-height:1.5;
 }
-.modal-body img {
-  width: 100%;
-  border-radius: 12px;
-  margin-bottom: 12px;
+/* gaya konten info seperti screenshot */
+.info-store {
+  text-align: center;
+  margin-bottom: 15px;
 }
-.modal-body h3 {
-  margin: 0 0 5px 0;
-  font-size: 18px;
+.info-store h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #222;
 }
-.modal-body .game-sub {
+.info-store p {
   color: #666;
+  font-size: 12px;
+  margin-top: 5px;
+}
+.info-game {
+  text-align: center;
+  margin: 15px 0;
+}
+.info-game h3 {
+  margin: 0;
+  font-size: 20px;
+}
+.info-game .sub {
+  color: #888;
   font-size: 13px;
-  margin-bottom: 12px;
-  border-left: 3px solid #16a34a;
-  padding-left: 8px;
 }
-.modal-body .desc-text {
-  background: #f9f9f9;
-  padding: 10px;
-  border-radius: 10px;
+.bullet-list {
+  list-style: none;
+  padding: 0;
   margin: 10px 0;
-  color: #2c3e2f;
 }
-.modal-body .detail-list {
-  margin-top: 10px;
-}
-.modal-body .detail-list p {
-  margin: 6px 0;
+.bullet-list li {
+  margin: 8px 0;
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.modal-body .detail-list .check {
+.bullet-list li:before {
+  content: "•";
   color: #16a34a;
-  font-weight: bold;
+  font-size: 18px;
 }
-
+.steps {
+  background: #f9f9f9;
+  padding: 10px 15px;
+  border-radius: 12px;
+  margin: 15px 0;
+}
+.steps p {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+.steps ol {
+  margin: 0;
+  padding-left: 20px;
+}
+.steps li {
+  margin: 5px 0;
+}
+.note {
+  background: #fff3e0;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-top: 15px;
+}
+.note a {
+  color: #16a34a;
+  text-decoration: none;
+}
+.note a:hover {
+  text-decoration: underline;
+}
 @keyframes popup{
 from{transform:scale(0.9);opacity:0;}
 to{transform:scale(1);opacity:1;}
@@ -509,37 +550,81 @@ to{transform:scale(1);opacity:1;}
 </div>
 
 <script>
-// ======================= DATABASE INTERNAL =======================
+// ======================= DATABASE (dengan info lengkap seperti screenshot) =======================
 const database = {
-  freefire: { name: "Free Fire", image: "https://via.placeholder.com/60?text=FF", require: ["userId"], serverType: null, qris: true, 
-    desc: "Top Up Diamond Free Fire", 
-    detail: "✅ Proses cepat 1-30 detik\n✅ Tanpa login akun\n✅ Layanan 24 jam\n✅ Harga termurah" 
+  freefire: { 
+    name: "Free Fire", 
+    image: "https://via.placeholder.com/60?text=FF", 
+    require: ["userId"], 
+    serverType: null, 
+    qris: true,
+    // Konten untuk modal info sesuai screenshot
+    infoContent: `
+      <div class="info-store">
+        <h2>PRIMA STORE</h2>
+        <p>The Most Trusted & Safest Platform For TopUp Games</p>
+      </div>
+      <div class="info-game">
+        <h3>FREE FIRE</h3>
+        <div class="sub">Garena</div>
+      </div>
+      <ul class="bullet-list">
+        <li>Proses Cepat</li>
+        <li>Layanan Chat 24/7</li>
+        <li>Produk Resmi</li>
+      </ul>
+      <div class="steps">
+        <p><strong>Deskripsi dan cara melakukan transaksi</strong></p>
+        <p>Beli top up diamond free fire harga paling murah, aman, cepat, dan terpercaya.</p>
+        <p><strong>Cara topup Free Fire:</strong></p>
+        <ol>
+          <li>Masukkan Data Akun</li>
+          <li>Pilih Nominal</li>
+          <li>Pilih Pembayaran</li>
+          <li>Masukkan Kode Promo (jika ada)</li>
+          <li>Isi Detail Kontak</li>
+          <li>Klik Pesan Sekarang dan lakukan Pembayaran</li>
+          <li>Selesai</li>
+        </ol>
+      </div>
+      <div class="note">
+        <strong>Note:</strong> Jika Mengalami Kendala Silahkan hub CS IG <a href="#" target="_blank">Klik Disini</a> dan CS WhatsApp <a href="#" target="_blank">Klik Disini</a>
+      </div>
+    `
   },
-  mlbb: { name: "Mobile Legends", image: "https://via.placeholder.com/60?text=ML", require: ["userId", "server"], serverType: "id", qris: true,
-    desc: "Diamond Mobile Legends",
-    detail: "✅ Masukkan ID dan Server ID dengan benar\n✅ Proses otomatis\n✅ Stok selalu tersedia"
+  mlbb: { 
+    name: "Mobile Legends", 
+    image: "https://via.placeholder.com/60?text=ML", 
+    require: ["userId", "server"], 
+    serverType: "id", 
+    qris: true,
+    infoContent: `
+      <div class="info-store"><h2>PRIMA STORE</h2><p>Top Up Mobile Legends</p></div>
+      <div class="info-game"><h3>MOBILE LEGENDS</h3><div class="sub">Moonton</div></div>
+      <ul class="bullet-list"><li>Proses Cepat</li><li>Harga Termurah</li><li>Garansi</li></ul>
+      <div class="steps"><p><strong>Cara Topup MLBB:</strong></p><ol><li>Masukkan ID & Server</li><li>Pilih Nominal</li><li>Bayar</li><li>Diamond masuk otomatis</li></ol></div>
+      <div class="note">Note: Pastikan ID benar</div>
+    `
   },
-  genshin: { name: "Genshin Impact", image: "https://via.placeholder.com/60?text=GI", require: ["userId", "server"], serverType: "region", qris: true,
-    desc: "Welkin Moon & Genesis Crystals",
-    detail: "✅ Pilih region server yang sesuai\n✅ Top up via UID\n✅ Tanpa perlu login"
+  genshin: { 
+    name: "Genshin Impact", 
+    image: "https://via.placeholder.com/60?text=GI", 
+    require: ["userId", "server"], 
+    serverType: "region", 
+    qris: true,
+    infoContent: `<div class="info-store"><h2>PRIMA STORE</h2><p>Top Up Genesis Crystal</p></div><div class="info-game"><h3>GENSHIN IMPACT</h3><div class="sub">Hoyoverse</div></div><ul class="bullet-list"><li>Proses 1-30 detik</li><li>Tanpa login</li></ul><div class="steps"><p><strong>Cara Topup:</strong></p><ol><li>Masukkan UID</li><li>Pilih Server Region</li><li>Pilih Item</li><li>Bayar</li></ol></div>`
   },
-  pubg: { name: "PUBG Mobile", image: "https://via.placeholder.com/60?text=PUBG", require: ["userId"], serverType: null, qris: false,
-    desc: "Top up UC PUBG Mobile cepat & aman",
-    detail: "✅ Daftar Layanan\n✅ Proses Cepat\n✅ Layanan Chat 24/7\n✅ Top Up FF Term\n✅ Produk Resmi\n✅ Layanan Chat"
+  pubg: { 
+    name: "PUBG Mobile", 
+    image: "https://via.placeholder.com/60?text=PUBG", 
+    require: ["userId"], 
+    serverType: null, 
+    qris: false,
+    infoContent: `<div class="info-store"><h2>PRIMA STORE</h2><p>Top Up UC PUBG</p></div><div class="info-game"><h3>PUBG MOBILE</h3><div class="sub">Tencent</div></div><ul class="bullet-list"><li>Proses Cepat</li><li>Layanan 24 Jam</li></ul><div class="steps"><p><strong>Cara Topup:</strong></p><ol><li>Masukkan ID Player</li><li>Pilih Nominal UC</li><li>Lakukan Pembayaran</li><li>UC langsung masuk</li></ol></div>`
   }
 };
-const databaseOther = {
-  steamwallet: { name: "Steam Wallet", image: "https://via.placeholder.com/60?text=Steam", require: ["username"], serverType: null, qris: true,
-    desc: "Steam Wallet Code",
-    detail: "✅ Kode dikirim via email\n✅ Bisa untuk semua game Steam\n✅ Garansi 100%"
-  }
-};
-const databasePanel = {
-  panelvps: { name: "VPS Panel", image: "https://via.placeholder.com/60?text=VPS", require: ["username", "phone"], serverType: null, qris: false,
-    desc: "Hosting Panel",
-    detail: "✅ Akses panel setelah pembayaran\n✅ Support 24 jam\n✅ Garansi uptime 99%"
-  }
-};
+const databaseOther = {};
+const databasePanel = {};
 
 // Ambil parameter dari URL
 const params = new URLSearchParams(window.location.search);
@@ -622,46 +707,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ========== MODAL INFO dengan UI mirip screenshot ==========
+// ========== MODAL INFO dengan konten dari database ==========
 function openInfo() {
   const modal = document.getElementById("infoModal");
   const body = document.getElementById("modalBody");
-  let found = databasePanel[key] || database[key] || databaseOther[key];
   
-  // Ambil desc dan detail dari database
-  let descText = found?.desc || "Informasi produk tidak tersedia.";
-  let detailText = found?.detail || "";
-  
-  // Format detail menjadi bullet points jika mengandung \n atau kita bisa split per baris
-  let detailHtml = "";
-  if (detailText) {
-    const lines = detailText.split('\n');
-    detailHtml = '<div class="detail-list">';
-    lines.forEach(line => {
-      if (line.trim()) {
-        // Jika line sudah mengandung ✅ atau •, biarkan, tapi kita tambahkan ikon centang jika belum
-        if (line.includes('✅') || line.includes('•') || line.includes('-')) {
-          detailHtml += `<p>${line}</p>`;
-        } else {
-          detailHtml += `<p><span class="check">✅</span> ${line}</p>`;
-        }
-      }
-    });
-    detailHtml += '</div>';
-  } else {
-    detailHtml = '<p class="desc-text">Tidak ada detail tambahan.</p>';
-  }
-  
-  // Tampilkan modal dengan gaya mirip screenshot
-  body.innerHTML = `
-    <img src="${image}" onerror="this.src='default.png'">
-    <h3>${game}</h3>
-    <div class="game-sub">${item}</div>
-    <div class="desc-text">${descText}</div>
-    ${detailHtml}
-    <hr style="margin: 15px 0;">
-    <p style="font-size:12px; color:#888;">Pastikan data yang kamu input sudah benar sebelum checkout. Kesalahan input bukan tanggung jawab admin.</p>
+  // Jika produk memiliki infoContent, gunakan itu. Jika tidak, buat default
+  let content = produk.infoContent || `
+    <div class="info-store"><h2>${game}</h2><p>Informasi produk</p></div>
+    <div class="info-game"><h3>${item}</h3></div>
+    <ul class="bullet-list"><li>Proses cepat & aman</li><li>Layanan 24/7</li></ul>
+    <div class="steps"><p><strong>Cara transaksi:</strong></p><ol><li>Masukkan data akun</li><li>Pilih pembayaran</li><li>Selesaikan pembayaran</li></ol></div>
+    <div class="note">Note: Pastikan data benar sebelum checkout.</div>
   `;
+  
+  body.innerHTML = content;
   modal.style.display = "flex";
 }
 
