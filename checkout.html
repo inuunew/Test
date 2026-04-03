@@ -1,0 +1,345 @@
+<div class="checkout-page">
+  <div class="header">
+    <div class="back" onclick="goBack()">←</div>
+    <div class="title">Detail Pesanan</div>
+  </div>
+
+  <div class="card">
+    <div class="product">
+      <img id="gameImage" onerror="this.src='default.png'">
+      <div>
+        <div class="badge">GAMES</div>
+        <div id="itemName"></div>
+        <div class="price" id="price"></div>
+      </div>
+    </div>
+    <div class="action-menu">
+      <div class="action-item" onclick="openInfo()">ℹ️ Info</div>
+    </div>
+  </div>
+
+  <div id="confirmSheet" class="sheet">
+    <div class="sheet-content">
+      <div class="sheet-header">
+        <span>Detail Pembayaran</span>
+        <span onclick="closeSheet()">▼</span>
+      </div>
+      <div class="sheet-body">
+        <div style="display:flex;gap:10px;align-items:center;">
+          <img id="sheetImage" style="width:50px;border-radius:8px;">
+          <div>
+            <div id="sheetItem"></div>
+            <div id="sheetPrice" style="color:#555;"></div>
+          </div>
+        </div>
+        <hr style="margin:15px 0;">
+        <div class="row"><span>Tujuan :</span><span id="sheetUser" style="color:red;"></span></div>
+        <div class="row"><span>Harga :</span><span id="sheetHarga"></span></div>
+        <div style="margin-top:15px;background:#f3f4f6;padding:10px;border-radius:10px;">
+          Pastikan data sudah benar agar tidak terjadi kesalahan.<br>Melanjutkan Berarti Membeli! admin akan blacklist orang yang tidak bersungguh-sungguh
+        </div>
+        <button onclick="lanjutWA()" class="pay" style="width:100%;margin-top:15px;">Lanjutkan Pembelian</button>
+        <button onclick="closeSheet()" style="width:100%;margin-top:10px;padding:10px;border:none;border-radius:10px;">Kembali</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="userIdBox">
+    <label class="label">USER ID</label>
+    <div class="input-group">
+      <input type="text" placeholder="Masukkan ID Player" id="userId">
+    </div>
+  </div>
+
+  <div class="card" id="usernameBox" style="display:none;">
+    <label class="label">USERNAME PANEL</label>
+    <div class="input-group">
+      <input type="text" placeholder="Masukkan Username" id="username">
+    </div>
+  </div>
+
+  <div class="card" id="phoneBox" style="display:none;">
+    <label class="label">NOMOR TELEPON</label>
+    <div class="input-group">
+      <input type="tel" placeholder="Masukkan Nomor HP" id="phone">
+    </div>
+  </div>
+
+  <div class="card" id="serverBox" style="display:none;">
+    <label class="label">SERVER</label>
+    <div class="input-group" id="mlServer" style="display:none;">
+      <input type="number" placeholder="Server ID" id="serverId">
+    </div>
+    <div class="input-group" id="genshinServer" style="display:none;">
+      <select id="serverRegion">
+        <option value="">Pilih Server</option>
+        <option>Asia</option>
+        <option>America</option>
+        <option>Europe</option>
+        <option>TW / HK / MO</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>METODE PEMBAYARAN</h4>
+    <div class="payment-select" onclick="togglePayment()">
+      <div id="paymentSelected">Pilih Metode Pembayaran</div>
+      <div>▼</div>
+    </div>
+    <div class="payment-list" id="paymentList">
+      <div class="payment-item" data-method="qris-auto">QRIS Otomatis</div>
+      <div class="payment-item" data-method="qris-manual">QRIS Manual (Order Via WhatsApp)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>RINCIAN TRANSAKSI</h4>
+    <div class="row"><span>Subtotal</span><span id="subtotal"></span></div>
+    <hr>
+    <div class="row"><span>Total</span><span class="total" id="total"></span></div>
+  </div>
+
+  <div class="footer">
+    <div>
+      <div style="font-size:12px;color:#777;">TOTAL</div>
+      <div class="bill" id="bill"></div>
+    </div>
+    <button class="pay" onclick="bayar()">Bayar</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  // Ambil parameter dari URL (window.location.search masih berfungsi)
+  const params = new URLSearchParams(window.location.search);
+  const key = params.get("key");
+  const game = params.get("game") || "";
+  const item = params.get("item") || "";
+  const price = Number(params.get("price")) || 0;
+  const image = params.get("image") || "default.png";
+  const type = params.get("type") || "";
+
+  let produk = {};
+  if (typeof database !== 'undefined') produk = database[key] || {};
+  if (typeof databaseOther !== 'undefined' && !produk.name) produk = databaseOther[key] || {};
+  if (typeof databasePanel !== 'undefined' && !produk.name) produk = databasePanel[key] || {};
+
+  const required = produk.require || [];
+
+  // Tampilkan data produk
+  document.getElementById("itemName").innerText = game + " " + item;
+  document.getElementById("price").innerText = "Rp " + price.toLocaleString("id-ID");
+  document.getElementById("subtotal").innerText = "Rp " + price.toLocaleString("id-ID");
+  document.getElementById("total").innerText = "Rp " + price.toLocaleString("id-ID");
+  document.getElementById("bill").innerText = "Rp " + price.toLocaleString("id-ID");
+  document.getElementById("gameImage").src = image;
+
+  // Tampilkan input sesuai required
+  document.getElementById("userIdBox").style.display = required.includes("userId") ? "block" : "none";
+  document.getElementById("usernameBox").style.display = required.includes("username") ? "block" : "none";
+  document.getElementById("phoneBox").style.display = required.includes("phone") ? "block" : "none";
+  document.getElementById("serverBox").style.display = required.includes("server") ? "block" : "none";
+
+  if (required.includes("server")) {
+    const mlServer = document.getElementById("mlServer");
+    const genshinServer = document.getElementById("genshinServer");
+    if (produk.serverType === "id") {
+      mlServer.style.display = "flex";
+      genshinServer.style.display = "none";
+    } else if (produk.serverType === "region") {
+      mlServer.style.display = "none";
+      genshinServer.style.display = "flex";
+    }
+  }
+
+  let selectedPayment = "";
+  let isManualQRIS = false;
+
+  window.togglePayment = function() {
+    const list = document.getElementById("paymentList");
+    list.style.display = list.style.display === "block" ? "none" : "block";
+  };
+
+  window.selectPayment = function(name, isManual) {
+    if (name === "QRIS Otomatis" && !produk.qris) {
+      alert("QRIS otomatis sedang error, silakan pilih metode lain!");
+      return;
+    }
+    selectedPayment = name;
+    isManualQRIS = isManual;
+    document.getElementById("paymentSelected").innerText = name;
+    document.getElementById("paymentList").style.display = "none";
+  };
+
+  // Pasang event listener ke payment items
+  const autoItem = document.querySelector('.payment-item[data-method="qris-auto"]');
+  const manualItem = document.querySelector('.payment-item[data-method="qris-manual"]');
+  if (autoItem) {
+    if (!produk.qris) {
+      autoItem.innerText = "QRIS Otomatis (sedang error)";
+      autoItem.classList.add("disabled");
+      autoItem.onclick = () => alert("QRIS otomatis sedang error, silakan pilih metode lain!");
+    } else {
+      autoItem.onclick = () => selectPayment("QRIS Otomatis", false);
+    }
+  }
+  if (manualItem) {
+    manualItem.onclick = () => selectPayment("QRIS Manual", true);
+  }
+
+  // Fungsi global yang dipanggil dari tombol
+  window.goBack = function() {
+    if (typeof loadPage !== 'undefined') {
+      loadPage('beranda');
+    } else {
+      window.location.href = 'index.html';
+    }
+  };
+
+  window.showLoading = function() {
+    const popup = document.getElementById("loadingPopup");
+    if (popup) popup.style.display = "flex";
+  };
+  window.closeWarning = function() {
+    document.getElementById("warningPopup").style.display = "none";
+  };
+  window.showWarning = function(text) {
+    document.getElementById("warningText").innerText = text;
+    document.getElementById("warningPopup").style.display = "flex";
+  };
+  window.openSheet = function() {
+    document.getElementById("confirmSheet").classList.add("show");
+    document.getElementById("sheetImage").src = image;
+    document.getElementById("sheetItem").innerText = game + " " + item;
+    document.getElementById("sheetPrice").innerText = "Rp " + price.toLocaleString("id-ID");
+    document.getElementById("sheetHarga").innerText = "Rp " + price.toLocaleString("id-ID");
+    let userVal = document.getElementById("userId")?.value ||
+                  document.getElementById("username")?.value ||
+                  document.getElementById("phone")?.value || "-";
+    document.getElementById("sheetUser").innerText = userVal;
+  };
+  window.closeSheet = function() {
+    document.getElementById("confirmSheet").classList.remove("show");
+  };
+  window.lanjutWA = function() {
+    closeSheet();
+    const waNumber = "6283160556330";
+    let serverValue = "";
+    if (required.includes("server")) {
+      serverValue = (produk.serverType === "id") 
+        ? document.getElementById("serverId").value 
+        : document.getElementById("serverRegion").value;
+    }
+    const message = encodeURIComponent(
+      `Halo, saya ingin melakukan pembayaran memakai qris manual untuk:\n`+
+      `Game: ${game}\nItem: ${item}\nHarga: Rp ${price.toLocaleString("id-ID")}\n`+
+      `UserID: ${document.getElementById("userId")?.value || ''}\n`+
+      `Username: ${document.getElementById("username")?.value || ''}\n`+
+      `Phone: ${document.getElementById("phone")?.value || ''}\n`+
+      `Server: ${serverValue}`
+    );
+    window.open(`https://wa.me/${waNumber}?text=${message}`, '_blank');
+  };
+
+  window.bayar = function() {
+    const btn = document.querySelector(".pay");
+    let serverValue = "";
+    if (required.includes("server")) {
+      serverValue = (produk.serverType === "id") 
+        ? document.getElementById("serverId").value 
+        : document.getElementById("serverRegion").value;
+    }
+
+    if (required.includes("username") && !document.getElementById("username").value) {
+      showWarning("Masukkan username terlebih dahulu!");
+      return;
+    }
+    if (required.includes("userId") && !document.getElementById("userId").value) {
+      showWarning("Masukkan ID terlebih dahulu!");
+      return;
+    }
+    if (required.includes("server") && !serverValue) {
+      showWarning("Masukkan server terlebih dahulu!");
+      return;
+    }
+    if (!selectedPayment) {
+      showWarning("Pilih metode pembayaran!");
+      return;
+    }
+    if (isManualQRIS) {
+      openSheet();
+      return;
+    }
+
+    // QRIS Otomatis
+    btn.innerHTML = "⏳ Memproses...";
+    btn.disabled = true;
+    btn.style.opacity = "0.7";
+    showLoading();
+
+    const invoiceUrl = "invoice.html?" +
+      "key=" + encodeURIComponent(key) +
+      "&game=" + encodeURIComponent(game) +
+      "&item=" + encodeURIComponent(item) +
+      "&price=" + encodeURIComponent(price) +
+      "&type=" + encodeURIComponent(type) +
+      "&userId=" + encodeURIComponent(document.getElementById("userId")?.value || '') +
+      "&username=" + encodeURIComponent(document.getElementById("username")?.value || '') +
+      "&phone=" + encodeURIComponent(document.getElementById("phone")?.value || '') +
+      "&server=" + encodeURIComponent(serverValue) +
+      "&payment=" + encodeURIComponent(selectedPayment);
+
+    setTimeout(() => {
+      window.location.href = invoiceUrl;
+    }, 1200);
+  };
+
+  window.openInfo = function() {
+    const modal = document.getElementById("infoModal");
+    const body = document.getElementById("modalBody");
+    let found = (typeof databasePanel !== 'undefined' && databasePanel[key]) ||
+                (typeof database !== 'undefined' && database[key]) ||
+                (typeof databaseOther !== 'undefined' && databaseOther[key]);
+    if (found) {
+      body.innerHTML = `
+        <img src="${image}" style="width:100%;border-radius:10px;margin-bottom:10px;">
+        <h3>${found.name}</h3>
+        <p>${found.desc || '-'}</p>
+        <hr><p>${found.detail || '-'}</p>
+      `;
+    } else {
+      body.innerHTML = `
+        <h3>${game} - ${item}</h3>
+        <p style="margin-top:10px;">
+          ✅ Proses otomatis 1-30 detik<br>
+          ✅ Tanpa login akun<br>
+          ✅ Aman & terpercaya<br>
+          ✅ Layanan 24 jam
+        </p>
+        <hr>
+        <p style="margin-top:10px;color:#16a34a;">
+          Pastikan data yang kamu input sudah benar sebelum checkout.
+          Kesalahan input bukan tanggung jawab admin.
+        </p>
+      `;
+    }
+    modal.style.display = "flex";
+  };
+  window.closeInfo = function() {
+    document.getElementById("infoModal").style.display = "none";
+  };
+
+  // Tutup popup loading jika ada
+  window.addEventListener("pageshow", () => {
+    const btn = document.querySelector(".pay");
+    if (btn) {
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      btn.innerHTML = "Bayar";
+    }
+    const loadingPopup = document.getElementById("loadingPopup");
+    if (loadingPopup) loadingPopup.style.display = "none";
+  });
+})();
+</script>
