@@ -333,17 +333,159 @@ function initPengumuman() {
   });
 }
 
-// ==================== MUSIC ====================
-function initMusic() {
-  fetch('listmusic.json')
+// ==================== GLOBAL AUDIO PLAYER ====================
+let globalAudio = new Audio();
+let globalSongsData = [];
+let globalCurrentIndex = 0;
+let isGlobalPlaying = false;
+
+// Fungsi untuk memuat lagu ke globalAudio
+function loadGlobalSong(index) {
+  if (!globalSongsData[index]) return;
+  const song = globalSongsData[index];
+  globalAudio.src = song.src;
+  globalAudio.load();
+  if (isGlobalPlaying) globalAudio.play();
+  // Simpan metadata untuk UI nanti
+  window.currentSongMeta = {
+    title: song.title,
+    artist: song.artist,
+    cover: song.cover,
+    lyrics: song.lyrics,
+    index: index
+  };
+}
+
+// Fungsi untuk toggle play/pause global
+function toggleGlobalPlay() {
+  if (globalAudio.paused) {
+    globalAudio.play();
+    isGlobalPlaying = true;
+  } else {
+    globalAudio.pause();
+    isGlobalPlaying = false;
+  }
+  // Update UI music jika halaman music sedang aktif
+  updateMusicUI();
+}
+
+// Fungsi untuk next lagu
+function nextGlobalSong() {
+  if (globalSongsData.length === 0) return;
+  globalCurrentIndex = (globalCurrentIndex + 1) % globalSongsData.length;
+  loadGlobalSong(globalCurrentIndex);
+  globalAudio.play();
+  isGlobalPlaying = true;
+  updateMusicUI();
+}
+
+function prevGlobalSong() {
+  if (globalSongsData.length === 0) return;
+  globalCurrentIndex = (globalCurrentIndex - 1 + globalSongsData.length) % globalSongsData.length;
+  loadGlobalSong(globalCurrentIndex);
+  globalAudio.play();
+  isGlobalPlaying = true;
+  updateMusicUI();
+}
+
+// Fungsi untuk menyinkronkan UI music.html dengan global player
+function updateMusicUI() {
+  const musicPage = document.querySelector('.music-page');
+  if (!musicPage) return; // Halaman music tidak aktif
+  
+  const song = globalSongsData[globalCurrentIndex];
+  if (!song) return;
+  
+  document.getElementById('songTitle').innerText = song.title;
+  document.getElementById('artist').innerText = song.artist;
+  document.getElementById('musicCover').src = song.cover;
+  
+  const playPauseIcon = document.getElementById('playPauseIcon');
+  if (playPauseIcon) {
+    playPauseIcon.className = globalAudio.paused ? 'fas fa-play' : 'fas fa-pause';
+  }
+  
+  // Update lyrics
+  const lyricsContainer = document.getElementById('lyricsContainer');
+  if (lyricsContainer && song.lyrics) {
+    lyricsContainer.innerHTML = '';
+    song.lyrics.forEach(line => {
+      const p = document.createElement('p');
+      p.innerText = line.text;
+      lyricsContainer.appendChild(p);
+    });
+  }
+  
+  // Update progress bar secara berkala jika halaman aktif
+  if (window.progressInterval) clearInterval(window.progressInterval);
+  window.progressInterval = setInterval(() => {
+    if (!globalAudio.duration) return;
+    const percent = (globalAudio.currentTime / globalAudio.duration) * 100;
+    const progressBar = document.getElementById('musicProgress');
+    if (progressBar) progressBar.style.width = percent + '%';
+    
+    // Update lyrics highlight
+    const currentSong = globalSongsData[globalCurrentIndex];
+    if (currentSong && currentSong.lyrics) {
+      const lines = document.querySelectorAll('#lyricsContainer p');
+      let activeIndex = -1;
+      for (let i = 0; i < currentSong.lyrics.length; i++) {
+        if (globalAudio.currentTime >= currentSong.lyrics[i].time) activeIndex = i;
+        else break;
+      }
+      lines.forEach((line, idx) => {
+        if (idx === activeIndex) line.classList.add('active');
+        else line.classList.remove('active');
+      });
+      if (activeIndex >= 0 && lines[activeIndex]) {
+        lines[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, 200);
+}
+
+// Inisialisasi music (load data JSON) hanya sekali
+function initMusicGlobal() {
+  if (globalSongsData.length > 0) return Promise.resolve();
+  return fetch('listmusic.json')
     .then(res => res.json())
     .then(data => {
-      songsData = data.songs;
-      currentSongIndex = 0;
-      setupMusicPlayer();
-      loadSong(currentSongIndex);
+      globalSongsData = data.songs;
+      if (globalSongsData.length > 0 && !globalAudio.src) {
+        loadGlobalSong(0);
+      }
     })
     .catch(err => console.error('Gagal load music:', err));
+}
+
+// ==================== MUSIC ====================
+function initMusic() {
+  initMusicGlobal().then(() => {
+    // Tampilkan UI sesuai global player
+    updateMusicUI();
+    // Pasang event listener untuk kontrol tombol di music.html
+    attachMusicControls();
+  });
+}
+
+function attachMusicControls() {
+  const playBtn = document.getElementById('playPauseBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressContainer = document.getElementById('progressContainer');
+  
+  if (playBtn) playBtn.onclick = () => toggleGlobalPlay();
+  if (prevBtn) prevBtn.onclick = () => prevGlobalSong();
+  if (nextBtn) nextBtn.onclick = () => nextGlobalSong();
+  if (progressContainer) {
+    progressContainer.onclick = (e) => {
+      const width = e.currentTarget.clientWidth;
+      const clickX = e.offsetX;
+      if (globalAudio.duration) {
+        globalAudio.currentTime = (clickX / width) * globalAudio.duration;
+      }
+    };
+  }
 }
 
 function setupMusicPlayer() {
