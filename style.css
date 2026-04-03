@@ -120,11 +120,14 @@ body {
   top: 0;
   z-index: 100;
 }
-.nav-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  position: relative;
+.nav-left .icon {
+  padding: 8px 12px;  /* Lebar horizontal lebih besar */
+  margin-left: 5px;   /* Beri jarak dari teks */
+}
+
+/* Atau jika ingin lebih besar lagi */
+.nav-left .icon i {
+  font-size: 22px;    /* Perbesar ikon sedikit */
 }
 .logo {
   width: 40px;
