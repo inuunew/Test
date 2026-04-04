@@ -341,6 +341,7 @@ let globalCurrentIndex = 0;
 let isGlobalPlaying = false;
 let cassetteWrapper = null;
 let progressInterval = null;
+let lastActiveLyricIndex = -1; // Simpan indeks lirik terakhir yang aktif (dideklarasikan di luar fungsi, misal di awal global)
 
 globalAudio.addEventListener('ended', () => {
     nextGlobalSong();
@@ -383,6 +384,8 @@ function prevGlobalSong() {
   updateMusicUI();
 }
 
+
+
 function updateMusicUI() {
   const musicPage = document.querySelector('.music-page');
   if (!musicPage) return;
@@ -421,6 +424,9 @@ function updateMusicUI() {
     }
   }
 
+  // Reset lastActiveLyricIndex saat lagu berganti (opsional, agar scroll ulang dari awal)
+  lastActiveLyricIndex = -1;
+
   if (progressInterval) clearInterval(progressInterval);
   progressInterval = setInterval(() => {
     if (!globalAudio.duration) return;
@@ -440,8 +446,11 @@ function updateMusicUI() {
         if (idx === activeIndex) line.classList.add('active');
         else line.classList.remove('active');
       });
-      if (activeIndex >= 0 && lines[activeIndex]) {
+      
+      // Hanya scroll jika indeks aktif berubah
+      if (activeIndex >= 0 && lines[activeIndex] && activeIndex !== lastActiveLyricIndex) {
         lines[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        lastActiveLyricIndex = activeIndex;
       }
     }
   }, 200);
