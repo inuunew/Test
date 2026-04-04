@@ -1,16 +1,25 @@
 <div class="player">
-  <img id="musicCover" class="music-cover" src="">
+  <!-- GANTI img dengan container kaset -->
+  <div class="cassette-wrapper">
+    <div class="cassette">
+      <div class="reel left-reel"></div>
+      <div class="reel right-reel"></div>
+      <div class="tape-window"></div>
+    </div>
+  </div>
+
   <div class="song-title" id="songTitle">-</div>
   <div class="artist" id="artist">-</div>
   <div id="lyricsContainer" class="lyrics"></div>
+  
   <div class="progress-container" id="progressContainer">
     <div class="progress" id="musicProgress"></div>
   </div>
+  
   <div class="controls">
     <button id="prevBtn"><i class="fas fa-backward"></i></button>
     <button id="playPauseBtn"><i id="playPauseIcon" class="fas fa-play"></i></button>
     <button id="nextBtn"><i class="fas fa-forward"></i></button>
-    <!-- 👇 TAMBAHKAN INI -->
     <button id="playlistBtn"><i class="fas fa-list"></i></button>
   </div>
 </div>
