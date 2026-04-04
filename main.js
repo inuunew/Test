@@ -424,9 +424,6 @@ function updateMusicUI() {
     }
   }
 
-  // Reset lastActiveLyricIndex saat lagu berganti (opsional, agar scroll ulang dari awal)
-  lastActiveLyricIndex = -1;
-
   if (progressInterval) clearInterval(progressInterval);
   progressInterval = setInterval(() => {
     if (!globalAudio.duration) return;
@@ -447,15 +444,11 @@ function updateMusicUI() {
         else line.classList.remove('active');
       });
       
-      // Hanya scroll jika indeks aktif berubah
-      if (activeIndex >= 0 && lines[activeIndex] && activeIndex !== lastActiveLyricIndex) {
-        lines[activeIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-        lastActiveLyricIndex = activeIndex;
-      }
+      // ========== AUTO-SCROLL DIHAPUS ==========
+      // Tidak ada lagi panggilan scrollIntoView
     }
   }, 200);
 }
-
 function initMusicGlobal() {
   if (globalSongsData.length > 0) return Promise.resolve();
   return fetch('listmusic.json')
