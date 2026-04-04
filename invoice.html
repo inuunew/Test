@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Invoice - Prima Store</title>
+  <title>Invoice - Inuu Market</title>
+  
+  <!-- Font Awesome 6 & Google Font Outfit -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
     * {
       margin: 0;
@@ -12,7 +17,7 @@
     }
 
     body {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      font-family: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       background: #f1f5f9;
       padding: 20px 12px 40px;
     }
@@ -39,6 +44,9 @@
       padding: 6px 14px;
       border-radius: 40px;
       margin-bottom: 16px;
+    }
+    .status-badge i {
+      margin-right: 6px;
     }
 
     .invoice-title {
@@ -74,6 +82,11 @@
 
     .row-label {
       color: #334155;
+    }
+    .row-label i {
+      width: 20px;
+      margin-right: 8px;
+      color: #16a34a;
     }
 
     .row-value {
@@ -122,6 +135,10 @@
       margin-top: 12px;
       text-align: left;
     }
+    .instruction i {
+      margin-right: 6px;
+      color: #16a34a;
+    }
 
     /* Input tambahan */
     .input-group {
@@ -133,6 +150,10 @@
       font-size: 14px;
       margin-bottom: 6px;
       color: #1e293b;
+    }
+    .input-group label i {
+      margin-right: 6px;
+      color: #16a34a;
     }
     .input-group label .required {
       color: #ef4444;
@@ -146,6 +167,7 @@
       font-size: 15px;
       background: #fafcff;
       outline: none;
+      font-family: 'Outfit', sans-serif;
     }
     .input-group input:focus {
       border-color: #16a34a;
@@ -194,6 +216,7 @@
       border: none;
       cursor: pointer;
       font-size: 16px;
+      font-family: 'Outfit', sans-serif;
     }
     .btn-primary {
       background: #16a34a;
@@ -305,6 +328,7 @@
       max-width: 300px;
       width: 85%;
       animation: fadeInUp 0.3s ease;
+      font-family: 'Outfit', sans-serif;
     }
     .modal-loading-content .spinner {
       width: 48px;
@@ -338,7 +362,7 @@
       }
     }
 
-    /* ========== POPUP WARNING (SAMA SEPERTI CHECKOUT) ========== */
+    /* POPUP WARNING */
     .popup-warning {
       position: fixed;
       top: 0;
@@ -359,6 +383,7 @@
       width: 85%;
       max-width: 340px;
       animation: fadeIn 0.2s ease;
+      font-family: 'Outfit', sans-serif;
     }
     .popup-box .icon {
       font-size: 48px;
@@ -383,6 +408,7 @@
       border-radius: 40px;
       font-weight: 600;
       cursor: pointer;
+      font-family: 'Outfit', sans-serif;
     }
     @keyframes fadeIn {
       from { transform: scale(0.9); opacity: 0; }
@@ -394,72 +420,72 @@
 <div class="container">
   <!-- Kartu Rincian Invoice -->
   <div class="card">
-    <div class="status-badge">⏳ MENUNGGU PEMBAYARAN</div>
+    <div class="status-badge"><i class="fas fa-hourglass-half"></i> MENUNGGU PEMBAYARAN</div>
     <div class="invoice-title">
-      💳 INVOICE
-      <span class="invoice-id" id="invoiceNumber">#PRIMA/INV/001</span>
+      <i class="fas fa-file-invoice-dollar"></i> INVOICE
+      <span class="invoice-id" id="invoiceNumber">#INUU/INV/001</span>
     </div>
     <div class="divider"></div>
 
     <div class="row">
-      <span class="row-label">Produk</span>
+      <span class="row-label"><i class="fas fa-gamepad"></i> Produk</span>
       <span class="row-value" id="productName">-</span>
     </div>
     <div class="row">
-      <span class="row-label">Harga Produk</span>
+      <span class="row-label"><i class="fas fa-tag"></i> Harga Produk</span>
       <span class="row-value" id="basePriceDisplay">-</span>
     </div>
     <div class="row">
-      <span class="row-label">Biaya Admin (1.5%)</span>
+      <span class="row-label"><i class="fas fa-percent"></i> Biaya Admin (1.5%)</span>
       <span class="row-value" id="adminFeeDisplay">-</span>
     </div>
     <div class="row total-row">
-      <span class="row-label">Total Dibayar</span>
+      <span class="row-label"><i class="fas fa-coins"></i> Total Dibayar</span>
       <span class="row-value" id="totalPriceDisplay">-</span>
     </div>
 
     <div class="divider"></div>
 
     <div class="row">
-      <span class="row-label">User ID / Akun</span>
+      <span class="row-label"><i class="fas fa-id-card"></i> User ID / Akun</span>
       <span class="row-value" id="userIdDisplay">-</span>
     </div>
     <div class="row" id="usernameRow" style="display: none;">
-      <span class="row-label">Username</span>
+      <span class="row-label"><i class="fas fa-user"></i> Username</span>
       <span class="row-value" id="usernameDisplay">-</span>
     </div>
     <div class="row" id="phoneRow" style="display: none;">
-      <span class="row-label">No. Telepon</span>
+      <span class="row-label"><i class="fas fa-phone-alt"></i> No. Telepon</span>
       <span class="row-value" id="phoneDisplay">-</span>
     </div>
     <div class="row" id="serverRow" style="display: none;">
-      <span class="row-label">Server</span>
+      <span class="row-label"><i class="fas fa-globe-asia"></i> Server</span>
       <span class="row-value" id="serverDisplay">-</span>
     </div>
     <div class="row" id="voucherRow" style="display: none;">
-      <span class="row-label">Voucher</span>
+      <span class="row-label"><i class="fas fa-ticket-alt"></i> Voucher</span>
       <span class="row-value" id="voucherDisplay">-</span>
     </div>
 
     <div class="divider"></div>
     <div class="row">
-      <span class="row-label">Metode Pembayaran</span>
+      <span class="row-label"><i class="fas fa-credit-card"></i> Metode Pembayaran</span>
       <span class="row-value" id="paymentMethod">-</span>
     </div>
     <div class="row">
-      <span class="row-label">Waktu Order</span>
+      <span class="row-label"><i class="fas fa-clock"></i> Waktu Order</span>
       <span class="row-value" id="orderTime">-</span>
     </div>
   </div>
 
-  <!-- QRIS Card (bisa diklik untuk perbesar) -->
+  <!-- QRIS Card -->
   <div class="card qris-box" id="qrisCard">
-    <h3 style="margin-bottom: 8px;">🔽 Scan QRIS untuk Membayar</h3>
+    <h3 style="margin-bottom: 8px;"><i class="fas fa-qrcode"></i> Scan QRIS untuk Membayar</h3>
     <div class="qris-image" id="qrisImageClick">
       <img id="qrisImage" src="https://placehold.co/400x400?text=QRIS+Asli+Toko" alt="QRIS Code">
     </div>
     <div class="instruction">
-      💡 <strong>Instruksi Pembayaran:</strong><br>
+      <i class="fas fa-lightbulb"></i> <strong>Instruksi Pembayaran:</strong><br>
       1. Buka aplikasi mobile banking / e-wallet (GoPay, OVO, DANA, LinkAja, dll).<br>
       2. Pilih menu scan QRIS.<br>
       3. Scan kode QR di atas (klik gambar untuk memperbesar).<br>
@@ -468,58 +494,58 @@
       6. Upload bukti di bawah lalu kirim ke admin.
     </div>
     <div class="warning-note">
-      ⚠️ Pastikan nominal yang Anda bayar <strong>PERSIS</strong> dengan total tagihan.<br>
+      <i class="fas fa-exclamation-triangle"></i> Pastikan nominal yang Anda bayar <strong>PERSIS</strong> dengan total tagihan.<br>
       Pesanan akan diproses setelah bukti transfer diverifikasi.
     </div>
   </div>
 
-  <!-- Input Nomor WhatsApp dan Email (WAJIB) -->
+  <!-- Data Kontak (wajib) -->
   <div class="card">
-    <h3 style="margin-bottom: 12px;">📞 Data Kontak (wajib)</h3>
+    <h3 style="margin-bottom: 12px;"><i class="fas fa-address-card"></i> Data Kontak (wajib)</h3>
     <div class="input-group">
-      <label>📱 Nomor WhatsApp <span class="required">*</span></label>
+      <label><i class="fab fa-whatsapp"></i> Nomor WhatsApp <span class="required">*</span></label>
       <input type="tel" id="whatsappInput" placeholder="Contoh: 628123456789">
     </div>
     <div class="input-group">
-      <label>📧 Email <span class="required">*</span></label>
+      <label><i class="fas fa-envelope"></i> Email <span class="required">*</span></label>
       <input type="email" id="emailInput" placeholder="contoh@email.com">
     </div>
     <div class="warning-note" style="margin-top: 8px; background:#f1f5f9;">
-      ⚠️ Data ini diperlukan untuk konfirmasi pesanan oleh admin.
+      <i class="fas fa-info-circle"></i> Data ini diperlukan untuk konfirmasi pesanan oleh admin.
     </div>
   </div>
 
   <!-- Upload Bukti Transfer -->
   <div class="card">
-    <h3 style="margin-bottom: 12px;">📸 Upload Bukti Transfer</h3>
+    <h3 style="margin-bottom: 12px;"><i class="fas fa-upload"></i> Upload Bukti Transfer</h3>
     <div class="upload-area" id="uploadArea">
-      <span>📁 Klik atau taruh file gambar (JPEG/PNG)</span>
+      <i class="fas fa-cloud-upload-alt"></i> Klik atau taruh file gambar (JPEG/PNG)
       <input type="file" id="fileInput" class="file-input" accept="image/jpeg,image/png">
       <div id="previewContainer"></div>
     </div>
     <div class="warning-note" style="margin-top: 8px;">
-      ⚠️ Pastikan bukti transfer jelas (nama bank, nominal, tanggal). Maks 2MB.
+      <i class="fas fa-shield-alt"></i> Pastikan bukti transfer jelas (nama bank, nominal, tanggal). Maks 2MB.
     </div>
   </div>
 
-  <!-- Tombol Kirim Bukti & Batalkan Transaksi -->
+  <!-- Tombol Aksi -->
   <div class="card">
-    <button class="btn btn-primary" id="submitProofBtn">📨 Kirim Bukti Transfer ke Admin</button>
-    <button class="btn btn-danger" id="cancelTransactionBtn">❌ Batalkan Transaksi</button>
+    <button class="btn btn-primary" id="submitProofBtn"><i class="fas fa-paper-plane"></i> Kirim Bukti Transfer ke Admin</button>
+    <button class="btn btn-danger" id="cancelTransactionBtn"><i class="fas fa-trash-alt"></i> Batalkan Transaksi</button>
   </div>
 
   <div class="footer">
-    Prima Store © 2025 • Setelah upload bukti, admin akan memproses pesanan Anda.
+    <i class="fas fa-store"></i> Inuu Market © 2025 • Setelah upload bukti, admin akan memproses pesanan Anda.
   </div>
 </div>
 
 <!-- Modal QRIS Fullscreen -->
 <div id="modalQris" class="modal-qris">
-  <span class="close-modal" id="closeModalQris">✕</span>
+  <span class="close-modal" id="closeModalQris"><i class="fas fa-times"></i></span>
   <img id="modalQrisImage" src="" alt="QRIS Full">
 </div>
 
-<!-- MODAL LOADING UNTUK BATALKAN TRANSAKSI -->
+<!-- Modal Loading Batalkan -->
 <div id="cancelModal" class="modal-loading">
   <div class="modal-loading-content" id="cancelModalContent">
     <div class="spinner"></div>
@@ -528,13 +554,13 @@
   </div>
 </div>
 
-<!-- ========== POPUP WARNING (SAMA SEPERTI CHECKOUT) ========== -->
+<!-- Popup Warning -->
 <div id="warningPopup" class="popup-warning">
   <div class="popup-box">
-    <div class="icon">❗</div>
+    <div class="icon"><i class="fas fa-exclamation-circle"></i></div>
     <h3>Peringatan</h3>
     <p id="warningText">Harap isi data terlebih dahulu!</p>
-    <button onclick="closeWarning()">Oke</button>
+    <button onclick="closeWarning()"><i class="fas fa-check"></i> Oke</button>
   </div>
 </div>
 
@@ -555,7 +581,7 @@
     document.getElementById("warningPopup").style.display = "none";
   }
 
-  // Helper format rupiah
+  // Format Rupiah
   function formatRupiah(angka) {
     if (isNaN(angka) || angka === null || angka === '') return 'Rp 0';
     return 'Rp ' + Number(angka).toLocaleString('id-ID');
@@ -585,11 +611,10 @@
   document.getElementById('paymentMethod').innerText = paymentMethod;
   document.getElementById('nominalDisplay').innerText = formatRupiah(totalPrice);
 
-  // Tampilkan QRIS image
+  // QRIS image
   const qrisImg = document.getElementById('qrisImage');
   qrisImg.src = QRIS_IMAGE_URL;
   qrisImg.onerror = () => {
-    console.warn('Gambar QRIS gagal dimuat, periksa URL');
     qrisImg.src = 'https://placehold.co/400x400?text=QRIS+GAGAL+LOAD';
   };
 
@@ -608,7 +633,7 @@
     if (e.target === modalQris) modalQris.classList.remove('show');
   });
 
-  // Tampilkan data tambahan (username, phone, server, voucher)
+  // Tampilkan data tambahan
   if (username && username.trim() !== '') {
     document.getElementById('usernameRow').style.display = 'flex';
     document.getElementById('usernameDisplay').innerText = username;
@@ -664,7 +689,6 @@
     }
   });
 
-  // Fungsi validasi WhatsApp & Email wajib
   function validateContact() {
     const whatsapp = document.getElementById('whatsappInput').value.trim();
     const email = document.getElementById('emailInput').value.trim();
@@ -694,7 +718,7 @@
     return isValid;
   }
 
-  // Fungsi kirim ke Telegram (REAL)
+  // Kirim ke Telegram
   async function sendToTelegram(fileBase64, caption) {
     if (BOT_TOKEN === "ISI_TOKEN_BOT_ANDA" || CHAT_ID === "ISI_CHAT_ID_ADMIN") {
       showWarning('Konfigurasi Bot Telegram belum diisi!\n\nSilakan buka file invoice.html dan ganti BOT_TOKEN dan CHAT_ID dengan milik Anda.');
@@ -724,7 +748,7 @@
     }
   }
 
-  // Tombol kirim bukti (dengan validasi WA & Email wajib)
+  // Tombol kirim bukti
   document.getElementById('submitProofBtn').addEventListener('click', async () => {
     if (!selectedFile) {
       showWarning('Silakan pilih file bukti transfer terlebih dahulu!');
@@ -779,15 +803,15 @@
     reader.readAsDataURL(selectedFile);
   });
 
-  // ========== TOMBOL BATALKAN TRANSAKSI (MODAL LOADING) ==========
-  const cancelModal = document.getElementById('cancelModal');
+  // Tombol batalkan transaksi
+  const cancelModalElem = document.getElementById('cancelModal');
   const cancelModalContent = document.getElementById('cancelModalContent');
   
   document.getElementById('cancelTransactionBtn').addEventListener('click', () => {
-    cancelModal.classList.add('show');
+    cancelModalElem.classList.add('show');
     setTimeout(() => {
       cancelModalContent.innerHTML = `
-        <div class="cancel-icon">❌</div>
+        <div class="cancel-icon"><i class="fas fa-times-circle"></i></div>
         <h3>Pembayaran Dibatalkan</h3>
         <p>Mengarahkan ke beranda...</p>
       `;
