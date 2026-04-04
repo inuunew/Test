@@ -489,7 +489,7 @@ to{transform:scale(1);opacity:1;}
   <div class="product">
     <img id="gameImage" onerror="this.src='default.png'">
     <div>
-      <div class="badge">PRODUK</div>
+      <div id="itemName"></div>
     <span class="feature">✅ Layanan cepat</span>
     <span class="feature">⚡ Anti delay</span>
     <span class="feature">💬 Admin fast respon</span>
@@ -605,6 +605,7 @@ const image = params.get("image") || "default.png";
 const type = params.get("type") || "";
 
 // Tampilkan info produk
+document.getElementById("itemName").innerText = game + " " + item;
 document.getElementById("subtotal").innerText = "Rp " + price.toLocaleString("id-ID");
 document.getElementById("total").innerText = "Rp " + price.toLocaleString("id-ID");
 document.getElementById("bill").innerText = "Rp " + price.toLocaleString("id-ID");
