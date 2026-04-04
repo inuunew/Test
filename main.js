@@ -591,6 +591,111 @@ window.setProgress = function(e) {
   }
 };
 
+// ==================== PLAYLIST MODAL ====================
+function initPlaylistModal() {
+  if (document.getElementById('playlistModal')) return;
+  
+  const modalHTML = `
+    <div id="playlistModal" class="modal-overlay" style="display: none;">
+      <div class="modal-container">
+        <div class="modal-header">
+          <h3>📋 Daftar Lagu</h3>
+          <span class="modal-close">&times;</span>
+        </div>
+        <div id="playlistModalItems" class="modal-playlist"></div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  
+  const modal = document.getElementById('playlistModal');
+  const closeBtn = modal.querySelector('.modal-close');
+  closeBtn.onclick = () => modal.style.display = 'none';
+  modal.onclick = (e) => {
+    if (e.target === modal) modal.style.display = 'none';
+  };
+}
+
+function showPlaylistModal() {
+  const modal = document.getElementById('playlistModal');
+  const container = document.getElementById('playlistModalItems');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  if (globalSongsData.length === 0) {
+    container.innerHTML = '<div class="empty-playlist">Belum ada lagu</div>';
+    modal.style.display = 'flex';
+    return;
+  }
+  
+  globalSongsData.forEach((song, idx) => {
+    const item = document.createElement('div');
+    item.className = 'modal-playlist-item';
+    if (idx === globalCurrentIndex) item.classList.add('active');
+    
+    item.innerHTML = `
+      <img src="${song.cover}" class="modal-item-cover">
+      <div class="modal-item-info">
+        <div class="modal-item-title">${escapeHtml(song.title)}</div>
+        <div class="modal-item-artist">${escapeHtml(song.artist)}</div>
+      </div>
+    `;
+    
+    item.onclick = () => {
+      globalCurrentIndex = idx;
+      loadGlobalSong(globalCurrentIndex);
+      globalAudio.play();
+      isGlobalPlaying = true;
+      updateMusicUI();
+      modal.style.display = 'none';
+    };
+    
+    container.appendChild(item);
+  });
+  
+  modal.style.display = 'flex';
+}
+
+// Helper untuk menghindari XSS
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
+}
+
+// ==================== MODIFIKASI attachMusicControls (tambahkan tombol playlist) ====================
+// Simpan fungsi asli, lalu timpa dengan yang baru
+const originalAttachMusicControls = attachMusicControls;
+attachMusicControls = function() {
+  originalAttachMusicControls(); // panggil yang asli dulu
+  
+  // Cek dan tambahkan tombol playlist jika belum ada
+  let playlistBtn = document.getElementById('playlistBtn');
+  if (!playlistBtn) {
+    const controlsDiv = document.querySelector('.music-page .controls');
+    if (controlsDiv) {
+      const btn = document.createElement('button');
+      btn.id = 'playlistBtn';
+      btn.innerHTML = '<i class="fas fa-list"></i>';
+      controlsDiv.appendChild(btn);
+      playlistBtn = btn;
+    }
+  }
+  if (playlistBtn) {
+    playlistBtn.onclick = () => showPlaylistModal();
+  }
+};
+
+// ==================== MODIFIKASI initMusic (panggil initPlaylistModal) ====================
+const originalInitMusic = initMusic;
+initMusic = function() {
+  initPlaylistModal();
+  originalInitMusic();
+};
 // ==================== BANTUAN ====================
 function initBantuan() {
   // Tidak ada inisialisasi khusus, hanya konten statis
