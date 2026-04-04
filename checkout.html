@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Checkout - Prima Store</title>
+<title>Checkout - Inuu Market</title>
 <style>
 /* ========== GAYA DASAR ========== */
 * {
@@ -534,7 +534,7 @@ body{
 <div class="header">
   <div class="header-left">
     <div class="back" onclick="goHome()">←</div>
-    <div class="brand">INUUTYZDEV</div>
+    <div class="brand">Inuu Market</div>
   </div>
   <div class="header-right">
     <span class="chrome-icon"></span>
@@ -637,8 +637,6 @@ body{
   <hr style="margin:8px 0;">
   <div class="row"><span>💎 TOTAL YANG HARUS DIBAYAR</span><span class="total" id="totalAmount"></span></div>
 </div>
-
-
 
 <div class="footer">
 <div><div style="font-size:12px;color:#5b6e8c;">TOTAL BAYAR</div><div class="bill" id="billFooter"></div></div>
@@ -794,7 +792,7 @@ function getPublisher(key) {
     codm: "Activision", asphalt9: "Gameloft", roblox: "Roblox Corporation",
     panel: "Panel Bot", vps1: "Digital Ocean", do1: "Digital Ocean", alighm: "Alight Motion", viu: "Viu"
   };
-  return map[key] || "Prima Store";
+  return map[key] || "Inuu Market";
 }
 
 function openInfo() {
@@ -807,7 +805,7 @@ function openInfo() {
   let bulletHtml = '<ul class="bullet-list">' + bulletItems.map(l => `<li>${l.trim()}</li>`).join('') + '</ul>';
   let descText = produk.desc || "Top up termurah, aman, dan terpercaya. Voucher dikirim otomatis oleh admin setelah pembayaran.";
   const content = `
-    <div class="info-store"><h2>PRIMA STORE</h2><p>The Most Trusted Platform for TopUp & Voucher</p></div>
+    <div class="info-store"><h2>INUU MARKET</h2><p>The Most Trusted Platform for TopUp & Voucher</p></div>
     <div class="info-game"><h3>${gameName.toUpperCase()}</h3><div class="sub">${publisher}</div></div>
     ${bulletHtml}
     <div class="steps">
@@ -858,7 +856,7 @@ function lanjutWA(){
     voucherInfoForWA = "Tidak ada voucher";
   }
   const message = encodeURIComponent(
-    `*ORDER PRIMA STORE* 🛒\n\n`+
+    `*ORDER INUU MARKET* 🛒\n\n`+
     `Game: ${game}\nItem: ${item}\nHarga Produk: ${formatRupiah(basePrice)}\nBiaya Admin 1.5%: ${formatRupiah(adminFee)}\n*TOTAL BAYAR: ${formatRupiah(totalPrice)}*\n`+
     `User ID: ${document.getElementById("userId")?.value || '-'}\n`+
     `Username: ${document.getElementById("username")?.value || '-'}\n`+
