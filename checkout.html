@@ -522,6 +522,11 @@ to{transform:scale(1);opacity:1;}
 <div class="input-group"><input type="tel" placeholder="Masukkan Nomor HP" id="phone"></div>
 </div>
 
+<div class="card" id="voucherBox" style="display:none;">
+<label class="label">KODE VOUCHER</label>
+<div class="input-group"><input type="text" placeholder="Masukkan kode voucher" id="voucher"></div>
+</div>
+
 <div class="card" id="serverBox" style="display:none;">
 <label class="label">SERVER</label>
 <div class="input-group" id="mlServer" style="display:none;"><input type="number" placeholder="Server ID" id="serverId"></div>
@@ -549,84 +554,9 @@ to{transform:scale(1);opacity:1;}
 <button class="pay" onclick="bayar()">Bayar</button>
 </div>
 
+<script src="database.js"></script>
 <script>
-// ======================= DATABASE (dengan info lengkap seperti screenshot) =======================
-const database = {
-  freefire: { 
-    name: "Free Fire", 
-    image: "https://via.placeholder.com/60?text=FF", 
-    require: ["userId"], 
-    serverType: null, 
-    qris: true,
-    // Konten untuk modal info sesuai screenshot
-    infoContent: `
-      <div class="info-store">
-        <h2>PRIMA STORE</h2>
-        <p>The Most Trusted & Safest Platform For TopUp Games</p>
-      </div>
-      <div class="info-game">
-        <h3>FREE FIRE</h3>
-        <div class="sub">Garena</div>
-      </div>
-      <ul class="bullet-list">
-        <li>Proses Cepat</li>
-        <li>Layanan Chat 24/7</li>
-        <li>Produk Resmi</li>
-      </ul>
-      <div class="steps">
-        <p><strong>Deskripsi dan cara melakukan transaksi</strong></p>
-        <p>Beli top up diamond free fire harga paling murah, aman, cepat, dan terpercaya.</p>
-        <p><strong>Cara topup Free Fire:</strong></p>
-        <ol>
-          <li>Masukkan Data Akun</li>
-          <li>Pilih Nominal</li>
-          <li>Pilih Pembayaran</li>
-          <li>Masukkan Kode Promo (jika ada)</li>
-          <li>Isi Detail Kontak</li>
-          <li>Klik Pesan Sekarang dan lakukan Pembayaran</li>
-          <li>Selesai</li>
-        </ol>
-      </div>
-      <div class="note">
-        <strong>Note:</strong> Jika Mengalami Kendala Silahkan hub CS IG <a href="#" target="_blank">Klik Disini</a> dan CS WhatsApp <a href="#" target="_blank">Klik Disini</a>
-      </div>
-    `
-  },
-  mlbb: { 
-    name: "Mobile Legends", 
-    image: "https://via.placeholder.com/60?text=ML", 
-    require: ["userId", "server"], 
-    serverType: "id", 
-    qris: true,
-    infoContent: `
-      <div class="info-store"><h2>PRIMA STORE</h2><p>Top Up Mobile Legends</p></div>
-      <div class="info-game"><h3>MOBILE LEGENDS</h3><div class="sub">Moonton</div></div>
-      <ul class="bullet-list"><li>Proses Cepat</li><li>Harga Termurah</li><li>Garansi</li></ul>
-      <div class="steps"><p><strong>Cara Topup MLBB:</strong></p><ol><li>Masukkan ID & Server</li><li>Pilih Nominal</li><li>Bayar</li><li>Diamond masuk otomatis</li></ol></div>
-      <div class="note">Note: Pastikan ID benar</div>
-    `
-  },
-  genshin: { 
-    name: "Genshin Impact", 
-    image: "https://via.placeholder.com/60?text=GI", 
-    require: ["userId", "server"], 
-    serverType: "region", 
-    qris: true,
-    infoContent: `<div class="info-store"><h2>PRIMA STORE</h2><p>Top Up Genesis Crystal</p></div><div class="info-game"><h3>GENSHIN IMPACT</h3><div class="sub">Hoyoverse</div></div><ul class="bullet-list"><li>Proses 1-30 detik</li><li>Tanpa login</li></ul><div class="steps"><p><strong>Cara Topup:</strong></p><ol><li>Masukkan UID</li><li>Pilih Server Region</li><li>Pilih Item</li><li>Bayar</li></ol></div>`
-  },
-  pubg: { 
-    name: "PUBG Mobile", 
-    image: "https://via.placeholder.com/60?text=PUBG", 
-    require: ["userId"], 
-    serverType: null, 
-    qris: false,
-    infoContent: `<div class="info-store"><h2>PRIMA STORE</h2><p>Top Up UC PUBG</p></div><div class="info-game"><h3>PUBG MOBILE</h3><div class="sub">Tencent</div></div><ul class="bullet-list"><li>Proses Cepat</li><li>Layanan 24 Jam</li></ul><div class="steps"><p><strong>Cara Topup:</strong></p><ol><li>Masukkan ID Player</li><li>Pilih Nominal UC</li><li>Lakukan Pembayaran</li><li>UC langsung masuk</li></ol></div>`
-  }
-};
-const databaseOther = {};
-const databasePanel = {};
-
-// Ambil parameter dari URL
+// ========== Ambil data dari URL dan database eksternal ==========
 const params = new URLSearchParams(window.location.search);
 const key = params.get("key");
 let produk = database[key] || databaseOther[key] || databasePanel[key] || {};
@@ -636,6 +566,7 @@ let required = produk.require || [];
 const userIdBox = document.getElementById("userIdBox");
 const usernameBox = document.getElementById("usernameBox");
 const phoneBox = document.getElementById("phoneBox");
+const voucherBox = document.getElementById("voucherBox");
 const serverBox = document.getElementById("serverBox");
 const mlServer = document.getElementById("mlServer");
 const genshinServer = document.getElementById("genshinServer");
@@ -658,6 +589,7 @@ document.getElementById("gameImage").src = image;
 userIdBox.style.display = required.includes("userId") ? "block" : "none";
 usernameBox.style.display = required.includes("username") ? "block" : "none";
 phoneBox.style.display = required.includes("phone") ? "block" : "none";
+voucherBox.style.display = required.includes("voucher") ? "block" : "none";
 serverBox.style.display = required.includes("server") ? "block" : "none";
 
 if(required.includes("server")){
@@ -707,18 +639,82 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ========== MODAL INFO dengan konten dari database ==========
+// ========== Fungsi untuk mendapatkan publisher berdasarkan key (mirip screenshot) ==========
+function getPublisher(key) {
+  const map = {
+    ff: "Garena",
+    ml: "Moonton",
+    pubg: "Tencent",
+    genshin: "Hoyoverse",
+    hok: "Level Infinite",
+    valorant: "Riot Games",
+    fcmobile: "EA Sports",
+    codm: "Activision",
+    asphalt9: "Gameloft",
+    roblox: "Roblox Corporation"
+  };
+  return map[key] || "Official Store";
+}
+
+// ========== MODAL INFO dengan tampilan persis screenshot ==========
 function openInfo() {
   const modal = document.getElementById("infoModal");
   const body = document.getElementById("modalBody");
   
-  // Jika produk memiliki infoContent, gunakan itu. Jika tidak, buat default
-  let content = produk.infoContent || `
-    <div class="info-store"><h2>${game}</h2><p>Informasi produk</p></div>
-    <div class="info-game"><h3>${item}</h3></div>
-    <ul class="bullet-list"><li>Proses cepat & aman</li><li>Layanan 24/7</li></ul>
-    <div class="steps"><p><strong>Cara transaksi:</strong></p><ol><li>Masukkan data akun</li><li>Pilih pembayaran</li><li>Selesaikan pembayaran</li></ol></div>
-    <div class="note">Note: Pastikan data benar sebelum checkout.</div>
+  // Nama game yang ditampilkan (gunakan produk.name atau key)
+  let gameName = produk.name || game;
+  // Publisher
+  let publisher = getPublisher(key);
+  
+  // Ambil detail sebagai bullet list (split by newline)
+  let detailText = produk.detail || "Proses Cepat\nLayanan Chat 24/7\nProduk Resmi";
+  let bulletItems = detailText.split('\n').filter(line => line.trim().length > 0);
+  let bulletHtml = '<ul class="bullet-list">';
+  bulletItems.forEach(line => {
+    bulletHtml += `<li>${line.trim()}</li>`;
+  });
+  bulletHtml += '</ul>';
+  
+  // Deskripsi
+  let descText = produk.desc || "Top up diamond harga paling murah, aman, cepat, dan terpercaya.";
+  
+  // Langkah-langkah sesuai screenshot (1-7)
+  const stepsHtml = `
+    <div class="steps">
+      <p><strong>Deskripsi dan cara melakukan transaksi</strong></p>
+      <p>${descText}</p>
+      <p><strong>Cara topup ${gameName}:</strong></p>
+      <ol>
+        <li>Masukkan Data Akun</li>
+        <li>Pilih Nominal</li>
+        <li>Pilih Pembayaran</li>
+        <li>Masukkan Kode Promo (jika ada)</li>
+        <li>Isi Detail Kontak</li>
+        <li>Klik Pesan Sekarang dan lakukan Pembayaran</li>
+        <li>Selesai</li>
+      </ol>
+    </div>
+  `;
+  
+  // Note dengan link CS (ganti dengan link asli Anda)
+  const noteHtml = `
+    <div class="note">
+      <strong>Note:</strong> Jika Mengalami Kendala Silahkan hub CS IG <a href="https://instagram.com/..." target="_blank">Klik Disini</a> dan CS WhatsApp <a href="https://wa.me/6283160556330" target="_blank">Klik Disini</a>
+    </div>
+  `;
+  
+  const content = `
+    <div class="info-store">
+      <h2>PRIMA STORE</h2>
+      <p>The Most Trusted & Safest Platform For TopUp Games</p>
+    </div>
+    <div class="info-game">
+      <h3>${gameName.toUpperCase()}</h3>
+      <div class="sub">${publisher}</div>
+    </div>
+    ${bulletHtml}
+    ${stepsHtml}
+    ${noteHtml}
   `;
   
   body.innerHTML = content;
@@ -729,7 +725,7 @@ function closeInfo() {
   document.getElementById("infoModal").style.display = "none";
 }
 
-// Fungsi lain yang sudah ada
+// Fungsi lain
 function showLoading(){
   document.getElementById("loadingPopup").style.display = "flex";
 }
@@ -749,7 +745,7 @@ function openSheet(){
   document.getElementById("sheetItem").innerText = game + " " + item;
   document.getElementById("sheetPrice").innerText = "Rp " + price.toLocaleString("id-ID");
   document.getElementById("sheetHarga").innerText = "Rp " + price.toLocaleString("id-ID");
-  let userData = document.getElementById("userId")?.value || document.getElementById("username")?.value || document.getElementById("phone")?.value || "-";
+  let userData = document.getElementById("userId")?.value || document.getElementById("username")?.value || document.getElementById("phone")?.value || document.getElementById("voucher")?.value || "-";
   document.getElementById("sheetUser").innerText = userData;
 }
 function closeSheet(){
@@ -768,6 +764,7 @@ function lanjutWA(){
     `UserID: ${document.getElementById("userId")?.value || ''}\n`+
     `Username: ${document.getElementById("username")?.value || ''}\n`+
     `Phone: ${document.getElementById("phone")?.value || ''}\n`+
+    `Voucher: ${document.getElementById("voucher")?.value || ''}\n`+
     `Server: ${serverVal}`
   );
   window.location.href = `https://wa.me/${waNumber}?text=${message}`;
@@ -788,6 +785,14 @@ function bayar(){
   }
   if(required.includes("userId") && !document.getElementById("userId").value){
     showWarning("Masukkan ID terlebih dahulu!");
+    return;
+  }
+  if(required.includes("phone") && !document.getElementById("phone").value){
+    showWarning("Masukkan nomor telepon!");
+    return;
+  }
+  if(required.includes("voucher") && !document.getElementById("voucher").value){
+    showWarning("Masukkan kode voucher!");
     return;
   }
   if(required.includes("server") && !serverValue){
@@ -817,6 +822,7 @@ function bayar(){
     "&userId="+encodeURIComponent(document.getElementById("userId")?.value || '')+
     "&username="+encodeURIComponent(document.getElementById("username")?.value || '')+
     "&phone="+encodeURIComponent(document.getElementById("phone")?.value || '')+
+    "&voucher="+encodeURIComponent(document.getElementById("voucher")?.value || '')+
     "&server="+encodeURIComponent(serverValue || '')+
     "&payment="+encodeURIComponent(selectedPayment);
 
