@@ -91,40 +91,32 @@
       color: #16a34a;
     }
 
-    .qrcode-box {
-      background: white;
-      border-radius: 24px;
+    .upload-area {
+      border: 2px dashed #cbd5e1;
+      border-radius: 20px;
       padding: 20px;
       text-align: center;
-      border: 1px solid #e2e8f0;
-      margin: 20px 0;
-    }
-
-    .qrcode-placeholder {
-      width: 200px;
-      height: 200px;
-      background: #f8fafc;
-      margin: 0 auto 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 24px;
-      border: 1px solid #e2e8f0;
-      overflow: hidden;
-    }
-
-    .qrcode-placeholder img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .instruction {
-      background: #f0fdf4;
-      padding: 16px;
-      border-radius: 20px;
-      font-size: 14px;
+      background: #fafcff;
       margin: 16px 0;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .upload-area:hover {
+      border-color: #16a34a;
+      background: #f0fdf4;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .preview-img {
+      max-width: 100%;
+      max-height: 200px;
+      margin-top: 12px;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
     }
 
     .btn {
@@ -159,10 +151,6 @@
       color: #1e293b;
     }
 
-    .btn-outline:active {
-      background: #f8fafc;
-    }
-
     .warning-note {
       background: #fffbeb;
       border-left: 4px solid #f59e0b;
@@ -179,23 +167,20 @@
       margin-top: 20px;
     }
 
-    .admin-fee-info {
-      font-size: 12px;
-      color: #475569;
-      background: #f1f5f9;
-      border-radius: 20px;
-      padding: 6px 12px;
+    .loading {
       display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-left: 8px;
+      vertical-align: middle;
     }
 
-    @media (max-width: 480px) {
-      body {
-        padding: 16px 12px 30px;
-      }
-      .qrcode-placeholder {
-        width: 180px;
-        height: 180px;
-      }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -264,24 +249,38 @@
     </div>
   </div>
 
-  <!-- Area Pembayaran (QRIS / Manual) -->
-  <div id="paymentArea" class="card">
-    <!-- konten akan diisi javascript -->
+  <!-- CARD UPLOAD BUKTI TRANSFER (diatas tombol konfirmasi) -->
+  <div class="card" id="uploadCard">
+    <h3 style="margin-bottom: 12px;">📸 Upload Bukti Transfer</h3>
+    <div class="upload-area" id="uploadArea">
+      <span>📁 Klik atau taruh file gambar (JPEG/PNG)</span>
+      <input type="file" id="fileInput" class="file-input" accept="image/jpeg,image/png">
+      <div id="previewContainer"></div>
+    </div>
+    <div class="warning-note" style="margin-top: 8px;">
+      ⚠️ Pastikan bukti transfer jelas (nama bank, nominal, tanggal). Maks 2MB.
+    </div>
   </div>
 
-  <!-- Tombol Aksi -->
+  <!-- Tombol Kirim Bukti + Konfirmasi -->
   <div class="card">
-    <button class="btn btn-primary" id="whatsappConfirmBtn">📱 Konfirmasi via WhatsApp</button>
+    <button class="btn btn-primary" id="submitProofBtn">📨 Kirim Bukti Transfer ke Admin</button>
     <button class="btn btn-outline" id="backHomeBtn">← Kembali ke Beranda</button>
   </div>
 
   <div class="footer">
-    Prima Store © 2025 • Layanan 24 Jam • Pastikan data sudah benar sebelum bayar
+    Prima Store © 2025 • Setelah upload bukti, admin akan memproses pesanan Anda.
   </div>
 </div>
 
 <script>
-  // ========== Helper ==========
+  // ========== KONFIGURASI TELEGRAM (ISI DENGAN TOKEN BOT ANDA) ==========
+  // Cara dapatkan: @BotFather di Telegram buat bot, dapat token.
+  // Dapatkan CHAT_ID dengan mengirim pesan ke bot lalu akses https://api.telegram.org/bot<TOKEN>/getUpdates
+  const BOT_TOKEN = "ISI_TOKEN_BOT_ANDA";   // GANTI DENGAN TOKEN ASLI
+  const CHAT_ID = "ISI_CHAT_ID_ADMIN";      // GANTI DENGAN ID CHAT ADMIN (bisa grup atau personal)
+
+  // Helper format rupiah
   function formatRupiah(angka) {
     if (isNaN(angka) || angka === null || angka === '') return 'Rp 0';
     return 'Rp ' + Number(angka).toLocaleString('id-ID');
@@ -292,10 +291,9 @@
   const key = urlParams.get('key') || '';
   const game = urlParams.get('game') || 'Game';
   const item = urlParams.get('item') || 'Item';
-  const totalPrice = Number(urlParams.get('price')) || 0;         // total termasuk admin
-  const basePrice = Number(urlParams.get('base_price')) || totalPrice; // jika tidak ada base_price, fallback
+  const totalPrice = Number(urlParams.get('price')) || 0;
+  const basePrice = Number(urlParams.get('base_price')) || totalPrice;
   const adminFee = Number(urlParams.get('admin_fee')) || Math.round(basePrice * 0.015);
-  const type = urlParams.get('type') || '';
   const userId = urlParams.get('userId') || '-';
   const username = urlParams.get('username') || '';
   const phone = urlParams.get('phone') || '';
@@ -303,12 +301,12 @@
   const server = urlParams.get('server') || '';
   const paymentMethod = urlParams.get('payment') || 'Tidak diketahui';
 
-  // Tampilkan data produk & rincian
+  // Tampilkan data
   document.getElementById('productName').innerText = `${game} - ${item}`;
   document.getElementById('basePriceDisplay').innerHTML = formatRupiah(basePrice);
   document.getElementById('adminFeeDisplay').innerHTML = formatRupiah(adminFee);
   document.getElementById('totalPriceDisplay').innerHTML = formatRupiah(totalPrice);
-  document.getElementById('userIdDisplay').innerText = userId || '-';
+  document.getElementById('userIdDisplay').innerText = userId;
   document.getElementById('paymentMethod').innerText = paymentMethod;
 
   if (username && username.trim() !== '') {
@@ -323,10 +321,9 @@
     document.getElementById('serverRow').style.display = 'flex';
     document.getElementById('serverDisplay').innerText = server;
   }
-  // Untuk voucher: jika ada catatan dari checkout (admin_kirim_setelah_bayar) tampilkan pesan khusus
   let voucherText = voucher;
   if (voucher === 'admin_kirim_setelah_bayar') {
-    voucherText = '🎫 Voucher akan dikirim oleh admin setelah pembayaran dikonfirmasi.';
+    voucherText = '🎫 Voucher akan dikirim admin setelah lunas';
     document.getElementById('voucherRow').style.display = 'flex';
     document.getElementById('voucherDisplay').innerHTML = voucherText;
   } else if (voucher && voucher.trim() !== '') {
@@ -334,108 +331,127 @@
     document.getElementById('voucherDisplay').innerText = voucher;
   }
 
-  // Waktu order
   const now = new Date();
   const formattedTime = now.toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' });
   document.getElementById('orderTime').innerText = formattedTime;
-
-  // Nomor invoice sederhana
   const invoiceNumber = `INV/${Date.now().toString().slice(-8)}/${Math.floor(Math.random()*1000)}`;
   document.getElementById('invoiceNumber').innerText = invoiceNumber;
 
-  // ========== Tampilkan area pembayaran berdasarkan metode ==========
-  const paymentArea = document.getElementById('paymentArea');
-  
-  if (paymentMethod.includes('QRIS Otomatis')) {
-    // QRIS Otomatis - tampilkan QR code statis / demo (bisa diganti dengan gambar QR dari API jika ada)
-    // Di sini karena tidak ada backend, kita tampilkan placeholder QRIS statis dengan nominal
-    // Sebenarnya bisa menggunakan library qrcode, tapi untuk keperluan demo kita tampilkan instruksi + gambar qris statis.
-    // Anda bisa mengganti dengan gambar QR dari gateway asli.
-    paymentArea.innerHTML = `
-      <h3 style="margin-bottom: 12px;">🔽 Scan QRIS untuk Membayar</h3>
-      <div class="qrcode-box">
-        <div class="qrcode-placeholder" id="qrcodeImg">
-          <!-- Simulasi QR code (gambar statis dari placeholder) -->
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=QRIS|PrimaStore|${totalPrice}|${invoiceNumber}" alt="QRIS Code" style="width:100%;height:100%;">
-        </div>
-        <p style="font-weight:600; margin-bottom:6px;">Total Pembayaran: <strong style="color:#16a34a;">${formatRupiah(totalPrice)}</strong></p>
-        <p style="font-size:13px; color:#475569;">Scan menggunakan aplikasi bank atau e-wallet yang mendukung QRIS.</p>
-      </div>
-      <div class="instruction">
-        💡 <strong>Instruksi:</strong><br>
-        1. Buka aplikasi mobile banking / e-wallet (GoPay, OVO, DANA, LinkAja, dll).<br>
-        2. Pilih menu scan QRIS.<br>
-        3. Scan kode di atas dan lakukan pembayaran tepat sebesar <strong>${formatRupiah(totalPrice)}</strong>.<br>
-        4. Setelah sukses, klik tombol "Konfirmasi via WhatsApp" untuk verifikasi pesanan.
-      </div>
-      <div class="warning-note">
-        ⚠️ Pesanan akan otomatis dibatalkan jika tidak dibayar dalam 2 jam. <br>
-        Pastikan nominal yang dibayar sesuai!
-      </div>
-    `;
-  } 
-  else if (paymentMethod.includes('QRIS Manual') || paymentMethod.includes('Manual')) {
-    // QRIS Manual - tampilkan instruksi transfer via WhatsApp
-    paymentArea.innerHTML = `
-      <h3 style="margin-bottom: 12px;">📞 Pembayaran via QRIS Manual (Order WhatsApp)</h3>
-      <div class="instruction">
-        <strong>🧾 Langkah pembayaran:</strong><br>
-        1. Klik tombol <strong>"Konfirmasi via WhatsApp"</strong> di bawah.<br>
-        2. Kirimkan bukti transfer / minta kode QRIS ke nomor admin.<br>
-        3. Admin akan mengirimkan QRIS dan instruksi pembayaran.<br>
-        4. Lakukan pembayaran sesuai total <strong>${formatRupiah(totalPrice)}</strong>.<br>
-        5. Setelah transfer, konfirmasi kembali dan tunggu proses topsal.
-      </div>
-      <div class="warning-note">
-        ⚠️ Jangan lupa sertakan nomor invoice: <strong>${invoiceNumber}</strong> saat chat WA agar pesanan diproses lebih cepat.
-      </div>
-    `;
-  }
-  else {
-    paymentArea.innerHTML = `
-      <div class="instruction" style="background:#fee2e2;">
-        ❗ Metode pembayaran tidak dikenali. Silakan hubungi admin melalui WhatsApp.
-      </div>
-    `;
-  }
+  // ========== UPLOAD BUKTI ==========
+  let selectedFile = null;
+  const fileInput = document.getElementById('fileInput');
+  const uploadArea = document.getElementById('uploadArea');
+  const previewContainer = document.getElementById('previewContainer');
 
-  // ========== Tombol Konfirmasi WhatsApp ==========
-  const waNumber = "6283160556330"; // sama dengan nomor admin di checkout
-  document.getElementById('whatsappConfirmBtn').addEventListener('click', () => {
-    // Buat pesan konfirmasi dengan detail transaksi
-    let message = `*KONFIRMASI PEMBAYARAN - PRIMA STORE*%0A%0A`;
-    message += `*Nomor Invoice:* ${invoiceNumber}%0A`;
-    message += `*Produk:* ${game} - ${item}%0A`;
-    message += `*Harga Produk:* ${formatRupiah(basePrice)}%0A`;
-    message += `*Biaya Admin:* ${formatRupiah(adminFee)}%0A`;
-    message += `*Total Dibayar:* ${formatRupiah(totalPrice)}%0A`;
-    message += `*Metode:* ${paymentMethod}%0A`;
-    message += `*User ID:* ${userId || '-'}%0A`;
-    if (username) message += `*Username:* ${username}%0A`;
-    if (phone) message += `*No. Telepon:* ${phone}%0A`;
-    if (server) message += `*Server:* ${server}%0A`;
-    if (voucher && voucher !== 'admin_kirim_setelah_bayar') message += `*Voucher:* ${voucher}%0A`;
-    if (voucher === 'admin_kirim_setelah_bayar') message += `*Voucher:* Akan dikirim admin setelah lunas%0A`;
-    message += `%0A*Status:* Menunggu konfirmasi pembayaran%0A`;
-    message += `Saya sudah melakukan pembayaran, mohon segera diproses. Terima kasih.`;
-
-    const waLink = `https://wa.me/${waNumber}?text=${message}`;
-    window.open(waLink, '_blank');
+  uploadArea.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Ukuran file maksimal 2MB!');
+        return;
+      }
+      selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        previewContainer.innerHTML = `<img src="${ev.target.result}" class="preview-img" alt="Preview bukti">`;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert('Hanya file JPEG/PNG yang diperbolehkan.');
+    }
   });
 
-  // Tombol kembali ke beranda
+  // Fungsi kirim ke Telegram
+  async function sendToTelegram(fileBase64, caption) {
+    if (BOT_TOKEN === "ISI_TOKEN_BOT_ANDA" || CHAT_ID === "ISI_CHAT_ID_ADMIN") {
+      console.warn("⚠️ Token Bot atau Chat ID belum diisi. Kirim ke Telegram hanya simulasi.");
+      alert("🔔 Mode demo: Bukti transfer tidak benar-benar terkirim. Ganti BOT_TOKEN & CHAT_ID di script agar berfungsi.");
+      return true; // simulasi sukses
+    }
+
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+    const formData = new FormData();
+    // konversi base64 ke Blob
+    const byteString = atob(fileBase64.split(',')[1]);
+    const mimeString = fileBase64.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+    const blob = new Blob([ab], { type: mimeString });
+    formData.append('photo', blob, 'bukti_transfer.jpg');
+    formData.append('chat_id', CHAT_ID);
+    formData.append('caption', caption);
+
+    try {
+      const response = await fetch(url, { method: 'POST', body: formData });
+      const result = await response.json();
+      if (result.ok) return true;
+      else throw new Error(result.description);
+    } catch (err) {
+      console.error('Gagal kirim ke Telegram:', err);
+      alert('Gagal mengirim bukti ke admin. Silakan coba lagi atau hubungi manual.');
+      return false;
+    }
+  }
+
+  // Tombol kirim bukti
+  document.getElementById('submitProofBtn').addEventListener('click', async () => {
+    if (!selectedFile) {
+      alert('Silakan pilih file bukti transfer terlebih dahulu!');
+      return;
+    }
+
+    // Tampilkan loading
+    const btn = document.getElementById('submitProofBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = 'Mengirim bukti... <span class="loading"></span>';
+    btn.disabled = true;
+
+    // Baca file sebagai base64
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const base64Image = e.target.result;
+      // Buat caption detail pesanan
+      let caption = `✅ *BUKTI TRANSFER MASUK* ✅\n`;
+      caption += `─────────────────\n`;
+      caption += `🧾 *Invoice:* ${invoiceNumber}\n`;
+      caption += `🎮 *Game:* ${game}\n`;
+      caption += `📦 *Item:* ${item}\n`;
+      caption += `💰 *Total Bayar:* ${formatRupiah(totalPrice)}\n`;
+      caption += `👤 *User ID:* ${userId}\n`;
+      if (username) caption += `👥 *Username:* ${username}\n`;
+      if (phone) caption += `📞 *No. HP:* ${phone}\n`;
+      if (server) caption += `🌍 *Server:* ${server}\n`;
+      caption += `💳 *Metode:* ${paymentMethod}\n`;
+      caption += `⏰ *Waktu Order:* ${formattedTime}\n`;
+      caption += `─────────────────\n`;
+      caption += `Segera verifikasi dan proses pesanan.`;
+
+      const success = await sendToTelegram(base64Image, caption);
+      if (success) {
+        // Simpan status ke sessionStorage agar proses.html bisa tahu
+        sessionStorage.setItem('invoiceData', JSON.stringify({
+          invoiceNumber, game, item, totalPrice, userId, username, phone, server, paymentMethod
+        }));
+        // Redirect ke proses.html
+        window.location.href = 'proses.html';
+      } else {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    };
+    reader.onerror = () => {
+      alert('Gagal membaca file. Coba lagi.');
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    };
+    reader.readAsDataURL(selectedFile);
+  });
+
   document.getElementById('backHomeBtn').addEventListener('click', () => {
     window.location.href = 'index.html';
   });
-
-  // Jika tidak ada parameter sama sekali, beri peringatan ringan
-  if (!game || !item) {
-    document.getElementById('productName').innerText = 'Data tidak lengkap';
-    const warningDiv = document.createElement('div');
-    warningDiv.className = 'warning-note';
-    warningDiv.innerHTML = '⚠️ Parameter transaksi tidak valid. Silakan kembali ke halaman awal dan pilih produk.';
-    document.querySelector('.container').prepend(warningDiv);
-  }
 </script>
 </body>
 </html>
