@@ -591,72 +591,105 @@ window.setProgress = function(e) {
   }
 };
 
-// ==================== PLAYLIST MODAL ====================
-function initPlaylistModal() {
-  if (document.getElementById('playlistModal')) return;
+// ==================== PLAYLIST BOTTOM SHEET ====================
+function initPlaylistSheet() {
+  if (document.getElementById('playlistSheet')) return;
   
-  const modalHTML = `
-    <div id="playlistModal" class="modal-overlay" style="display: none;">
-      <div class="modal-container">
-        <div class="modal-header">
-          <h3>📋 Daftar Lagu</h3>
-          <span class="modal-close">&times;</span>
+  const sheetHTML = `
+    <div id="playlistSheet" class="bottom-sheet" style="display: none;">
+      <div class="bottom-sheet-overlay"></div>
+      <div class="bottom-sheet-container">
+        <div class="bottom-sheet-header">
+          <div class="sheet-handle"></div>
+          <h3>🎵 Daftar Lagu</h3>
+          <button class="sheet-close">&times;</button>
         </div>
-        <div id="playlistModalItems" class="modal-playlist"></div>
+        <div id="playlistSheetItems" class="bottom-sheet-list"></div>
       </div>
     </div>
   `;
-  document.body.insertAdjacentHTML('beforeend', modalHTML);
+  document.body.insertAdjacentHTML('beforeend', sheetHTML);
   
-  const modal = document.getElementById('playlistModal');
-  const closeBtn = modal.querySelector('.modal-close');
-  closeBtn.onclick = () => modal.style.display = 'none';
-  modal.onclick = (e) => {
-    if (e.target === modal) modal.style.display = 'none';
+  const sheet = document.getElementById('playlistSheet');
+  const overlay = sheet.querySelector('.bottom-sheet-overlay');
+  const closeBtn = sheet.querySelector('.sheet-close');
+  
+  const closeSheet = () => {
+    sheet.classList.remove('show');
+    setTimeout(() => {
+      if (!sheet.classList.contains('show')) sheet.style.display = 'none';
+    }, 300);
   };
+  
+  overlay.onclick = closeSheet;
+  closeBtn.onclick = closeSheet;
+  
+  // Optional: swipe down to close (touch)
+  let startY = 0;
+  const container = sheet.querySelector('.bottom-sheet-container');
+  container.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; });
+  container.addEventListener('touchmove', (e) => {
+    const deltaY = e.touches[0].clientY - startY;
+    if (deltaY > 50) closeSheet();
+  });
 }
 
-function showPlaylistModal() {
-  const modal = document.getElementById('playlistModal');
-  const container = document.getElementById('playlistModalItems');
+function showPlaylistSheet() {
+  const sheet = document.getElementById('playlistSheet');
+  const container = document.getElementById('playlistSheetItems');
   if (!container) return;
   
   container.innerHTML = '';
   if (globalSongsData.length === 0) {
     container.innerHTML = '<div class="empty-playlist">Belum ada lagu</div>';
-    modal.style.display = 'flex';
+    sheet.style.display = 'flex';
+    setTimeout(() => sheet.classList.add('show'), 10);
     return;
   }
   
   globalSongsData.forEach((song, idx) => {
     const item = document.createElement('div');
-    item.className = 'modal-playlist-item';
+    item.className = 'playlist-sheet-item';
     if (idx === globalCurrentIndex) item.classList.add('active');
     
     item.innerHTML = `
-      <img src="${song.cover}" class="modal-item-cover">
-      <div class="modal-item-info">
-        <div class="modal-item-title">${escapeHtml(song.title)}</div>
-        <div class="modal-item-artist">${escapeHtml(song.artist)}</div>
+      <div class="playlist-item-info">
+        <div class="playlist-item-title">${escapeHtml(song.title)}</div>
+        <div class="playlist-item-artist">${escapeHtml(song.artist)}</div>
       </div>
+      <button class="playlist-item-play" data-index="${idx}">
+        <i class="fas fa-play"></i>
+      </button>
     `;
     
-    item.onclick = () => {
+    const playBtn = item.querySelector('.playlist-item-play');
+    playBtn.onclick = (e) => {
+      e.stopPropagation();
       globalCurrentIndex = idx;
       loadGlobalSong(globalCurrentIndex);
       globalAudio.play();
       isGlobalPlaying = true;
       updateMusicUI();
-      modal.style.display = 'none';
+      closeSheet();
     };
     
     container.appendChild(item);
   });
   
-  modal.style.display = 'flex';
+  sheet.style.display = 'flex';
+  setTimeout(() => sheet.classList.add('show'), 10);
 }
 
-// Helper untuk menghindari XSS
+function closeSheet() {
+  const sheet = document.getElementById('playlistSheet');
+  if (sheet) {
+    sheet.classList.remove('show');
+    setTimeout(() => {
+      if (!sheet.classList.contains('show')) sheet.style.display = 'none';
+    }, 300);
+  }
+}
+
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/[&<>]/g, function(m) {
@@ -667,33 +700,20 @@ function escapeHtml(str) {
   });
 }
 
-// ==================== MODIFIKASI attachMusicControls (tambahkan tombol playlist) ====================
-// Simpan fungsi asli, lalu timpa dengan yang baru
+// ==================== OVERRIDE attachMusicControls ====================
 const originalAttachMusicControls = attachMusicControls;
 attachMusicControls = function() {
-  originalAttachMusicControls(); // panggil yang asli dulu
-  
-  // Cek dan tambahkan tombol playlist jika belum ada
-  let playlistBtn = document.getElementById('playlistBtn');
-  if (!playlistBtn) {
-    const controlsDiv = document.querySelector('.music-page .controls');
-    if (controlsDiv) {
-      const btn = document.createElement('button');
-      btn.id = 'playlistBtn';
-      btn.innerHTML = '<i class="fas fa-list"></i>';
-      controlsDiv.appendChild(btn);
-      playlistBtn = btn;
-    }
-  }
+  originalAttachMusicControls();
+  const playlistBtn = document.getElementById('playlistBtn');
   if (playlistBtn) {
-    playlistBtn.onclick = () => showPlaylistModal();
+    playlistBtn.onclick = () => showPlaylistSheet();
   }
 };
 
-// ==================== MODIFIKASI initMusic (panggil initPlaylistModal) ====================
+// ==================== OVERRIDE initMusic ====================
 const originalInitMusic = initMusic;
 initMusic = function() {
-  initPlaylistModal();
+  initPlaylistSheet();   // buat bottom sheet
   originalInitMusic();
 };
 // ==================== BANTUAN ====================
