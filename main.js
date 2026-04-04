@@ -339,6 +339,13 @@ let globalSongsData = [];
 let globalCurrentIndex = 0;
 let isGlobalPlaying = false;
 
+// ✅ Tambahkan ini SEKALI setelah globalAudio dibuat
+globalAudio.addEventListener('ended', () => {
+    nextGlobalSong();  // Akan lanjut ke lagu berikutnya, dan jika sudah terakhir kembali ke awal
+});
+
+// ... sisanya tetap seperti kode Anda, tapi hapus event listener yang ada di dalam initMusicGlobal ...
+
 // Fungsi untuk memuat lagu ke globalAudio
 function loadGlobalSong(index) {
   if (!globalSongsData[index]) return;
