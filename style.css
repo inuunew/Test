@@ -507,7 +507,21 @@ body {
 .beranda-page .menu-card p { font-size: 13px; font-weight: 600; }
 .beranda-page #gameGrid, .beranda-page #panelGrid, .beranda-page #otherGrid { display: none; }
 .beranda-page #titleGame, .beranda-page #titleHosting, .beranda-page #titleOther { display: none; }
-.beranda-page #backBtn { display: none; }
+.beranda-page #backBtn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      margin: 8px 16px;
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      width: fit-content;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+.beranda-page #backBtn:active {
+      background: #f1f5f9;
+    }
 
 /* ========== STYLE KHUSUS PENGUMUMAN ========== */
 .pengumuman-page .pengumuman-container {
@@ -750,7 +764,6 @@ body {
   word-break: break-word;
   white-space: normal; /* teks panjang bisa pindah baris tetapi tetap di samping gambar */
 }
-
 .checkout-page .badge {
   background: #e6f7ed;
   color: #1ea55b;
