@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Proses Pembayaran - Prima Store</title>
+  <title>Proses Pembayaran - Inuu Market</title>
+  
+  <!-- Font Awesome 6 & Google Font Outfit -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
     * {
       margin: 0;
@@ -12,7 +17,7 @@
     }
 
     body {
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      font-family: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       background: #f1f5f9;
       display: flex;
       align-items: center;
@@ -40,6 +45,7 @@
     .icon {
       font-size: 64px;
       margin-bottom: 16px;
+      color: #16a34a;
     }
 
     h2 {
@@ -58,11 +64,18 @@
       font-size: 14px;
       margin-bottom: 20px;
     }
+    .status-text i {
+      margin-right: 6px;
+    }
 
     .message {
       color: #334155;
       margin-bottom: 24px;
       line-height: 1.5;
+    }
+    .message i {
+      margin-right: 4px;
+      color: #16a34a;
     }
 
     .btn {
@@ -78,11 +91,15 @@
       border: none;
       cursor: pointer;
       font-size: 16px;
+      font-family: 'Outfit', sans-serif;
     }
 
     .btn-primary {
       background: #16a34a;
       color: white;
+    }
+    .btn-primary i {
+      margin-right: 8px;
     }
 
     .btn-primary:active {
@@ -101,21 +118,30 @@
       color: #64748b;
       margin-top: 20px;
     }
+    .small-note i {
+      margin-right: 4px;
+    }
   </style>
 </head>
 <body>
 <div class="card">
-  <div class="icon">⏳</div>
-  <div class="status-text">PEMBAYARAN SEDANG DIPROSES</div>
-  <h2>Terima kasih!</h2>
-  <div class="message">
-    Bukti transfer Anda telah diterima.<br>
-    Admin akan memverifikasi dalam waktu <strong>maksimal 15 menit</strong>.<br>
-    Silakan tunggu notifikasi via WhatsApp atau Telegram.
+  <div class="icon">
+    <i class="fas fa-hourglass-half"></i>
   </div>
-  <button class="btn btn-primary" id="homeBtn">🏠 Kembali ke Beranda</button>
+  <div class="status-text">
+    <i class="fas fa-spinner fa-pulse"></i> PEMBAYARAN SEDANG DIPROSES
+  </div>
+  <h2><i class="fas fa-check-circle"></i> Terima kasih!</h2>
+  <div class="message">
+    <i class="fas fa-check"></i> Bukti transfer Anda telah diterima.<br>
+    Admin akan memverifikasi dalam waktu <strong>maksimal 15 menit</strong>.<br>
+    <i class="fab fa-whatsapp"></i> Silakan tunggu notifikasi via WhatsApp atau Telegram.
+  </div>
+  <button class="btn btn-primary" id="homeBtn">
+    <i class="fas fa-home"></i> Kembali ke Beranda
+  </button>
   <div class="small-note">
-    Jika dalam 1 jam belum ada konfirmasi, hubungi CS di WhatsApp.
+    <i class="fas fa-clock"></i> Jika dalam 1 jam belum ada konfirmasi, hubungi CS di WhatsApp.
   </div>
 </div>
 
