@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Invoice - Prima Store</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #f1f5f9;
+      padding: 20px 12px 40px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    .status-badge {
+      display: inline-block;
+      background: #fef9c3;
+      color: #854d0e;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 40px;
+      margin-bottom: 16px;
+    }
+
+    .invoice-title {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .invoice-id {
+      font-size: 13px;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 5px 12px;
+      border-radius: 30px;
+      display: inline-block;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e2e8f0;
+      margin: 18px 0;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    .row-label {
+      color: #334155;
+    }
+
+    .row-value {
+      font-weight: 500;
+      color: #0f172a;
+      text-align: right;
+    }
+
+    .total-row {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 2px dashed #cbd5e1;
+      font-weight: 800;
+      font-size: 18px;
+      color: #16a34a;
+    }
+
+    .qrcode-box {
+      background: white;
+      border-radius: 24px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+      margin: 20px 0;
+    }
+
+    .qrcode-placeholder {
+      width: 200px;
+      height: 200px;
+      background: #f8fafc;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 24px;
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+    }
+
+    .qrcode-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .instruction {
+      background: #f0fdf4;
+      padding: 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin: 16px 0;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 60px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      transition: 0.2s;
+      margin-top: 12px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .btn-primary {
+      background: #16a34a;
+      color: white;
+      box-shadow: 0 2px 8px rgba(22,163,74,0.3);
+    }
+
+    .btn-primary:active {
+      background: #15803d;
+      transform: scale(0.97);
+    }
+
+    .btn-outline {
+      background: white;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
+    }
+
+    .btn-outline:active {
+      background: #f8fafc;
+    }
+
+    .warning-note {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 13px;
+      margin: 16px 0;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 20px;
+    }
+
+    .admin-fee-info {
+      font-size: 12px;
+      color: #475569;
+      background: #f1f5f9;
+      border-radius: 20px;
+      padding: 6px 12px;
+      display: inline-block;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 16px 12px 30px;
+      }
+      .qrcode-placeholder {
+        width: 180px;
+        height: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Kartu Status Invoice -->
+  <div class="card">
+    <div class="status-badge">⏳ MENUNGGU PEMBAYARAN</div>
+    <div class="invoice-title">
+      💳 INVOICE
+      <span class="invoice-id" id="invoiceNumber">#PRIMA/INV/001</span>
+    </div>
+    <div class="divider"></div>
+
+    <!-- Rincian Produk -->
+    <div class="row">
+      <span class="row-label">Produk</span>
+      <span class="row-value" id="productName">-</span>
+    </div>
+    <div class="row">
+      <span class="row-label">Harga Produk</span>
+      <span class="row-value" id="basePriceDisplay">-</span>
+    </div>
+    <div class="row">
+      <span class="row-label">Biaya Admin (1.5%)</span>
+      <span class="row-value" id="adminFeeDisplay">-</span>
+    </div>
+    <div class="row total-row">
+      <span class="row-label">Total Dibayar</span>
+      <span class="row-value" id="totalPriceDisplay">-</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Data Customer -->
+    <div class="row">
+      <span class="row-label">User ID / Akun</span>
+      <span class="row-value" id="userIdDisplay">-</span>
+    </div>
+    <div class="row" id="usernameRow" style="display: none;">
+      <span class="row-label">Username</span>
+      <span class="row-value" id="usernameDisplay">-</span>
+    </div>
+    <div class="row" id="phoneRow" style="display: none;">
+      <span class="row-label">No. Telepon</span>
+      <span class="row-value" id="phoneDisplay">-</span>
+    </div>
+    <div class="row" id="serverRow" style="display: none;">
+      <span class="row-label">Server</span>
+      <span class="row-value" id="serverDisplay">-</span>
+    </div>
+    <div class="row" id="voucherRow" style="display: none;">
+      <span class="row-label">Voucher</span>
+      <span class="row-value" id="voucherDisplay">-</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <span class="row-label">Metode Pembayaran</span>
+      <span class="row-value" id="paymentMethod">-</span>
+    </div>
+    <div class="row">
+      <span class="row-label">Waktu Order</span>
+      <span class="row-value" id="orderTime">-</span>
+    </div>
+  </div>
+
+  <!-- Area Pembayaran (QRIS / Manual) -->
+  <div id="paymentArea" class="card">
+    <!-- konten akan diisi javascript -->
+  </div>
+
+  <!-- Tombol Aksi -->
+  <div class="card">
+    <button class="btn btn-primary" id="whatsappConfirmBtn">📱 Konfirmasi via WhatsApp</button>
+    <button class="btn btn-outline" id="backHomeBtn">← Kembali ke Beranda</button>
+  </div>
+
+  <div class="footer">
+    Prima Store © 2025 • Layanan 24 Jam • Pastikan data sudah benar sebelum bayar
+  </div>
+</div>
+
+<script>
+  // ========== Helper ==========
+  function formatRupiah(angka) {
+    if (isNaN(angka) || angka === null || angka === '') return 'Rp 0';
+    return 'Rp ' + Number(angka).toLocaleString('id-ID');
+  }
+
+  // Ambil parameter dari URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const key = urlParams.get('key') || '';
+  const game = urlParams.get('game') || 'Game';
+  const item = urlParams.get('item') || 'Item';
+  const totalPrice = Number(urlParams.get('price')) || 0;         // total termasuk admin
+  const basePrice = Number(urlParams.get('base_price')) || totalPrice; // jika tidak ada base_price, fallback
+  const adminFee = Number(urlParams.get('admin_fee')) || Math.round(basePrice * 0.015);
+  const type = urlParams.get('type') || '';
+  const userId = urlParams.get('userId') || '-';
+  const username = urlParams.get('username') || '';
+  const phone = urlParams.get('phone') || '';
+  const voucher = urlParams.get('voucher') || '';
+  const server = urlParams.get('server') || '';
+  const paymentMethod = urlParams.get('payment') || 'Tidak diketahui';
+
+  // Tampilkan data produk & rincian
+  document.getElementById('productName').innerText = `${game} - ${item}`;
+  document.getElementById('basePriceDisplay').innerHTML = formatRupiah(basePrice);
+  document.getElementById('adminFeeDisplay').innerHTML = formatRupiah(adminFee);
+  document.getElementById('totalPriceDisplay').innerHTML = formatRupiah(totalPrice);
+  document.getElementById('userIdDisplay').innerText = userId || '-';
+  document.getElementById('paymentMethod').innerText = paymentMethod;
+
+  if (username && username.trim() !== '') {
+    document.getElementById('usernameRow').style.display = 'flex';
+    document.getElementById('usernameDisplay').innerText = username;
+  }
+  if (phone && phone.trim() !== '') {
+    document.getElementById('phoneRow').style.display = 'flex';
+    document.getElementById('phoneDisplay').innerText = phone;
+  }
+  if (server && server.trim() !== '') {
+    document.getElementById('serverRow').style.display = 'flex';
+    document.getElementById('serverDisplay').innerText = server;
+  }
+  // Untuk voucher: jika ada catatan dari checkout (admin_kirim_setelah_bayar) tampilkan pesan khusus
+  let voucherText = voucher;
+  if (voucher === 'admin_kirim_setelah_bayar') {
+    voucherText = '🎫 Voucher akan dikirim oleh admin setelah pembayaran dikonfirmasi.';
+    document.getElementById('voucherRow').style.display = 'flex';
+    document.getElementById('voucherDisplay').innerHTML = voucherText;
+  } else if (voucher && voucher.trim() !== '') {
+    document.getElementById('voucherRow').style.display = 'flex';
+    document.getElementById('voucherDisplay').innerText = voucher;
+  }
+
+  // Waktu order
+  const now = new Date();
+  const formattedTime = now.toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'short' });
+  document.getElementById('orderTime').innerText = formattedTime;
+
+  // Nomor invoice sederhana
+  const invoiceNumber = `INV/${Date.now().toString().slice(-8)}/${Math.floor(Math.random()*1000)}`;
+  document.getElementById('invoiceNumber').innerText = invoiceNumber;
+
+  // ========== Tampilkan area pembayaran berdasarkan metode ==========
+  const paymentArea = document.getElementById('paymentArea');
+  
+  if (paymentMethod.includes('QRIS Otomatis')) {
+    // QRIS Otomatis - tampilkan QR code statis / demo (bisa diganti dengan gambar QR dari API jika ada)
+    // Di sini karena tidak ada backend, kita tampilkan placeholder QRIS statis dengan nominal
+    // Sebenarnya bisa menggunakan library qrcode, tapi untuk keperluan demo kita tampilkan instruksi + gambar qris statis.
+    // Anda bisa mengganti dengan gambar QR dari gateway asli.
+    paymentArea.innerHTML = `
+      <h3 style="margin-bottom: 12px;">🔽 Scan QRIS untuk Membayar</h3>
+      <div class="qrcode-box">
+        <div class="qrcode-placeholder" id="qrcodeImg">
+          <!-- Simulasi QR code (gambar statis dari placeholder) -->
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=QRIS|PrimaStore|${totalPrice}|${invoiceNumber}" alt="QRIS Code" style="width:100%;height:100%;">
+        </div>
+        <p style="font-weight:600; margin-bottom:6px;">Total Pembayaran: <strong style="color:#16a34a;">${formatRupiah(totalPrice)}</strong></p>
+        <p style="font-size:13px; color:#475569;">Scan menggunakan aplikasi bank atau e-wallet yang mendukung QRIS.</p>
+      </div>
+      <div class="instruction">
+        💡 <strong>Instruksi:</strong><br>
+        1. Buka aplikasi mobile banking / e-wallet (GoPay, OVO, DANA, LinkAja, dll).<br>
+        2. Pilih menu scan QRIS.<br>
+        3. Scan kode di atas dan lakukan pembayaran tepat sebesar <strong>${formatRupiah(totalPrice)}</strong>.<br>
+        4. Setelah sukses, klik tombol "Konfirmasi via WhatsApp" untuk verifikasi pesanan.
+      </div>
+      <div class="warning-note">
+        ⚠️ Pesanan akan otomatis dibatalkan jika tidak dibayar dalam 2 jam. <br>
+        Pastikan nominal yang dibayar sesuai!
+      </div>
+    `;
+  } 
+  else if (paymentMethod.includes('QRIS Manual') || paymentMethod.includes('Manual')) {
+    // QRIS Manual - tampilkan instruksi transfer via WhatsApp
+    paymentArea.innerHTML = `
+      <h3 style="margin-bottom: 12px;">📞 Pembayaran via QRIS Manual (Order WhatsApp)</h3>
+      <div class="instruction">
+        <strong>🧾 Langkah pembayaran:</strong><br>
+        1. Klik tombol <strong>"Konfirmasi via WhatsApp"</strong> di bawah.<br>
+        2. Kirimkan bukti transfer / minta kode QRIS ke nomor admin.<br>
+        3. Admin akan mengirimkan QRIS dan instruksi pembayaran.<br>
+        4. Lakukan pembayaran sesuai total <strong>${formatRupiah(totalPrice)}</strong>.<br>
+        5. Setelah transfer, konfirmasi kembali dan tunggu proses topsal.
+      </div>
+      <div class="warning-note">
+        ⚠️ Jangan lupa sertakan nomor invoice: <strong>${invoiceNumber}</strong> saat chat WA agar pesanan diproses lebih cepat.
+      </div>
+    `;
+  }
+  else {
+    paymentArea.innerHTML = `
+      <div class="instruction" style="background:#fee2e2;">
+        ❗ Metode pembayaran tidak dikenali. Silakan hubungi admin melalui WhatsApp.
+      </div>
+    `;
+  }
+
+  // ========== Tombol Konfirmasi WhatsApp ==========
+  const waNumber = "6283160556330"; // sama dengan nomor admin di checkout
+  document.getElementById('whatsappConfirmBtn').addEventListener('click', () => {
+    // Buat pesan konfirmasi dengan detail transaksi
+    let message = `*KONFIRMASI PEMBAYARAN - PRIMA STORE*%0A%0A`;
+    message += `*Nomor Invoice:* ${invoiceNumber}%0A`;
+    message += `*Produk:* ${game} - ${item}%0A`;
+    message += `*Harga Produk:* ${formatRupiah(basePrice)}%0A`;
+    message += `*Biaya Admin:* ${formatRupiah(adminFee)}%0A`;
+    message += `*Total Dibayar:* ${formatRupiah(totalPrice)}%0A`;
+    message += `*Metode:* ${paymentMethod}%0A`;
+    message += `*User ID:* ${userId || '-'}%0A`;
+    if (username) message += `*Username:* ${username}%0A`;
+    if (phone) message += `*No. Telepon:* ${phone}%0A`;
+    if (server) message += `*Server:* ${server}%0A`;
+    if (voucher && voucher !== 'admin_kirim_setelah_bayar') message += `*Voucher:* ${voucher}%0A`;
+    if (voucher === 'admin_kirim_setelah_bayar') message += `*Voucher:* Akan dikirim admin setelah lunas%0A`;
+    message += `%0A*Status:* Menunggu konfirmasi pembayaran%0A`;
+    message += `Saya sudah melakukan pembayaran, mohon segera diproses. Terima kasih.`;
+
+    const waLink = `https://wa.me/${waNumber}?text=${message}`;
+    window.open(waLink, '_blank');
+  });
+
+  // Tombol kembali ke beranda
+  document.getElementById('backHomeBtn').addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+
+  // Jika tidak ada parameter sama sekali, beri peringatan ringan
+  if (!game || !item) {
+    document.getElementById('productName').innerText = 'Data tidak lengkap';
+    const warningDiv = document.createElement('div');
+    warningDiv.className = 'warning-note';
+    warningDiv.innerHTML = '⚠️ Parameter transaksi tidak valid. Silakan kembali ke halaman awal dan pilih produk.';
+    document.querySelector('.container').prepend(warningDiv);
+  }
+</script>
+</body>
+</html>
