@@ -4,13 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Checkout - Inuu Market</title>
+
+<!-- Font Awesome 6 & Google Font Outfit -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
 <style>
 /* ========== GAYA DASAR ========== */
 * {
   box-sizing: border-box;
 }
 body{
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-family: 'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
   background:#f3f4f6;
   margin:0;
   padding:0;
@@ -41,6 +46,7 @@ body{
   cursor:pointer;
   font-weight: 500;
   transition: opacity 0.2s;
+  color: #1f2937;
 }
 .back:active { opacity: 0.6; }
 
@@ -116,6 +122,12 @@ body{
   color: #1e293b;
 }
 
+.label i {
+  margin-right: 6px;
+  color: #16a34a;
+  width: 18px;
+}
+
 .input-group{
   display:flex;
   align-items:center;
@@ -132,6 +144,7 @@ body{
   outline:none;
   font-size: 15px;
   background: transparent;
+  font-family: 'Outfit', sans-serif;
 }
 
 .input-group:focus-within {
@@ -148,13 +161,16 @@ body{
 .feature {
   background: #e6f7ed;
   color: #1ea55b;
-  font-size: 11px;
-  padding: 4px 10px;
+  font-size: 12px;
+  padding: 4px 12px;
   border-radius: 30px;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   font-weight: 500;
+}
+.feature i {
+  font-size: 12px;
 }
 .desc-card-content, .detail-card-content {
   font-size: 14px;
@@ -170,13 +186,14 @@ body{
   border-radius: 40px;
   color: #15803d;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
   margin-top: 0px;
   padding: 10px 16px;
   width: 100%;
   text-align: center;
   font-weight: 500;
   transition: 0.2s;
+  font-family: 'Outfit', sans-serif;
 }
 .view-desc:active {
   background: #dcfce7;
@@ -218,10 +235,17 @@ body{
   cursor:pointer;
   transition: 0.2s;
   box-shadow: 0 2px 8px rgba(22,163,74,0.3);
+  font-family: 'Outfit', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .pay:active {
   transform: scale(0.97);
   background: #15803d;
+}
+.pay i {
+  font-size: 16px;
 }
 
 .bill{
@@ -240,6 +264,7 @@ body{
   cursor:pointer;
   background:#ffffff;
   transition: 0.1s;
+  font-family: 'Outfit', sans-serif;
 }
 
 .payment-list{
@@ -257,6 +282,7 @@ body{
   border-bottom: 1px solid #f1f5f9;
   cursor:pointer;
   transition: background 0.1s;
+  font-family: 'Outfit', sans-serif;
 }
 
 .payment-item:last-child {
@@ -296,6 +322,7 @@ body{
   border-radius:32px;
   padding:0;
   animation:popup .2s ease;
+  font-family: 'Outfit', sans-serif;
 }
 
 .modal-header{
@@ -392,6 +419,7 @@ body{
   box-shadow:0 -10px 30px rgba(0,0,0,0.2);
   transition:0.3s ease;
   z-index:9999;
+  font-family: 'Outfit', sans-serif;
 }
 .sheet.show{
   bottom:0;
@@ -426,6 +454,7 @@ body{
   width:85%;
   max-width:340px;
   animation:fadeIn 0.2s ease;
+  font-family: 'Outfit', sans-serif;
 }
 .popup-box .icon{
   font-size:48px;
@@ -441,6 +470,7 @@ body{
   border-radius:40px;
   font-weight: 600;
   cursor:pointer;
+  font-family: 'Outfit', sans-serif;
 }
 @keyframes fadeIn{
   from{transform:scale(0.92);opacity:0;}
@@ -465,6 +495,7 @@ body{
   text-align:center;
   width:80%;
   max-width:260px;
+  font-family: 'Outfit', sans-serif;
 }
 .spinner{
   width:44px;
@@ -533,7 +564,7 @@ body{
 
 <div class="header">
   <div class="header-left">
-    <div class="back" onclick="goHome()">←</div>
+    <div class="back" onclick="goHome()"><i class="fas fa-arrow-left"></i></div>
     <div class="brand">Inuu Market</div>
   </div>
   <div class="header-right">
@@ -548,23 +579,23 @@ body{
     <img id="gameImage" onerror="this.src='https://placehold.co/70x70?text=Game'">
     <div>
       <div id="itemName" style="font-weight:700; font-size:18px;"></div>
-      <div style="margin-top: 6px;">
-        <span class="feature">✅ Proses Cepat</span>
-        <span class="feature">⚡ Anti Delay</span>
-        <span class="feature">💬 Admin Fast Respon</span>
+      <div class="features">
+        <span class="feature"><i class="fas fa-check-circle"></i> Proses Cepat</span>
+        <span class="feature"><i class="fas fa-bolt"></i> Anti Delay</span>
+        <span class="feature"><i class="fas fa-comment-dots"></i> Admin Fast Respon</span>
       </div>
     </div>
   </div>
 </div>
 
 <div class="card">
-  <button class="view-desc" onclick="openInfo()">📄 Lihat Deskripsi & Panduan</button>
+  <button class="view-desc" onclick="openInfo()"><i class="fas fa-file-alt"></i> Lihat Deskripsi & Panduan</button>
 </div>
 
 <div id="confirmSheet" class="sheet">
   <div class="sheet-content">
     <div class="sheet-header">
-      <span>⚡ Konfirmasi Pesanan</span>
+      <span><i class="fas fa-bolt"></i> Konfirmasi Pesanan</span>
       <span onclick="closeSheet()" style="font-size:20px;">✕</span>
     </div>
     <div class="sheet-body">
@@ -576,30 +607,31 @@ body{
         </div>
       </div>
       <hr style="margin:15px 0;">
-      <div class="row"><span>📌 Tujuan / ID :</span><span id="sheetUser" style="color:#b91c1c; font-weight:500;"></span></div>
-      <div class="row"><span>💰 Total tagihan (inkl. admin) :</span><span id="sheetHarga" style="font-weight:700;"></span></div>
+      <div class="row"><span><i class="fas fa-map-marker-alt"></i> Tujuan / ID :</span><span id="sheetUser" style="color:#b91c1c; font-weight:500;"></span></div>
+      <div class="row"><span><i class="fas fa-receipt"></i> Total tagihan (inkl. admin) :</span><span id="sheetHarga" style="font-weight:700;"></span></div>
       <div style="margin-top:18px;background:#f0fdf4;padding:14px;border-radius:20px;font-size:13px;">
-        ✅ Pastikan data sudah benar. <br>📌 Melanjutkan berarti menyetujui pembelian, admin akan blacklist jika tidak serius.
+        <i class="fas fa-check-circle" style="color:#16a34a;"></i> Pastikan data sudah benar. <br>
+        <i class="fas fa-exclamation-triangle"></i> Melanjutkan berarti menyetujui pembelian, admin akan blacklist jika tidak serius.
       </div>
-      <button onclick="lanjutWA()" class="pay" style="width:100%;margin-top:18px;">Lanjut ke WhatsApp</button>
-      <button onclick="closeSheet()" style="width:100%;margin-top:10px;padding:12px;border:1px solid #ddd;border-radius:40px;background:white;">Kembali</button>
+      <button onclick="lanjutWA()" class="pay" style="width:100%;margin-top:18px;"><i class="fab fa-whatsapp"></i> Lanjut ke WhatsApp</button>
+      <button onclick="closeSheet()" style="width:100%;margin-top:10px;padding:12px;border:1px solid #ddd;border-radius:40px;background:white; font-family:'Outfit', sans-serif;"><i class="fas fa-arrow-left"></i> Kembali</button>
     </div>
   </div>
 </div>
 
 <!-- INPUT DATA USER -->
 <div class="card" id="userIdBox">
-<label class="label">🆔 USER ID / ID PLAYER</label>
+<label class="label"><i class="fas fa-id-card"></i> USER ID / ID PLAYER</label>
 <div class="input-group"><input type="text" placeholder="Contoh: 12345678" id="userId"></div>
 </div>
 
 <div class="card" id="usernameBox" style="display:none;">
-<label class="label">👤 USERNAME PANEL / AKUN</label>
+<label class="label"><i class="fas fa-user-circle"></i> USERNAME PANEL / AKUN</label>
 <div class="input-group"><input type="text" placeholder="Masukkan Username" id="username"></div>
 </div>
 
 <div class="card" id="phoneBox" style="display:none;">
-<label class="label">📞 NOMOR TELEPON (Aktif)</label>
+<label class="label"><i class="fas fa-phone-alt"></i> NOMOR TELEPON (Aktif)</label>
 <div class="input-group"><input type="tel" placeholder="08xxxxxxxx" id="phone"></div>
 </div>
 
@@ -609,7 +641,7 @@ body{
 </div>
 
 <div class="card" id="serverBox" style="display:none;">
-<label class="label">🌍 SERVER / ZONE</label>
+<label class="label"><i class="fas fa-globe-asia"></i> SERVER / ZONE</label>
 <div class="input-group" id="mlServer" style="display:none;"><input type="number" placeholder="Server ID (contoh: 1234)" id="serverId"></div>
 <div class="input-group" id="genshinServer" style="display:none;"><select id="serverRegion"><option value="">Pilih Server</option><option>Asia</option><option>America</option><option>Europe</option><option>TW/HK/MO</option></select></div>
 </div>
@@ -621,26 +653,26 @@ body{
 
 <!-- METODE BAYAR -->
 <div class="card">
-<h4 style="margin:0 0 12px 0;">💳 METODE PEMBAYARAN</h4>
-<div class="payment-select" onclick="togglePayment()"><div id="paymentSelected">Pilih Metode</div><div>▼</div></div>
+<h4 style="margin:0 0 12px 0;"><i class="fas fa-credit-card"></i> METODE PEMBAYARAN</h4>
+<div class="payment-select" onclick="togglePayment()"><div id="paymentSelected">Pilih Metode</div><div><i class="fas fa-chevron-down"></i></div></div>
 <div class="payment-list" id="paymentList">
-  <div class="payment-item" id="qrisAutoItem">QRIS Otomatis (Instant)</div>
-  <div class="payment-item" id="manualQrisItem">QRIS Manual (Order via WA)</div>
+  <div class="payment-item" id="qrisAutoItem"><i class="fas fa-qrcode"></i> QRIS Otomatis (Instant)</div>
+  <div class="payment-item" id="manualQrisItem"><i class="fab fa-whatsapp"></i> QRIS Manual (Order via WA)</div>
 </div>
 </div>
 
 <!-- RINCIAN TRANSAKSI DENGAN BIAYA ADMIN 1.5% -->
 <div class="card">
-  <h4 style="margin:0 0 12px 0;">📋 RINCIAN TRANSAKSI</h4>
-  <div class="row"><span>💰 Harga Produk</span><span id="hargaProduk"></span></div>
-  <div class="row"><span>⚙️ Biaya Admin (1.5%) <span class="admin-badge">termasuk pajak</span></span><span id="biayaAdmin"></span></div>
+  <h4 style="margin:0 0 12px 0;"><i class="fas fa-chart-line"></i> RINCIAN TRANSAKSI</h4>
+  <div class="row"><span><i class="fas fa-tag"></i> Harga Produk</span><span id="hargaProduk"></span></div>
+  <div class="row"><span><i class="fas fa-calculator"></i> Biaya Admin (1.5%) <span class="admin-badge">termasuk pajak</span></span><span id="biayaAdmin"></span></div>
   <hr style="margin:8px 0;">
-  <div class="row"><span>💎 TOTAL YANG HARUS DIBAYAR</span><span class="total" id="totalAmount"></span></div>
+  <div class="row"><span><i class="fas fa-coins"></i> TOTAL YANG HARUS DIBAYAR</span><span class="total" id="totalAmount"></span></div>
 </div>
 
 <div class="footer">
 <div><div style="font-size:12px;color:#5b6e8c;">TOTAL BAYAR</div><div class="bill" id="billFooter"></div></div>
-<button class="pay" id="bayarBtn">Bayar Sekarang</button>
+<button class="pay" id="bayarBtn"><i class="fas fa-lock"></i> Bayar Sekarang</button>
 </div>
 
 <script src="database.js"></script>
@@ -697,10 +729,10 @@ if (!selectedItemDetail && produk.items) selectedItemDetail = produk.items.find(
 if (!selectedItemDetail && produk.membership) selectedItemDetail = produk.membership.find(p => p.name === item);
 if (selectedItemDetail) {
   detailCard.style.display = "block";
-  let statusText = selectedItemDetail.status === 'online' ? '✅ Tersedia' : '⛔ Habis';
-  let detailHtml = `<strong>📦 Paket:</strong> ${selectedItemDetail.name}<br>`;
-  detailHtml += `<strong>💰 Harga Asli:</strong> ${formatRupiah(basePrice)}<br>`;
-  detailHtml += `<strong>⚡ Status:</strong> ${statusText}<br><span style="font-size:12px; color:#4b5563;">✨ Biaya admin 1.5% sudah termasuk total.</span>`;
+  let statusText = selectedItemDetail.status === 'online' ? '<i class="fas fa-check-circle" style="color:#16a34a;"></i> Tersedia' : '<i class="fas fa-times-circle" style="color:#ef4444;"></i> Habis';
+  let detailHtml = `<strong><i class="fas fa-box"></i> Paket:</strong> ${selectedItemDetail.name}<br>`;
+  detailHtml += `<strong><i class="fas fa-money-bill-wave"></i> Harga Asli:</strong> ${formatRupiah(basePrice)}<br>`;
+  detailHtml += `<strong><i class="fas fa-bolt"></i> Status:</strong> ${statusText}<br><span style="font-size:12px; color:#4b5563;"><i class="fas fa-info-circle"></i> Biaya admin 1.5% sudah termasuk total.</span>`;
   detailCardContent.innerHTML = detailHtml;
 } else {
   detailCard.style.display = "none";
@@ -712,11 +744,11 @@ function setupVoucherField() {
     voucherBox.style.display = "block";
     voucherInfoContainer.innerHTML = `
       <div class="voucher-message">
-        <span>🎫</span>
+        <span><i class="fas fa-ticket-alt"></i></span>
         <div>
           <strong style="display:block; margin-bottom:4px;">Voucher Digital</strong>
           <span style="font-size:13px;">Kode voucher akan dikirimkan oleh admin setelah pembayaran berhasil melalui WhatsApp/Email.</span>
-          <span style="font-size:12px; display:inline-block; margin-top:6px;">✔️ Tidak perlu memasukkan kode apapun.</span>
+          <span style="font-size:12px; display:inline-block; margin-top:6px;"><i class="fas fa-check-circle"></i> Tidak perlu memasukkan kode apapun.</span>
         </div>
       </div>
     `;
@@ -757,7 +789,7 @@ function selectPayment(name){
     return;
   }
   selectedPayment = name;
-  paymentSelectedElem.innerText = name;
+  paymentSelectedElem.innerHTML = (name === "QRIS Otomatis" ? '<i class="fas fa-qrcode"></i> ' : '<i class="fab fa-whatsapp"></i> ') + name;
   document.getElementById("paymentList").style.display = "none";
   isManualQRIS = (name === "QRIS Manual (Order via WA)");
 }
@@ -768,18 +800,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const manualQris = document.getElementById("manualQrisItem");
   if(qrisAuto){
     if(!produk.qris){
-      qrisAuto.innerText = "QRIS Otomatis (sedang error)";
+      qrisAuto.innerHTML = '<i class="fas fa-qrcode"></i> QRIS Otomatis (sedang error)';
       qrisAuto.classList.add("disabled");
       qrisAuto.addEventListener("click", (e) => {
         e.stopPropagation();
         showWarning("QRIS otomatis sedang error, gunakan QRIS Manual.");
       });
     } else {
-      qrisAuto.innerText = "QRIS Otomatis (Instant)";
+      qrisAuto.innerHTML = '<i class="fas fa-qrcode"></i> QRIS Otomatis (Instant)';
       qrisAuto.addEventListener("click", () => selectPayment("QRIS Otomatis"));
     }
   }
   if(manualQris){
+    manualQris.innerHTML = '<i class="fab fa-whatsapp"></i> QRIS Manual (Order via WA)';
     manualQris.addEventListener("click", () => selectPayment("QRIS Manual (Order via WA)"));
   }
 });
@@ -802,19 +835,19 @@ function openInfo() {
   let publisher = getPublisher(key);
   let detailText = produk.detail || "Proses Cepat\nLayanan Chat 24/7\nProduk Resmi 100%";
   let bulletItems = detailText.split('\n').filter(l => l.trim());
-  let bulletHtml = '<ul class="bullet-list">' + bulletItems.map(l => `<li>${l.trim()}</li>`).join('') + '</ul>';
+  let bulletHtml = '<ul class="bullet-list">' + bulletItems.map(l => `<li><i class="fas fa-check-circle" style="color:#16a34a;"></i> ${l.trim()}</li>`).join('') + '</ul>';
   let descText = produk.desc || "Top up termurah, aman, dan terpercaya. Voucher dikirim otomatis oleh admin setelah pembayaran.";
   const content = `
     <div class="info-store"><h2>INUU MARKET</h2><p>The Most Trusted Platform for TopUp & Voucher</p></div>
-    <div class="info-game"><h3>${gameName.toUpperCase()}</h3><div class="sub">${publisher}</div></div>
+    <div class="info-game"><h3>${gameName.toUpperCase()}</h3><div class="sub"><i class="fas fa-building"></i> ${publisher}</div></div>
     ${bulletHtml}
     <div class="steps">
-      <p><strong>📌 Cara transaksi :</strong></p>
+      <p><strong><i class="fas fa-shopping-cart"></i> Cara transaksi :</strong></p>
       <ol><li>Masukkan ID / Username yang valid</li><li>Pilih nominal / item</li><li>Pilih metode pembayaran</li><li>Jika produk VOUCHER, kode akan dikirim admin via WhatsApp</li><li>Klik Bayar & lakukan pembayaran</li><li>Proses otomatis/max 15 menit</li></ol>
       <p>${descText}</p>
-      <p style="background:#eef2ff; padding:8px; border-radius:16px; margin-top:12px;"><strong>🔖 Biaya Admin 1.5%</strong> sudah termasuk dalam total yang dibayarkan.</p>
+      <p style="background:#eef2ff; padding:8px; border-radius:16px; margin-top:12px;"><strong><i class="fas fa-percent"></i> Biaya Admin 1.5%</strong> sudah termasuk dalam total yang dibayarkan.</p>
     </div>
-    <div class="note"><strong>💡 Catatan:</strong> Untuk pembelian voucher, kode akan dikirim oleh admin setelah status lunas. Hubungi CS jika belum diterima dalam 1x24 jam. <a href="https://wa.me/6283160556330" target="_blank">Klik CS WhatsApp</a></div>
+    <div class="note"><strong><i class="fas fa-lightbulb"></i> Catatan:</strong> Untuk pembelian voucher, kode akan dikirim oleh admin setelah status lunas. Hubungi CS jika belum diterima dalam 1x24 jam. <a href="https://wa.me/6283160556330" target="_blank"><i class="fab fa-whatsapp"></i> Klik CS WhatsApp</a></div>
   `;
   body.innerHTML = content;
   modal.style.display = "flex";
@@ -889,7 +922,7 @@ function bayar(){
   }
   
   // QRIS Otomatis
-  btn.innerHTML = "⏳ Memproses...";
+  btn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Memproses...';
   btn.disabled = true;
   btn.style.opacity = "0.7";
   showLoading();
@@ -927,7 +960,7 @@ window.addEventListener("pageshow", () => {
   if(btn){
     btn.disabled = false;
     btn.style.opacity = "1";
-    btn.innerHTML = "Bayar Sekarang";
+    btn.innerHTML = '<i class="fas fa-lock"></i> Bayar Sekarang';
   }
   hideLoading();
 });
