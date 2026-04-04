@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Checkout - Prima Store</title>
 <style>
-/* ========== SEMUA WARNA PERTAHANKAN ========== */
+/* ========== GAYA DASAR ========== */
 * {
   box-sizing: border-box;
 }
@@ -493,6 +493,15 @@ body{
 .voucher-message span:first-child {
   font-size: 22px;
 }
+.admin-badge {
+  background: #eef2ff;
+  color: #1e40af;
+  font-size: 11px;
+  border-radius: 30px;
+  padding: 3px 10px;
+  display: inline-block;
+  margin-left: 6px;
+}
 </style>
 </head>
 <body>
@@ -568,7 +577,7 @@ body{
       </div>
       <hr style="margin:15px 0;">
       <div class="row"><span>📌 Tujuan / ID :</span><span id="sheetUser" style="color:#b91c1c; font-weight:500;"></span></div>
-      <div class="row"><span>💰 Total tagihan :</span><span id="sheetHarga" style="font-weight:700;"></span></div>
+      <div class="row"><span>💰 Total tagihan (inkl. admin) :</span><span id="sheetHarga" style="font-weight:700;"></span></div>
       <div style="margin-top:18px;background:#f0fdf4;padding:14px;border-radius:20px;font-size:13px;">
         ✅ Pastikan data sudah benar. <br>📌 Melanjutkan berarti menyetujui pembelian, admin akan blacklist jika tidak serius.
       </div>
@@ -594,7 +603,7 @@ body{
 <div class="input-group"><input type="tel" placeholder="08xxxxxxxx" id="phone"></div>
 </div>
 
-<!-- VOUCHER BOX: sekarang tidak input kode, melainkan informasi voucher akan dikirim admin -->
+<!-- VOUCHER BOX: INFORMATIF -->
 <div class="card" id="voucherBox" style="display:none;">
   <div id="voucherInfoContainer"></div>
 </div>
@@ -610,6 +619,15 @@ body{
   <div id="detailCardContent" class="detail-card-content"></div>
 </div>
 
+<!-- RINCIAN TRANSAKSI DENGAN BIAYA ADMIN 1.5% -->
+<div class="card">
+  <h4 style="margin:0 0 12px 0;">📋 RINCIAN TRANSAKSI</h4>
+  <div class="row"><span>💰 Harga Produk</span><span id="hargaProduk"></span></div>
+  <div class="row"><span>⚙️ Biaya Admin (1.5%) <span class="admin-badge">termasuk pajak</span></span><span id="biayaAdmin"></span></div>
+  <hr style="margin:8px 0;">
+  <div class="row"><span>💎 TOTAL YANG HARUS DIBAYAR</span><span class="total" id="totalAmount"></span></div>
+</div>
+
 <!-- METODE BAYAR -->
 <div class="card">
 <h4 style="margin:0 0 12px 0;">💳 METODE PEMBAYARAN</h4>
@@ -620,15 +638,8 @@ body{
 </div>
 </div>
 
-<div class="card">
-<h4>📋 RINCIAN TRANSAKSI</h4>
-<div class="row"><span>Subtotal</span><span id="subtotal"></span></div>
-<hr style="margin:5px 0;">
-<div class="row"><span>Total</span><span class="total" id="total"></span></div>
-</div>
-
 <div class="footer">
-<div><div style="font-size:12px;color:#5b6e8c;">TOTAL BAYAR</div><div class="bill" id="bill"></div></div>
+<div><div style="font-size:12px;color:#5b6e8c;">TOTAL BAYAR</div><div class="bill" id="billFooter"></div></div>
 <button class="pay" id="bayarBtn">Bayar Sekarang</button>
 </div>
 
@@ -658,15 +669,25 @@ const detailCardContent = document.getElementById("detailCardContent");
 
 const game = params.get("game") || produk.name || "Game";
 const item = params.get("item") || "Item";
-const price = Number(params.get("price")) || 0;
+const basePrice = Number(params.get("price")) || 0;   // harga produk asli
 const image = params.get("image") || "https://placehold.co/70x70?text=Item";
 const type = params.get("type") || "";
 
+// HITUNG BIAYA ADMIN 1.5% dan TOTAL
+const adminFee = Math.round(basePrice * 0.015);   // 1.5% dari harga produk, dibulatkan ke rupiah
+const totalPrice = basePrice + adminFee;
+
+// Fungsi format Rupiah
+function formatRupiah(angka) {
+  return "Rp " + angka.toLocaleString("id-ID");
+}
+
 // Tampilkan info produk utama
 document.getElementById("itemName").innerText = game + " " + item;
-document.getElementById("subtotal").innerText = "Rp " + price.toLocaleString("id-ID");
-document.getElementById("total").innerText = "Rp " + price.toLocaleString("id-ID");
-document.getElementById("bill").innerText = "Rp " + price.toLocaleString("id-ID");
+document.getElementById("hargaProduk").innerHTML = formatRupiah(basePrice);
+document.getElementById("biayaAdmin").innerHTML = formatRupiah(adminFee);
+document.getElementById("totalAmount").innerHTML = formatRupiah(totalPrice);
+document.getElementById("billFooter").innerHTML = formatRupiah(totalPrice);
 document.getElementById("gameImage").src = image;
 
 // Tampilkan detail item jika ada (spesifikasi)
@@ -678,18 +699,17 @@ if (selectedItemDetail) {
   detailCard.style.display = "block";
   let statusText = selectedItemDetail.status === 'online' ? '✅ Tersedia' : '⛔ Habis';
   let detailHtml = `<strong>📦 Paket:</strong> ${selectedItemDetail.name}<br>`;
-  detailHtml += `<strong>💰 Harga:</strong> Rp ${price.toLocaleString("id-ID")}<br>`;
-  detailHtml += `<strong>⚡ Status:</strong> ${statusText}`;
+  detailHtml += `<strong>💰 Harga Asli:</strong> ${formatRupiah(basePrice)}<br>`;
+  detailHtml += `<strong>⚡ Status:</strong> ${statusText}<br><span style="font-size:12px; color:#4b5563;">✨ Biaya admin 1.5% sudah termasuk total.</span>`;
   detailCardContent.innerHTML = detailHtml;
 } else {
   detailCard.style.display = "none";
 }
 
-// ========== FUNGSI VOUCHER: TIDAK ADA INPUT, HANYA INFORMASI ==========
+// ========== VOUCHER (tanpa input, hanya info) ==========
 function setupVoucherField() {
   if (required.includes("voucher")) {
     voucherBox.style.display = "block";
-    // Tampilkan pesan bahwa ini adalah produk VOUCHER dan kode akan dikirim admin
     voucherInfoContainer.innerHTML = `
       <div class="voucher-message">
         <span>🎫</span>
@@ -700,8 +720,6 @@ function setupVoucherField() {
         </div>
       </div>
     `;
-    // Hapus attribute required pada voucher karena user tidak perlu isi
-    // Juga kita tidak akan mengirim nilai voucher dari input, melainkan flag otomatis
   } else {
     voucherBox.style.display = "none";
   }
@@ -712,8 +730,6 @@ userIdBox.style.display = required.includes("userId") ? "block" : "none";
 usernameBox.style.display = required.includes("username") ? "block" : "none";
 phoneBox.style.display = required.includes("phone") ? "block" : "none";
 serverBox.style.display = required.includes("server") ? "block" : "none";
-
-// Handle field voucher secara spesial (tidak pakai input)
 setupVoucherField();
 
 if(required.includes("server")){
@@ -746,7 +762,7 @@ function selectPayment(name){
   isManualQRIS = (name === "QRIS Manual (Order via WA)");
 }
 
-// Inisialisasi event listener untuk metode pembayaran
+// Event listener untuk metode pembayaran
 document.addEventListener("DOMContentLoaded", () => {
   const qrisAuto = document.getElementById("qrisAutoItem");
   const manualQris = document.getElementById("manualQrisItem");
@@ -768,7 +784,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ========== MODAL INFORMASI PRODUK ==========
+// ========== MODAL INFO PRODUK ==========
 function getPublisher(key) {
   const map = {
     ff: "Garena", ml: "Moonton", pubg: "Tencent", genshin: "Hoyoverse",
@@ -796,6 +812,7 @@ function openInfo() {
       <p><strong>📌 Cara transaksi :</strong></p>
       <ol><li>Masukkan ID / Username yang valid</li><li>Pilih nominal / item</li><li>Pilih metode pembayaran</li><li>Jika produk VOUCHER, kode akan dikirim admin via WhatsApp</li><li>Klik Bayar & lakukan pembayaran</li><li>Proses otomatis/max 15 menit</li></ol>
       <p>${descText}</p>
+      <p style="background:#eef2ff; padding:8px; border-radius:16px; margin-top:12px;"><strong>🔖 Biaya Admin 1.5%</strong> sudah termasuk dalam total yang dibayarkan.</p>
     </div>
     <div class="note"><strong>💡 Catatan:</strong> Untuk pembelian voucher, kode akan dikirim oleh admin setelah status lunas. Hubungi CS jika belum diterima dalam 1x24 jam. <a href="https://wa.me/6283160556330" target="_blank">Klik CS WhatsApp</a></div>
   `;
@@ -804,7 +821,6 @@ function openInfo() {
 }
 function closeInfo() { document.getElementById("infoModal").style.display = "none"; }
 
-// Helper notifikasi
 function showLoading(){ document.getElementById("loadingPopup").style.display = "flex"; }
 function hideLoading(){ document.getElementById("loadingPopup").style.display = "none"; }
 function showWarning(text){
@@ -814,13 +830,13 @@ function showWarning(text){
 function closeWarning(){ document.getElementById("warningPopup").style.display = "none"; }
 function goHome() { window.location.href = "index.html"; }
 
-// Sheet manual QRIS
+// Sheet untuk manual QRIS (tampilkan totalPrice)
 function openSheet(){
   document.getElementById("confirmSheet").classList.add("show");
   document.getElementById("sheetImage").src = image;
   document.getElementById("sheetItem").innerText = game + " " + item;
-  document.getElementById("sheetPrice").innerText = "Rp " + price.toLocaleString("id-ID");
-  document.getElementById("sheetHarga").innerHTML = "Rp " + price.toLocaleString("id-ID");
+  document.getElementById("sheetPrice").innerHTML = formatRupiah(basePrice) + " + admin 1.5%";
+  document.getElementById("sheetHarga").innerHTML = formatRupiah(totalPrice);
   let userData = document.getElementById("userId")?.value || document.getElementById("username")?.value || document.getElementById("phone")?.value || "Data akan dikirim via WA";
   document.getElementById("sheetUser").innerText = userData;
 }
@@ -833,28 +849,27 @@ function lanjutWA(){
   if(required.includes("server")){
     serverVal = (produk.serverType==="id") ? document.getElementById("serverId").value : document.getElementById("serverRegion").value;
   }
-  // Karena voucher tidak diinput user, kita kasih keterangan bahwa user membeli voucher
   let voucherInfoForWA = "";
   if(required.includes("voucher")){
     voucherInfoForWA = "✅ PRODUK VOUCHER (Kode akan dikirim oleh admin setelah pembayaran lunas)";
   } else {
-    voucherInfoForWA = document.getElementById("voucher")?.value || "Tidak ada voucher";
+    voucherInfoForWA = "Tidak ada voucher";
   }
   const message = encodeURIComponent(
     `*ORDER PRIMA STORE* 🛒\n\n`+
-    `Game: ${game}\nItem: ${item}\nHarga: Rp ${price.toLocaleString("id-ID")}\n`+
+    `Game: ${game}\nItem: ${item}\nHarga Produk: ${formatRupiah(basePrice)}\nBiaya Admin 1.5%: ${formatRupiah(adminFee)}\n*TOTAL BAYAR: ${formatRupiah(totalPrice)}*\n`+
     `User ID: ${document.getElementById("userId")?.value || '-'}\n`+
     `Username: ${document.getElementById("username")?.value || '-'}\n`+
     `No. Telepon: ${document.getElementById("phone")?.value || '-'}\n`+
     `Server: ${serverVal || '-'}\n`+
     `Metode: QRIS Manual (WhatsApp)\n`+
     `Keterangan Voucher: ${voucherInfoForWA}\n\n`+
-    `*Pembeli mohon konfirmasi setelah transfer.*`
+    `*Pembeli mohon konfirmasi setelah transfer ke nomor yang diberikan.*`
   );
   window.location.href = `https://wa.me/${waNumber}?text=${message}`;
 }
 
-// PROSES BAYAR UTAMA
+// PROSES BAYAR UTAMA (QRIS otomatis)
 function bayar(){
   const btn = document.getElementById("bayarBtn");
   let serverValue = "";
@@ -862,14 +877,12 @@ function bayar(){
     serverValue = (produk.serverType==="id") ? document.getElementById("serverId").value : document.getElementById("serverRegion").value;
   }
   
-  // Validasi field wajib (kecuali voucher karena tidak perlu input)
   if(required.includes("username") && !document.getElementById("username").value){ showWarning("Masukkan username!"); return; }
   if(required.includes("userId") && !document.getElementById("userId").value){ showWarning("Masukkan ID Player!"); return; }
   if(required.includes("phone") && !document.getElementById("phone").value){ showWarning("Masukkan nomor telepon aktif!"); return; }
   if(required.includes("server") && !serverValue){ showWarning("Pilih / masukkan server!"); return; }
   if(!selectedPayment){ showWarning("Pilih metode pembayaran!"); return; }
   
-  // Jika metode adalah QRIS Manual, buka sheet konfirmasi WA
   if(isManualQRIS){
     openSheet();
     return;
@@ -881,7 +894,6 @@ function bayar(){
   btn.style.opacity = "0.7";
   showLoading();
   
-  // Karena voucher tidak ada input user, kita lewatkan parameter voucher kosong atau flag "voucher_auto"
   let voucherParam = "";
   if(required.includes("voucher")){
     voucherParam = "voucher=admin_kirim_setelah_bayar";
@@ -889,11 +901,14 @@ function bayar(){
     voucherParam = "voucher=" + encodeURIComponent(document.getElementById("voucher")?.value || '');
   }
   
+  // Kirim totalPrice (sudah termasuk admin) sebagai price agar invoice menampilkan nominal yg dibayar
   const invoiceUrl = "invoice.html?" +
     "key="+encodeURIComponent(key)+
     "&game="+encodeURIComponent(game)+
     "&item="+encodeURIComponent(item)+
-    "&price="+encodeURIComponent(price)+
+    "&price="+encodeURIComponent(totalPrice)+   // mengirim total termasuk admin
+    "&base_price="+encodeURIComponent(basePrice)+   // opsional, untuk keperluan lain
+    "&admin_fee="+encodeURIComponent(adminFee)+
     "&type="+encodeURIComponent(type)+
     "&userId="+encodeURIComponent(document.getElementById("userId")?.value || '')+
     "&username="+encodeURIComponent(document.getElementById("username")?.value || '')+
@@ -905,10 +920,8 @@ function bayar(){
   setTimeout(() => { window.location.href = invoiceUrl; }, 1300);
 }
 
-// Event binding tombol bayar
 document.getElementById("bayarBtn").addEventListener("click", bayar);
 
-// Reset loading jika halaman kembali (pageshow)
 window.addEventListener("pageshow", () => {
   const btn = document.getElementById("bayarBtn");
   if(btn){
@@ -919,7 +932,7 @@ window.addEventListener("pageshow", () => {
   hideLoading();
 });
 
-// Jika ada field userId dan game Mobile Legends, bisa auto placeholder
+// placeholder tambahan jika ml
 if(game.toLowerCase().includes("mobile legend") || game.toLowerCase().includes("ml")){
   const userIdInput = document.getElementById("userId");
   if(userIdInput && !userIdInput.placeholder.includes("ZoneID")){
