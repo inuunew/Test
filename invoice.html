@@ -91,9 +91,10 @@
       color: #16a34a;
     }
 
-    /* QRIS Card */
+    /* QRIS Box */
     .qris-box {
       text-align: center;
+      cursor: pointer;
     }
     .qris-image {
       width: 220px;
@@ -103,6 +104,10 @@
       border-radius: 24px;
       padding: 8px;
       border: 1px solid #e2e8f0;
+      transition: transform 0.1s ease;
+    }
+    .qris-image:active {
+      transform: scale(0.98);
     }
     .qris-image img {
       width: 100%;
@@ -116,6 +121,31 @@
       font-size: 14px;
       margin-top: 12px;
       text-align: left;
+    }
+
+    /* Input tambahan */
+    .input-group {
+      margin-bottom: 14px;
+    }
+    .input-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #1e293b;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: 15px;
+      background: #fafcff;
+      outline: none;
+    }
+    .input-group input:focus {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 2px rgba(22,163,74,0.2);
     }
 
     /* Upload Area */
@@ -166,10 +196,13 @@
       background: #15803d;
       transform: scale(0.97);
     }
-    .btn-outline {
-      background: white;
-      border: 1px solid #cbd5e1;
-      color: #1e293b;
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+    .btn-danger:active {
+      background: #dc2626;
+      transform: scale(0.97);
     }
     .warning-note {
       background: #fffbeb;
@@ -198,6 +231,74 @@
     }
     @keyframes spin {
       to { transform: rotate(360deg); }
+    }
+
+    /* Modal QRIS Fullscreen */
+    .modal-qris {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .modal-qris.show {
+      display: flex;
+    }
+    .modal-qris img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 20px;
+      background: white;
+      padding: 10px;
+    }
+    .modal-qris .close-modal {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      color: white;
+      font-size: 32px;
+      cursor: pointer;
+      background: rgba(0,0,0,0.5);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Loading overlay batalkan */
+    .cancel-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 2000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      font-size: 24px;
+      gap: 16px;
+    }
+    .cancel-overlay.show {
+      display: flex;
+    }
+    .spinner-large {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
     }
   </style>
 </head>
@@ -263,18 +364,17 @@
     </div>
   </div>
 
-  <!-- ========== CARD QRIS UNTUK DISCAN ========== -->
-  <div class="card qris-box">
+  <!-- QRIS Card (bisa diklik untuk perbesar) -->
+  <div class="card qris-box" id="qrisCard">
     <h3 style="margin-bottom: 8px;">🔽 Scan QRIS untuk Membayar</h3>
-    <div class="qris-image">
-      <!-- GANTI DENGAN URL GAMBAR QRIS ASLI TOKO ANDA -->
+    <div class="qris-image" id="qrisImageClick">
       <img id="qrisImage" src="https://placehold.co/400x400?text=QRIS+Asli+Toko" alt="QRIS Code">
     </div>
     <div class="instruction">
       💡 <strong>Instruksi Pembayaran:</strong><br>
       1. Buka aplikasi mobile banking / e-wallet (GoPay, OVO, DANA, LinkAja, dll).<br>
       2. Pilih menu scan QRIS.<br>
-      3. Scan kode QR di atas.<br>
+      3. Scan kode QR di atas (klik gambar untuk memperbesar).<br>
       4. Masukkan nominal <strong id="nominalDisplay">Rp 0</strong> (sesuai total tagihan).<br>
       5. Lakukan pembayaran dan simpan bukti transfer.<br>
       6. Upload bukti di bawah lalu kirim ke admin.
@@ -285,7 +385,20 @@
     </div>
   </div>
 
-  <!-- ========== CARD UPLOAD BUKTI TRANSFER ========== -->
+  <!-- Input Nomor WhatsApp dan Email (di atas upload) -->
+  <div class="card">
+    <h3 style="margin-bottom: 12px;">📞 Data Kontak (opsional)</h3>
+    <div class="input-group">
+      <label>📱 Nomor WhatsApp (untuk konfirmasi admin)</label>
+      <input type="tel" id="whatsappInput" placeholder="Contoh: 628123456789">
+    </div>
+    <div class="input-group">
+      <label>📧 Email (opsional)</label>
+      <input type="email" id="emailInput" placeholder="contoh@email.com">
+    </div>
+  </div>
+
+  <!-- Upload Bukti Transfer -->
   <div class="card">
     <h3 style="margin-bottom: 12px;">📸 Upload Bukti Transfer</h3>
     <div class="upload-area" id="uploadArea">
@@ -298,10 +411,10 @@
     </div>
   </div>
 
-  <!-- Tombol Kirim Bukti + Konfirmasi -->
+  <!-- Tombol Kirim Bukti & Batalkan Transaksi -->
   <div class="card">
     <button class="btn btn-primary" id="submitProofBtn">📨 Kirim Bukti Transfer ke Admin</button>
-    <button class="btn btn-outline" id="backHomeBtn">← Kembali ke Beranda</button>
+    <button class="btn btn-danger" id="cancelTransactionBtn">❌ Batalkan Transaksi</button>
   </div>
 
   <div class="footer">
@@ -309,16 +422,24 @@
   </div>
 </div>
 
+<!-- Modal QRIS Fullscreen -->
+<div id="modalQris" class="modal-qris">
+  <span class="close-modal" id="closeModalQris">✕</span>
+  <img id="modalQrisImage" src="" alt="QRIS Full">
+</div>
+
+<!-- Overlay batalkan transaksi -->
+<div id="cancelOverlay" class="cancel-overlay">
+  <div class="spinner-large"></div>
+  <div>⏳ Membatalkan transaksi...</div>
+</div>
+
 <script>
   // ========== KONFIGURASI TELEGRAM (WAJIB DIISI) ==========
-  // Cara dapatkan: @BotFather di Telegram buat bot, dapat token.
-  // Dapatkan CHAT_ID dengan mengirim pesan ke bot lalu akses https://api.telegram.org/bot<TOKEN>/getUpdates
   const BOT_TOKEN = "8416791607:AAG6qRAnaGP-bYJUyOFTlCd_XAeEgFi9v1w";   // GANTI DENGAN TOKEN ASLI
-  const CHAT_ID = "7314158034";      // GANTI DENGAN ID CHAT ADMIN (bisa grup atau personal)
+  const CHAT_ID = "7314158034";      // GANTI DENGAN ID CHAT ADMIN
 
   // ========== KONFIGURASI GAMBAR QRIS (GANTI DENGAN URL QR ASLI) ==========
-  // Upload gambar QRIS toko Anda ke hosting (misal imgbb, postimages, atau file lokal)
-  // Contoh: const QRIS_IMAGE_URL = "https://example.com/qris-toko-saya.png";
   const QRIS_IMAGE_URL = "https://placehold.co/400x400?text=GANTI+DENGAN+QRIS+ASLI";  // <-- GANTI INI
 
   // Helper format rupiah
@@ -352,13 +473,29 @@
   document.getElementById('nominalDisplay').innerText = formatRupiah(totalPrice);
 
   // Tampilkan QRIS image
-  document.getElementById('qrisImage').src = QRIS_IMAGE_URL;
-  // Jika gambar gagal load, beri peringatan
-  document.getElementById('qrisImage').onerror = () => {
+  const qrisImg = document.getElementById('qrisImage');
+  qrisImg.src = QRIS_IMAGE_URL;
+  qrisImg.onerror = () => {
     console.warn('Gambar QRIS gagal dimuat, periksa URL');
-    document.getElementById('qrisImage').src = 'https://placehold.co/400x400?text=QRIS+GAGAL+LOAD';
+    qrisImg.src = 'https://placehold.co/400x400?text=QRIS+GAGAL+LOAD';
   };
 
+  // Modal QRIS besar
+  const modalQris = document.getElementById('modalQris');
+  const modalQrisImage = document.getElementById('modalQrisImage');
+  const openModal = () => {
+    modalQrisImage.src = qrisImg.src;
+    modalQris.classList.add('show');
+  };
+  document.getElementById('qrisImageClick').addEventListener('click', openModal);
+  document.getElementById('closeModalQris').addEventListener('click', () => {
+    modalQris.classList.remove('show');
+  });
+  modalQris.addEventListener('click', (e) => {
+    if (e.target === modalQris) modalQris.classList.remove('show');
+  });
+
+  // Tampilkan data tambahan (username, phone, server, voucher)
   if (username && username.trim() !== '') {
     document.getElementById('usernameRow').style.display = 'flex';
     document.getElementById('usernameDisplay').innerText = username;
@@ -414,17 +551,14 @@
     }
   });
 
-  // Fungsi kirim ke Telegram (REAL, bukan demo)
+  // Fungsi kirim ke Telegram (REAL)
   async function sendToTelegram(fileBase64, caption) {
-    // Validasi token dan chat ID
     if (BOT_TOKEN === "ISI_TOKEN_BOT_ANDA" || CHAT_ID === "ISI_CHAT_ID_ADMIN") {
       alert("❌ Konfigurasi Bot Telegram belum diisi!\n\nSilakan buka file invoice.html dan ganti BOT_TOKEN dan CHAT_ID dengan milik Anda.");
       throw new Error("Token atau Chat ID tidak valid");
     }
-
     const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
     const formData = new FormData();
-    // Konversi base64 ke Blob
     const byteString = atob(fileBase64.split(',')[1]);
     const mimeString = fileBase64.split(',')[0].split(':')[1].split(';')[0];
     const ab = new ArrayBuffer(byteString.length);
@@ -442,7 +576,7 @@
       else throw new Error(result.description);
     } catch (err) {
       console.error('Gagal kirim ke Telegram:', err);
-      alert('Gagal mengirim bukti ke admin: ' + err.message + '\nCoba periksa token/chat ID atau koneksi internet.');
+      alert('Gagal mengirim bukti ke admin: ' + err.message);
       return false;
     }
   }
@@ -453,6 +587,8 @@
       alert('Silakan pilih file bukti transfer terlebih dahulu!');
       return;
     }
+    const whatsapp = document.getElementById('whatsappInput').value.trim();
+    const email = document.getElementById('emailInput').value.trim();
 
     const btn = document.getElementById('submitProofBtn');
     const originalText = btn.innerHTML;
@@ -462,7 +598,6 @@
     const reader = new FileReader();
     reader.onload = async (e) => {
       const base64Image = e.target.result;
-      // Buat caption detail pesanan
       let caption = `✅ *BUKTI TRANSFER MASUK* ✅\n`;
       caption += `─────────────────\n`;
       caption += `🧾 *Invoice:* ${invoiceNumber}\n`;
@@ -471,8 +606,10 @@
       caption += `💰 *Total Dibayar:* ${formatRupiah(totalPrice)}\n`;
       caption += `👤 *User ID:* ${userId}\n`;
       if (username) caption += `👥 *Username:* ${username}\n`;
-      if (phone) caption += `📞 *No. HP:* ${phone}\n`;
+      if (phone) caption += `📞 *No. Telepon:* ${phone}\n`;
       if (server) caption += `🌍 *Server:* ${server}\n`;
+      if (whatsapp) caption += `📱 *WhatsApp Pembeli:* ${whatsapp}\n`;
+      if (email) caption += `📧 *Email:* ${email}\n`;
       caption += `💳 *Metode:* ${paymentMethod}\n`;
       caption += `⏰ *Waktu Order:* ${formattedTime}\n`;
       caption += `─────────────────\n`;
@@ -480,11 +617,9 @@
 
       const success = await sendToTelegram(base64Image, caption);
       if (success) {
-        // Simpan data invoice ke sessionStorage untuk proses.html
         sessionStorage.setItem('invoiceData', JSON.stringify({
-          invoiceNumber, game, item, totalPrice, userId, username, phone, server, paymentMethod
+          invoiceNumber, game, item, totalPrice, userId, username, phone, server, paymentMethod, whatsapp, email
         }));
-        // Redirect ke halaman proses
         window.location.href = 'proses.html';
       } else {
         btn.innerHTML = originalText;
@@ -499,8 +634,23 @@
     reader.readAsDataURL(selectedFile);
   });
 
-  document.getElementById('backHomeBtn').addEventListener('click', () => {
-    window.location.href = 'index.html';
+  // ========== TOMBOL BATALKAN TRANSAKSI ==========
+  const cancelOverlay = document.getElementById('cancelOverlay');
+  document.getElementById('cancelTransactionBtn').addEventListener('click', () => {
+    // Tampilkan overlay loading + teks
+    cancelOverlay.classList.add('show');
+    // Ganti teks setelah 0.5 detik (animasi)
+    setTimeout(() => {
+      const overlayDiv = cancelOverlay;
+      overlayDiv.innerHTML = `
+        <div class="spinner-large"></div>
+        <div>❌ Pembayaran Dibatalkan</div>
+        <div style="font-size: 16px; margin-top: 8px;">Mengarahkan ke beranda...</div>
+      `;
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1200);
+    }, 500);
   });
 </script>
 </body>
