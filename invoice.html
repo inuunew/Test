@@ -91,6 +91,34 @@
       color: #16a34a;
     }
 
+    /* QRIS Card */
+    .qris-box {
+      text-align: center;
+    }
+    .qris-image {
+      width: 220px;
+      height: 220px;
+      margin: 12px auto;
+      background: #fff;
+      border-radius: 24px;
+      padding: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .qris-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .instruction {
+      background: #f0fdf4;
+      padding: 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-top: 12px;
+      text-align: left;
+    }
+
+    /* Upload Area */
     .upload-area {
       border: 2px dashed #cbd5e1;
       border-radius: 20px;
@@ -101,24 +129,20 @@
       cursor: pointer;
       transition: 0.2s;
     }
-
     .upload-area:hover {
       border-color: #16a34a;
       background: #f0fdf4;
     }
-
     .file-input {
       display: none;
     }
-
     .preview-img {
       max-width: 100%;
-      max-height: 200px;
+      max-height: 180px;
       margin-top: 12px;
       border-radius: 16px;
       border: 1px solid #e2e8f0;
     }
-
     .btn {
       display: block;
       width: 100%;
@@ -133,24 +157,20 @@
       cursor: pointer;
       font-size: 16px;
     }
-
     .btn-primary {
       background: #16a34a;
       color: white;
       box-shadow: 0 2px 8px rgba(22,163,74,0.3);
     }
-
     .btn-primary:active {
       background: #15803d;
       transform: scale(0.97);
     }
-
     .btn-outline {
       background: white;
       border: 1px solid #cbd5e1;
       color: #1e293b;
     }
-
     .warning-note {
       background: #fffbeb;
       border-left: 4px solid #f59e0b;
@@ -159,14 +179,12 @@
       font-size: 13px;
       margin: 16px 0;
     }
-
     .footer {
       text-align: center;
       font-size: 12px;
       color: #94a3b8;
       margin-top: 20px;
     }
-
     .loading {
       display: inline-block;
       width: 20px;
@@ -178,7 +196,6 @@
       margin-left: 8px;
       vertical-align: middle;
     }
-
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
@@ -186,7 +203,7 @@
 </head>
 <body>
 <div class="container">
-  <!-- Kartu Status Invoice -->
+  <!-- Kartu Rincian Invoice -->
   <div class="card">
     <div class="status-badge">⏳ MENUNGGU PEMBAYARAN</div>
     <div class="invoice-title">
@@ -195,7 +212,6 @@
     </div>
     <div class="divider"></div>
 
-    <!-- Rincian Produk -->
     <div class="row">
       <span class="row-label">Produk</span>
       <span class="row-value" id="productName">-</span>
@@ -215,7 +231,6 @@
 
     <div class="divider"></div>
 
-    <!-- Data Customer -->
     <div class="row">
       <span class="row-label">User ID / Akun</span>
       <span class="row-value" id="userIdDisplay">-</span>
@@ -238,7 +253,6 @@
     </div>
 
     <div class="divider"></div>
-
     <div class="row">
       <span class="row-label">Metode Pembayaran</span>
       <span class="row-value" id="paymentMethod">-</span>
@@ -249,8 +263,30 @@
     </div>
   </div>
 
-  <!-- CARD UPLOAD BUKTI TRANSFER (diatas tombol konfirmasi) -->
-  <div class="card" id="uploadCard">
+  <!-- ========== CARD QRIS UNTUK DISCAN ========== -->
+  <div class="card qris-box">
+    <h3 style="margin-bottom: 8px;">🔽 Scan QRIS untuk Membayar</h3>
+    <div class="qris-image">
+      <!-- GANTI DENGAN URL GAMBAR QRIS ASLI TOKO ANDA -->
+      <img id="qrisImage" src="https://placehold.co/400x400?text=QRIS+Asli+Toko" alt="QRIS Code">
+    </div>
+    <div class="instruction">
+      💡 <strong>Instruksi Pembayaran:</strong><br>
+      1. Buka aplikasi mobile banking / e-wallet (GoPay, OVO, DANA, LinkAja, dll).<br>
+      2. Pilih menu scan QRIS.<br>
+      3. Scan kode QR di atas.<br>
+      4. Masukkan nominal <strong id="nominalDisplay">Rp 0</strong> (sesuai total tagihan).<br>
+      5. Lakukan pembayaran dan simpan bukti transfer.<br>
+      6. Upload bukti di bawah lalu kirim ke admin.
+    </div>
+    <div class="warning-note">
+      ⚠️ Pastikan nominal yang Anda bayar <strong>PERSIS</strong> dengan total tagihan.<br>
+      Pesanan akan diproses setelah bukti transfer diverifikasi.
+    </div>
+  </div>
+
+  <!-- ========== CARD UPLOAD BUKTI TRANSFER ========== -->
+  <div class="card">
     <h3 style="margin-bottom: 12px;">📸 Upload Bukti Transfer</h3>
     <div class="upload-area" id="uploadArea">
       <span>📁 Klik atau taruh file gambar (JPEG/PNG)</span>
@@ -274,11 +310,16 @@
 </div>
 
 <script>
-  // ========== KONFIGURASI TELEGRAM (ISI DENGAN TOKEN BOT ANDA) ==========
+  // ========== KONFIGURASI TELEGRAM (WAJIB DIISI) ==========
   // Cara dapatkan: @BotFather di Telegram buat bot, dapat token.
   // Dapatkan CHAT_ID dengan mengirim pesan ke bot lalu akses https://api.telegram.org/bot<TOKEN>/getUpdates
-  const BOT_TOKEN = "ISI_TOKEN_BOT_ANDA";   // GANTI DENGAN TOKEN ASLI
-  const CHAT_ID = "ISI_CHAT_ID_ADMIN";      // GANTI DENGAN ID CHAT ADMIN (bisa grup atau personal)
+  const BOT_TOKEN = "8416791607:AAG6qRAnaGP-bYJUyOFTlCd_XAeEgFi9v1w";   // GANTI DENGAN TOKEN ASLI
+  const CHAT_ID = "7314158034";      // GANTI DENGAN ID CHAT ADMIN (bisa grup atau personal)
+
+  // ========== KONFIGURASI GAMBAR QRIS (GANTI DENGAN URL QR ASLI) ==========
+  // Upload gambar QRIS toko Anda ke hosting (misal imgbb, postimages, atau file lokal)
+  // Contoh: const QRIS_IMAGE_URL = "https://example.com/qris-toko-saya.png";
+  const QRIS_IMAGE_URL = "https://placehold.co/400x400?text=GANTI+DENGAN+QRIS+ASLI";  // <-- GANTI INI
 
   // Helper format rupiah
   function formatRupiah(angka) {
@@ -301,13 +342,22 @@
   const server = urlParams.get('server') || '';
   const paymentMethod = urlParams.get('payment') || 'Tidak diketahui';
 
-  // Tampilkan data
+  // Tampilkan data invoice
   document.getElementById('productName').innerText = `${game} - ${item}`;
   document.getElementById('basePriceDisplay').innerHTML = formatRupiah(basePrice);
   document.getElementById('adminFeeDisplay').innerHTML = formatRupiah(adminFee);
   document.getElementById('totalPriceDisplay').innerHTML = formatRupiah(totalPrice);
   document.getElementById('userIdDisplay').innerText = userId;
   document.getElementById('paymentMethod').innerText = paymentMethod;
+  document.getElementById('nominalDisplay').innerText = formatRupiah(totalPrice);
+
+  // Tampilkan QRIS image
+  document.getElementById('qrisImage').src = QRIS_IMAGE_URL;
+  // Jika gambar gagal load, beri peringatan
+  document.getElementById('qrisImage').onerror = () => {
+    console.warn('Gambar QRIS gagal dimuat, periksa URL');
+    document.getElementById('qrisImage').src = 'https://placehold.co/400x400?text=QRIS+GAGAL+LOAD';
+  };
 
   if (username && username.trim() !== '') {
     document.getElementById('usernameRow').style.display = 'flex';
@@ -359,20 +409,22 @@
       reader.readAsDataURL(file);
     } else {
       alert('Hanya file JPEG/PNG yang diperbolehkan.');
+      selectedFile = null;
+      previewContainer.innerHTML = '';
     }
   });
 
-  // Fungsi kirim ke Telegram
+  // Fungsi kirim ke Telegram (REAL, bukan demo)
   async function sendToTelegram(fileBase64, caption) {
-    if (BOT_TOKEN === "8416791607:AAG6qRAnaGP-bYJUyOFTlCd_XAeEgFi9v1w" || CHAT_ID === "7314158034") {
-      console.warn("⚠️ Token Bot atau Chat ID belum diisi. Kirim ke Telegram hanya simulasi.");
-      alert("🔔 Mode demo: Bukti transfer tidak benar-benar terkirim. Ganti BOT_TOKEN & CHAT_ID di script agar berfungsi.");
-      return true; // simulasi sukses
+    // Validasi token dan chat ID
+    if (BOT_TOKEN === "ISI_TOKEN_BOT_ANDA" || CHAT_ID === "ISI_CHAT_ID_ADMIN") {
+      alert("❌ Konfigurasi Bot Telegram belum diisi!\n\nSilakan buka file invoice.html dan ganti BOT_TOKEN dan CHAT_ID dengan milik Anda.");
+      throw new Error("Token atau Chat ID tidak valid");
     }
 
     const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
     const formData = new FormData();
-    // konversi base64 ke Blob
+    // Konversi base64 ke Blob
     const byteString = atob(fileBase64.split(',')[1]);
     const mimeString = fileBase64.split(',')[0].split(':')[1].split(';')[0];
     const ab = new ArrayBuffer(byteString.length);
@@ -390,7 +442,7 @@
       else throw new Error(result.description);
     } catch (err) {
       console.error('Gagal kirim ke Telegram:', err);
-      alert('Gagal mengirim bukti ke admin. Silakan coba lagi atau hubungi manual.');
+      alert('Gagal mengirim bukti ke admin: ' + err.message + '\nCoba periksa token/chat ID atau koneksi internet.');
       return false;
     }
   }
@@ -402,13 +454,11 @@
       return;
     }
 
-    // Tampilkan loading
     const btn = document.getElementById('submitProofBtn');
     const originalText = btn.innerHTML;
     btn.innerHTML = 'Mengirim bukti... <span class="loading"></span>';
     btn.disabled = true;
 
-    // Baca file sebagai base64
     const reader = new FileReader();
     reader.onload = async (e) => {
       const base64Image = e.target.result;
@@ -418,7 +468,7 @@
       caption += `🧾 *Invoice:* ${invoiceNumber}\n`;
       caption += `🎮 *Game:* ${game}\n`;
       caption += `📦 *Item:* ${item}\n`;
-      caption += `💰 *Total Bayar:* ${formatRupiah(totalPrice)}\n`;
+      caption += `💰 *Total Dibayar:* ${formatRupiah(totalPrice)}\n`;
       caption += `👤 *User ID:* ${userId}\n`;
       if (username) caption += `👥 *Username:* ${username}\n`;
       if (phone) caption += `📞 *No. HP:* ${phone}\n`;
@@ -430,11 +480,11 @@
 
       const success = await sendToTelegram(base64Image, caption);
       if (success) {
-        // Simpan status ke sessionStorage agar proses.html bisa tahu
+        // Simpan data invoice ke sessionStorage untuk proses.html
         sessionStorage.setItem('invoiceData', JSON.stringify({
           invoiceNumber, game, item, totalPrice, userId, username, phone, server, paymentMethod
         }));
-        // Redirect ke proses.html
+        // Redirect ke halaman proses
         window.location.href = 'proses.html';
       } else {
         btn.innerHTML = originalText;
