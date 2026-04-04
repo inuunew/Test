@@ -490,27 +490,20 @@ to{transform:scale(1);opacity:1;}
     <img id="gameImage" onerror="this.src='default.png'">
     <div>
       <div class="badge">PRODUK</div>
-      <div id="itemName"></div>
-      <div class="price" id="price"></div>
+      <span class="feature">✅ Layanan cepat</span>
+      <span class="feature">⚡ Anti delay</span>
+      <span class="feature">💬 Admin fast respon</span>
     </div>
   </div>
-  <div class="features" id="featuresList">
-    <span class="feature">✅ Layanan cepat</span>
-    <span class="feature">⚡ Anti delay</span>
-    <span class="feature">💬 Admin fast respon</span>
-  </div>
-  <button class="view-desc" onclick="openInfo()">📄 Tekan untuk melihat deskripsi</button>
+
 </div>
 
 <!-- CARD 2: Deskripsi produk (terpisah) -->
 <div id="descCard" class="card" style="display:none;">
-  <div id="descCardContent" class="desc-card-content"></div>
+  <button class="view-desc" onclick="openInfo()">📄 Tekan untuk melihat deskripsi</button>
 </div>
 
-<!-- CARD 3: Detail produk / spesifikasi item (terpisah) -->
-<div id="detailCard" class="card" style="display:none;">
-  <div id="detailCardContent" class="detail-card-content"></div>
-</div>
+
 
 <div id="confirmSheet" class="sheet">
   <div class="sheet-content">
@@ -562,6 +555,11 @@ to{transform:scale(1);opacity:1;}
 <label class="label">SERVER</label>
 <div class="input-group" id="mlServer" style="display:none;"><input type="number" placeholder="Server ID" id="serverId"></div>
 <div class="input-group" id="genshinServer" style="display:none;"><select id="serverRegion"><option value="">Pilih Server</option><option>Asia</option><option>America</option><option>Europe</option><option>TW / HK / MO</option></select></div>
+</div>
+
+<!-- CARD 3: Detail produk / spesifikasi item (terpisah) -->
+<div id="detailCard" class="card" style="display:none;">
+  <div id="detailCardContent" class="detail-card-content"></div>
 </div>
 
 <div class="card">
