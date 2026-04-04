@@ -658,72 +658,119 @@ body {
   cursor: pointer;
 }
 
-.music-page .modal-overlay {
+/* Bottom Sheet Playlist - khusus halaman music */
+.music-page .bottom-sheet {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.7);
-  display: flex;
-  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2000;
+  display: none;
+  align-items: flex-end;
   justify-content: center;
-  z-index: 1000;
+  visibility: hidden;
+  transition: visibility 0.3s;
 }
-.music-page .modal-container {
+.music-page .bottom-sheet.show {
+  visibility: visible;
+}
+.music-page .bottom-sheet-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.music-page .bottom-sheet.show .bottom-sheet-overlay {
+  opacity: 1;
+}
+.music-page .bottom-sheet-container {
+  position: relative;
+  width: 100%;
+  max-height: 70%;
   background: #1e1e2f;
-  border-radius: 20px;
-  width: 90%;
-  max-width: 400px;
-  max-height: 80%;
-  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
   display: flex;
   flex-direction: column;
-  animation: fadeInUp 0.2s ease;
+  overflow: hidden;
 }
-.music-page .modal-header {
+.music-page .bottom-sheet.show .bottom-sheet-container {
+  transform: translateY(0);
+}
+.music-page .bottom-sheet-header {
+  padding: 12px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
   border-bottom: 1px solid #333;
+  background: #2a2a3a;
 }
-.music-page .modal-close {
-  font-size: 28px;
+.music-page .sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: #666;
+  border-radius: 2px;
+  margin: 0 auto 8px;
+}
+.music-page .bottom-sheet-header h3 {
+  margin: 0;
+  color: white;
+  font-size: 18px;
+}
+.music-page .sheet-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #aaa;
   cursor: pointer;
 }
-.music-page .modal-playlist {
+.music-page .bottom-sheet-list {
   overflow-y: auto;
   padding: 10px 0;
 }
-.music-page .modal-playlist-item {
+.music-page .playlist-sheet-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background 0.2s;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-bottom: 1px solid #2a2a3a;
+  background: #1e1e2f;
 }
-.music-page .modal-playlist-item:hover {
-  background: #2a2a3a;
-}
-.music-page .modal-playlist-item.active {
+.music-page .playlist-sheet-item.active {
   background: #3a2c4a;
-  border-left: 3px solid #ff9800;
 }
-.music-page .modal-item-cover {
-  width: 45px;
-  height: 45px;
-  border-radius: 8px;
-  object-fit: cover;
-}
-.music-page .modal-item-info {
+.music-page .playlist-item-info {
   flex: 1;
 }
-.music-page .modal-item-title {
+.music-page .playlist-item-title {
   font-weight: bold;
+  color: white;
 }
-.music-page .modal-item-artist {
+.music-page .playlist-item-artist {
   font-size: 12px;
   color: #aaa;
+}
+.music-page .playlist-item-play {
+  background: #ff9800;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.1s;
+}
+.music-page .playlist-item-play:active {
+  transform: scale(0.95);
 }
 .music-page .empty-playlist {
   text-align: center;
