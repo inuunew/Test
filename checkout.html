@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,446 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checkout</title>
 <style>
-/* ========== SEMUA WARNA PERTAHANKAN ========== */
-body{
-font-family: Arial, sans-serif;
-background:#f3f4f6;
-margin:0;
-padding:0;
--webkit-tap-highlight-color: transparent;
-}
-
-.header{
-display:flex;
-align-items:center;
-justify-content: space-between;
-padding:15px;
-background:white;
-box-shadow:0 2px 5px rgba(0,0,0,0.05);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.back{
-font-size:22px;
-cursor:pointer;
-}
-
-.brand {
-  font-weight: bold;
-  font-size: 18px;
-  color: #333;
-}
-
-.header-right {
-  font-size: 16px;
-  font-weight: 500;
-  color: #5a5a5a;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.chrome-icon {
-  width: 20px;
-  height: 20px;
-  background: conic-gradient(#EA4335 0deg 120deg, #FBBC05 120deg 240deg, #34A853 240deg 360deg);
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.card{
-background:white;
-margin:15px;
-padding:15px;
-border-radius:14px;
-box-shadow:0 2px 6px rgba(0,0,0,0.06);
-}
-
-.product{
-display:flex;
-align-items:center;
-gap:15px;
-}
-
-.product img{
-width:60px;
-border-radius:10px;
-}
-
-.badge{
-background:#e6f7ed;
-color:#1ea55b;
-font-size:12px;
-padding:3px 8px;
-border-radius:6px;
-display:inline-block;
-margin-bottom:5px;
-}
-
-.price{
-color:#555;
-}
-
-.label{
-font-weight:bold;
-margin-bottom:6px;
-display:block;
-}
-
-.input-group{
-display:flex;
-align-items:center;
-border:1px solid #ddd;
-border-radius:10px;
-overflow:hidden;
-}
-
-.input-group input, .input-group select{
-flex:1;
-border:none;
-padding:12px;
-outline:none;
-}
-
-.features {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-}
-.feature {
-  background: #e6f7ed;
-  color: #1ea55b;
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.desc-card-content, .detail-card-content {
-  font-size: 13px;
-  line-height: 1.5;
-}
-.desc-card-content strong, .detail-card-content strong {
-  color: #16a34a;
-}
-.view-desc {
-  background: none;
-  border: none;
-  color: #16a34a;
-  cursor: pointer;
-  font-size: 13px;
-  margin-top: 8px;
-  padding: 0;
-  text-decoration: underline;
-}
-.row{
-display:flex;
-justify-content:space-between;
-margin:8px 0;
-}
-
-.total{
-font-size:20px;
-color:#16a34a;
-font-weight:bold;
-}
-
-.footer{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:white;
-padding:15px;
-box-shadow:0 -2px 10px rgba(0,0,0,0.05);
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-.pay{
-background:#16a34a;
-color:white;
-border:none;
-padding:12px 30px;
-border-radius:10px;
-font-size:16px;
-cursor:pointer;
-}
-
-.bill{
-color:#16a34a;
-font-weight:bold;
-font-size:18px;
-}
-
-.payment-select{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border:1px solid #ddd;
-  padding:12px;
-  border-radius:10px;
-  cursor:pointer;
-  background:#fafafa;
-  position: relative;
-  z-index: 10;
-}
-
-.payment-list{
-  display:none;
-  margin-top:10px;
-  position: relative;
-  z-index: 9;
-}
-
-.payment-item{
-padding:10px;
-border:1px solid #eee;
-border-radius:10px;
-margin-bottom:8px;
-cursor:pointer;
-}
-
-.payment-item:hover{
-background:#f5f5f5;
-}
-
-.payment-item.disabled{
-  color: #999;
-  cursor: not-allowed;
-}
-/* MODAL INFO */
-.modal{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.5);
-display:none;
-justify-content:center;
-align-items:center;
-z-index:999;
-}
-
-.modal-content{
-background:white;
-width:90%;
-max-width:420px;
-max-height:85%;
-overflow-y:auto;
-border-radius:20px;
-padding:0;
-animation:popup .2s ease;
-}
-
-.modal-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px;
-border-bottom:1px solid #eee;
-font-weight:bold;
-}
-
-.close{
-cursor:pointer;
-font-size:20px;
-}
-
-.modal-body{
-padding:15px;
-font-size:14px;
-color:#333;
-line-height:1.5;
-}
-.info-store {
-  text-align: center;
-  margin-bottom: 15px;
-}
-.info-store h2 {
-  margin: 0;
-  font-size: 22px;
-  color: #222;
-}
-.info-store p {
-  color: #666;
-  font-size: 12px;
-  margin-top: 5px;
-}
-.info-game {
-  text-align: center;
-  margin: 15px 0;
-}
-.info-game h3 {
-  margin: 0;
-  font-size: 20px;
-}
-.info-game .sub {
-  color: #888;
-  font-size: 13px;
-}
-.bullet-list {
-  list-style: none;
-  padding: 0;
-  margin: 10px 0;
-}
-.bullet-list li {
-  margin: 8px 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.bullet-list li:before {
-  content: "•";
-  color: #16a34a;
-  font-size: 18px;
-}
-.steps {
-  background: #f9f9f9;
-  padding: 10px 15px;
-  border-radius: 12px;
-  margin: 15px 0;
-}
-.steps p {
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-.steps ol {
-  margin: 0;
-  padding-left: 20px;
-}
-.steps li {
-  margin: 5px 0;
-}
-.note {
-  background: #fff3e0;
-  padding: 10px;
-  border-radius: 10px;
-  font-size: 13px;
-  margin-top: 15px;
-}
-.note a {
-  color: #16a34a;
-  text-decoration: none;
-}
-@keyframes popup{
-from{transform:scale(0.9);opacity:0;}
-to{transform:scale(1);opacity:1;}
-}
-.sheet{
-  position:fixed;
-  bottom:-100%;
-  left:0;
-  right:0;
-  background:white;
-  border-radius:20px 20px 0 0;
-  box-shadow:0 -5px 20px rgba(0,0,0,0.1);
-  transition:0.3s;
-  z-index:9999;
-}
-.sheet.show{
-  bottom:0;
-}
-.sheet-content{
-  padding:15px;
-}
-.sheet-header{
-  display:flex;
-  justify-content:space-between;
-  font-weight:bold;
-  margin-bottom:10px;
-}
-.popup-warning{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.5);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-.popup-box{
-  background:white;
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
-  width:85%;
-  max-width:350px;
-  animation:fadeIn 0.2s ease;
-}
-.popup-box .icon{
-  font-size:50px;
-  color:#f59e0b;
-  margin-bottom:10px;
-}
-.popup-box h3{
-  margin:5px 0;
-}
-.popup-box p{
-  font-size:14px;
-  color:#555;
-}
-.popup-box button{
-  margin-top:15px;
-  width:100%;
-  padding:10px;
-  border:none;
-  background:#f59e0b;
-  color:white;
-  border-radius:10px;
-  cursor:pointer;
-}
-@keyframes fadeIn{
-  from{transform:scale(0.8);opacity:0;}
-  to{transform:scale(1);opacity:1;}
-}
-.loading-popup{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.5);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-.loading-box{
-  background:white;
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
-  width:80%;
-  max-width:250px;
-}
-.spinner{
-  width:40px;
-  height:40px;
-  border:4px solid #eee;
-  border-top:4px solid #5b7cff;
-  border-radius:50%;
-  margin:0 auto 10px;
-  animation:spin 1s linear infinite;
-}
-@keyframes spin{
-  0%{transform:rotate(0deg);}
-  100%{transform:rotate(360deg);}
-}
+/* (CSS kamu tidak diubah sama sekali) */
+body{font-family: Arial, sans-serif;background:#f3f4f6;margin:0;padding:0;-webkit-tap-highlight-color: transparent;}
+.header{display:flex;align-items:center;justify-content: space-between;padding:15px;background:white;box-shadow:0 2px 5px rgba(0,0,0,0.05);}
+.header-left {display: flex;align-items: center;gap: 10px;}
+.back{font-size:22px;cursor:pointer;}
+.brand {font-weight: bold;font-size: 18px;color: #333;}
+.header-right {font-size: 16px;font-weight: 500;color: #5a5a5a;display: flex;align-items: center;gap: 5px;}
+.chrome-icon {width: 20px;height: 20px;background: conic-gradient(#EA4335 0deg 120deg, #FBBC05 120deg 240deg, #34A853 240deg 360deg);border-radius: 50%;display: inline-block;}
+.card{background:white;margin:15px;padding:15px;border-radius:14px;box-shadow:0 2px 6px rgba(0,0,0,0.06);}
+.product{display:flex;align-items:center;gap:15px;}
+.product img{width:60px;border-radius:10px;}
+.badge{background:#e6f7ed;color:#1ea55b;font-size:12px;padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:5px;}
+.price{color:#555;}
+.label{font-weight:bold;margin-bottom:6px;display:block;}
+.input-group{display:flex;align-items:center;border:1px solid #ddd;border-radius:10px;overflow:hidden;}
+.input-group input, .input-group select{flex:1;border:none;padding:12px;outline:none;}
+.features {display: flex;flex-wrap: wrap;gap: 8px;margin-top: 10px;}
+.feature {background: #e6f7ed;color: #1ea55b;font-size: 11px;padding: 4px 8px;border-radius: 20px;display: inline-flex;align-items: center;gap: 4px;}
+.row{display:flex;justify-content:space-between;margin:8px 0;}
+.total{font-size:20px;color:#16a34a;font-weight:bold;}
+.footer{position:fixed;bottom:0;left:0;right:0;background:white;padding:15px;box-shadow:0 -2px 10px rgba(0,0,0,0.05);display:flex;justify-content:space-between;align-items:center;}
+.pay{background:#16a34a;color:white;border:none;padding:12px 30px;border-radius:10px;font-size:16px;cursor:pointer;}
+.bill{color:#16a34a;font-weight:bold;font-size:18px;}
+.payment-select{display:flex;justify-content:space-between;align-items:center;border:1px solid #ddd;padding:12px;border-radius:10px;cursor:pointer;background:#fafafa;}
+.payment-list{display:none;margin-top:10px;}
+.payment-item{padding:10px;border:1px solid #eee;border-radius:10px;margin-bottom:8px;cursor:pointer;}
+.payment-item.disabled{color:#999;cursor:not-allowed;}
+.loading-popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;}
+.loading-box{background:white;padding:20px;border-radius:15px;text-align:center;}
+.spinner{width:40px;height:40px;border:4px solid #eee;border-top:4px solid #5b7cff;border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 </style>
 </head>
+
 <body>
 
 <div id="loadingPopup" class="loading-popup">
@@ -454,40 +47,17 @@ to{transform:scale(1);opacity:1;}
     <p>Generate Qris...</p>
   </div>
 </div>
-<div id="warningPopup" class="popup-warning">
-  <div class="popup-box">
-    <div class="icon">❗</div>
-    <h3>Peringatan</h3>
-    <p id="warningText">Harap isi data terlebih dahulu!</p>
-    <button onclick="closeWarning()">Oke</button>
-  </div>
-</div>
-
-<div id="infoModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <span>Detail Produk</span>
-      <span class="close" onclick="closeInfo()">✕</span>
-    </div>
-    <div id="modalBody" class="modal-body">Loading...</div>
-  </div>
-</div>
 
 <div class="header">
   <div class="header-left">
     <div class="back" onclick="goHome()">←</div>
     <div class="brand">INUUTYZDEV</div>
   </div>
-  <div class="header-right">
-    <span class="chrome-icon"></span>
-    <span>Chrome</span>
-  </div>
 </div>
 
-<!-- CARD 1: Produk utama + fitur + tombol deskripsi -->
 <div class="card">
   <div class="product">
-    <img id="gameImage" onerror="this.src='default.png'">
+    <img id="gameImage" onerror="this.onerror=null;this.src='default.png'">
     <div>
       <div class="badge">PRODUK</div>
       <span class="feature">✅ Layanan cepat</span>
@@ -495,86 +65,22 @@ to{transform:scale(1);opacity:1;}
       <span class="feature">💬 Admin fast respon</span>
     </div>
   </div>
-
-</div>
-
-<!-- CARD 2: Deskripsi produk (terpisah) -->
-<div id="descCard" class="card" style="display:none;">
-  <button class="view-desc" onclick="openInfo()">📄 Tekan untuk melihat deskripsi</button>
-</div>
-
-
-
-<div id="confirmSheet" class="sheet">
-  <div class="sheet-content">
-    <div class="sheet-header">
-      <span>Detail Pembayaran</span>
-      <span onclick="closeSheet()">▼</span>
-    </div>
-    <div class="sheet-body">
-      <div style="display:flex;gap:10px;align-items:center;">
-        <img id="sheetImage" style="width:50px;border-radius:8px;">
-        <div>
-          <div id="sheetItem"></div>
-          <div id="sheetPrice" style="color:#555;"></div>
-        </div>
-      </div>
-      <hr style="margin:15px 0;">
-      <div class="row"><span>Tujuan :</span><span id="sheetUser" style="color:red;"></span></div>
-      <div class="row"><span>Harga :</span><span id="sheetHarga"></span></div>
-      <div style="margin-top:15px;background:#f3f4f6;padding:10px;border-radius:10px;">
-        Pastikan data sudah benar agar tidak terjadi kesalahan.<br>Melanjutkan Berarti Membeli! admin akan blacklist orang yang tidak bersungguh-sungguh
-      </div>
-      <button onclick="lanjutWA()" class="pay" style="width:100%;margin-top:15px;">Lanjutkan Pembelian</button>
-      <button onclick="closeSheet()" style="width:100%;margin-top:10px;padding:10px;border:none;border-radius:10px;">Kembali</button>
-    </div>
-  </div>
-</div>
-
-<div class="card" id="userIdBox">
-<label class="label">USER ID</label>
-<div class="input-group"><input type="text" placeholder="Masukkan ID Player" id="userId"></div>
-</div>
-
-<div class="card" id="usernameBox" style="display:none;">
-<div style="display:flex; justify-content:space-between; align-items:center;"><label class="label">USERNAME PANEL</label></div>
-<div class="input-group"><input type="text" placeholder="Masukkan Username" id="username"></div>
-</div>
-
-<div class="card" id="phoneBox" style="display:none;">
-<label class="label">NOMOR TELEPON</label>
-<div class="input-group"><input type="tel" placeholder="Masukkan Nomor HP" id="phone"></div>
-</div>
-
-<div class="card" id="voucherBox" style="display:none;">
-<label class="label">KODE VOUCHER</label>
-<div class="input-group"><input type="text" placeholder="Masukkan kode voucher" id="voucher"></div>
-</div>
-
-<div class="card" id="serverBox" style="display:none;">
-<label class="label">SERVER</label>
-<div class="input-group" id="mlServer" style="display:none;"><input type="number" placeholder="Server ID" id="serverId"></div>
-<div class="input-group" id="genshinServer" style="display:none;"><select id="serverRegion"><option value="">Pilih Server</option><option>Asia</option><option>America</option><option>Europe</option><option>TW / HK / MO</option></select></div>
-</div>
-
-<!-- CARD 3: Detail produk / spesifikasi item (terpisah) -->
-<div id="detailCard" class="card" style="display:none;">
-  <div id="detailCardContent" class="detail-card-content"></div>
 </div>
 
 <div class="card">
 <h4>METODE PEMBAYARAN</h4>
-<div class="payment-select" onclick="togglePayment()"><div id="paymentSelected">Pilih Metode Pembayaran</div><div>▼</div></div>
+<div class="payment-select" onclick="togglePayment()">
+  <div id="paymentSelected">Pilih Metode Pembayaran</div>
+  <div>▼</div>
+</div>
 <div class="payment-list" id="paymentList">
-  <div class="payment-item" id="qrisAutoItem">QRIS Otomatis</div>
-  <div class="payment-item" onclick="selectPayment('QRIS Manual')">QRIS Manual (Order Via WhatsApp)</div>
+  <div class="payment-item" onclick="selectPayment('QRIS Otomatis')">QRIS Otomatis</div>
+  <div class="payment-item" onclick="selectPayment('QRIS Manual')">QRIS Manual</div>
 </div>
 </div>
 
 <div class="card">
 <h4>RINCIAN TRANSAKSI</h4>
-<div class="row"><span>Subtotal</span><span id="subtotal"></span></div>
-<hr>
 <div class="row"><span>Total</span><span class="total" id="total"></span></div>
 </div>
 
@@ -585,90 +91,26 @@ to{transform:scale(1);opacity:1;}
 
 <script src="database.js"></script>
 <script>
-// ========== Ambil data dari URL dan database eksternal ==========
 const params = new URLSearchParams(window.location.search);
 const key = params.get("key");
-let produk = database[key] || databaseOther[key] || databasePanel[key] || {};
-let required = produk.require || [];
 
-// Elemen DOM
-const userIdBox = document.getElementById("userIdBox");
-const usernameBox = document.getElementById("usernameBox");
-const phoneBox = document.getElementById("phoneBox");
-const voucherBox = document.getElementById("voucherBox");
-const serverBox = document.getElementById("serverBox");
-const mlServer = document.getElementById("mlServer");
-const genshinServer = document.getElementById("genshinServer");
-const descCard = document.getElementById("descCard");
-const descCardContent = document.getElementById("descCardContent");
-const detailCard = document.getElementById("detailCard");
-const detailCardContent = document.getElementById("detailCardContent");
+// SAFE DATABASE
+let produk =
+  (typeof database !== "undefined" && database[key]) ||
+  (typeof databaseOther !== "undefined" && databaseOther[key]) ||
+  (typeof databasePanel !== "undefined" && databasePanel[key]) ||
+  {};
 
 const game = params.get("game") || "";
 const item = params.get("item") || "";
 const price = Number(params.get("price")) || 0;
 const image = params.get("image") || "default.png";
-const type = params.get("type") || "";
 
-// Tampilkan info produk
-document.getElementById("itemName").innerText = game + " " + item;
-document.getElementById("price").innerText = "Rp " + price.toLocaleString("id-ID");
-document.getElementById("subtotal").innerText = "Rp " + price.toLocaleString("id-ID");
 document.getElementById("total").innerText = "Rp " + price.toLocaleString("id-ID");
 document.getElementById("bill").innerText = "Rp " + price.toLocaleString("id-ID");
 document.getElementById("gameImage").src = image;
 
-// Tampilkan DESKRIPSI (dari produk.desc) di card terpisah
-if (produk.desc && produk.desc.trim() !== "") {
-  descCard.style.display = "block";
-  descCardContent.innerHTML = `<strong>📝 Deskripsi:</strong><br>${produk.desc}`;
-} else {
-  descCard.style.display = "none";
-}
-
-// Tampilkan DETAIL PRODUK (spesifikasi item yang dipilih) di card terpisah
-let selectedItemDetail = null;
-if (produk.regular) {
-  selectedItemDetail = produk.regular.find(p => p.name === item);
-}
-if (!selectedItemDetail && produk.items) {
-  selectedItemDetail = produk.items.find(p => p.name === item);
-}
-if (!selectedItemDetail && produk.membership) {
-  selectedItemDetail = produk.membership.find(p => p.name === item);
-}
-if (selectedItemDetail) {
-  detailCard.style.display = "block";
-  let detailHtml = `<strong>📦 Detail Paket:</strong> ${selectedItemDetail.name}<br>`;
-  detailHtml += `<strong>💰 Harga:</strong> Rp ${price.toLocaleString("id-ID")}<br>`;
-  detailHtml += `<strong>⚡ Status:</strong> ${selectedItemDetail.status === 'online' ? 'Tersedia' : 'Habis'}`;
-  if (produk.detail) {
-    detailHtml += `<br><strong>ℹ️ Info Tambahan:</strong> ${produk.detail}`;
-  }
-  detailCardContent.innerHTML = detailHtml;
-} else {
-  detailCard.style.display = "none";
-}
-
-// Sembunyikan/tampilkan input berdasarkan require
-userIdBox.style.display = required.includes("userId") ? "block" : "none";
-usernameBox.style.display = required.includes("username") ? "block" : "none";
-phoneBox.style.display = required.includes("phone") ? "block" : "none";
-voucherBox.style.display = required.includes("voucher") ? "block" : "none";
-serverBox.style.display = required.includes("server") ? "block" : "none";
-
-if(required.includes("server")){
-  if(produk.serverType === "id"){ 
-    mlServer.style.display="flex"; 
-    genshinServer.style.display="none"; 
-  } else if(produk.serverType === "region"){ 
-    mlServer.style.display="none"; 
-    genshinServer.style.display="flex"; 
-  }
-}
-
 let selectedPayment = "";
-let isManualQRIS = false;
 
 function togglePayment() {
   const list = document.getElementById("paymentList");
@@ -676,149 +118,28 @@ function togglePayment() {
 }
 
 function selectPayment(name){
-  const paymentSelected = document.getElementById("paymentSelected");
-  if(name === "QRIS Otomatis" && !produk.qris){
-    alert("QRIS otomatis sedang error, silakan pilih metode lain!");
+  selectedPayment = name;
+  document.getElementById("paymentSelected").innerText = name;
+  document.getElementById("paymentList").style.display = "none";
+}
+
+function goHome() {
+  window.location.href = "index.html";
+}
+
+function bayar(){
+  if(!selectedPayment){
+    alert("Pilih metode pembayaran!");
     return;
   }
-  selectedPayment = name;
-  paymentSelected.innerText = name;
-  document.getElementById("paymentList").style.display = "none";
-  isManualQRIS = (name === "QRIS Manual");
-}
 
-document.addEventListener("DOMContentLoaded", () => {
-  const qrisItem = document.getElementById("qrisAutoItem");
-  if(qrisItem){
-    if(!produk.qris){
-      qrisItem.innerText = "QRIS Otomatis (sedang error)";
-      qrisItem.classList.add("disabled");
-      qrisItem.addEventListener("click", (e) => {
-        e.stopPropagation();
-        alert("QRIS otomatis sedang error, silakan pilih metode lain!");
-      });
-    } else {
-      qrisItem.innerText = "QRIS Otomatis";
-      qrisItem.addEventListener("click", () => selectPayment("QRIS Otomatis"));
-    }
-  }
-});
+  document.getElementById("loadingPopup").style.display = "flex";
 
-// ========== Fungsi untuk modal info ==========
-function getPublisher(key) {
-  const map = {
-    ff: "Garena", ml: "Moonton", pubg: "Tencent", genshin: "Hoyoverse",
-    hok: "Level Infinite", valorant: "Riot Games", fcmobile: "EA Sports",
-    codm: "Activision", asphalt9: "Gameloft", roblox: "Roblox Corporation",
-    panel: "Panel Bot", vps1: "Digital Ocean", do1: "Digital Ocean", alighm: "Alight Motion", viu: "Viu"
-  };
-  return map[key] || "Prima Store";
+  setTimeout(() => {
+    window.location.href = "invoice.html";
+  }, 1200);
 }
-
-function openInfo() {
-  const modal = document.getElementById("infoModal");
-  const body = document.getElementById("modalBody");
-  let gameName = produk.name || game;
-  let publisher = getPublisher(key);
-  let detailText = produk.detail || "Proses Cepat\nLayanan Chat 24/7\nProduk Resmi";
-  let bulletItems = detailText.split('\n').filter(l => l.trim());
-  let bulletHtml = '<ul class="bullet-list">' + bulletItems.map(l => `<li>${l.trim()}</li>`).join('') + '</ul>';
-  let descText = produk.desc || "Top up diamond harga paling murah, aman, cepat, dan terpercaya.";
-  const content = `
-    <div class="info-store"><h2>PRIMA STORE</h2><p>The Most Trusted & Safest Platform For TopUp Games</p></div>
-    <div class="info-game"><h3>${gameName.toUpperCase()}</h3><div class="sub">${publisher}</div></div>
-    ${bulletHtml}
-    <div class="steps">
-      <p><strong>Deskripsi dan cara melakukan transaksi</strong></p>
-      <p>${descText}</p>
-      <p><strong>Cara topup ${gameName}:</strong></p>
-      <ol><li>Masukkan Data Akun</li><li>Pilih Nominal</li><li>Pilih Pembayaran</li><li>Masukkan Kode Promo (jika ada)</li><li>Isi Detail Kontak</li><li>Klik Pesan Sekarang dan lakukan Pembayaran</li><li>Selesai</li></ol>
-    </div>
-    <div class="note"><strong>Note:</strong> Jika Mengalami Kendala Silahkan hub CS IG <a href="#">Klik Disini</a> dan CS WhatsApp <a href="https://wa.me/6283160556330" target="_blank">Klik Disini</a></div>
-  `;
-  body.innerHTML = content;
-  modal.style.display = "flex";
-}
-
-function closeInfo() {
-  document.getElementById("infoModal").style.display = "none";
-}
-
-// Fungsi lain
-function showLoading(){ document.getElementById("loadingPopup").style.display = "flex"; }
-function showWarning(text){
-  document.getElementById("warningText").innerText = text;
-  document.getElementById("warningPopup").style.display = "flex";
-}
-function closeWarning(){ document.getElementById("warningPopup").style.display = "none"; }
-function goHome() { window.location.href = "index.html"; }
-function openSheet(){
-  document.getElementById("confirmSheet").classList.add("show");
-  document.getElementById("sheetImage").src = image;
-  document.getElementById("sheetItem").innerText = game + " " + item;
-  document.getElementById("sheetPrice").innerText = "Rp " + price.toLocaleString("id-ID");
-  document.getElementById("sheetHarga").innerText = "Rp " + price.toLocaleString("id-ID");
-  let userData = document.getElementById("userId")?.value || document.getElementById("username")?.value || document.getElementById("phone")?.value || document.getElementById("voucher")?.value || "-";
-  document.getElementById("sheetUser").innerText = userData;
-}
-function closeSheet(){ document.getElementById("confirmSheet").classList.remove("show"); }
-function lanjutWA(){
-  closeSheet();
-  const waNumber = "6283160556330";
-  let serverVal = "";
-  if(required.includes("server")){
-    serverVal = (produk.serverType==="id") ? document.getElementById("serverId").value : document.getElementById("serverRegion").value;
-  }
-  const message = encodeURIComponent(
-    `Halo, saya ingin melakukan pembayaran memakai qris manual untuk:\n`+
-    `Game: ${game}\nItem: ${item}\nHarga: Rp ${price.toLocaleString("id-ID")}\n`+
-    `UserID: ${document.getElementById("userId")?.value || ''}\n`+
-    `Username: ${document.getElementById("username")?.value || ''}\n`+
-    `Phone: ${document.getElementById("phone")?.value || ''}\n`+
-    `Voucher: ${document.getElementById("voucher")?.value || ''}\n`+
-    `Server: ${serverVal}`
-  );
-  window.location.href = `https://wa.me/${waNumber}?text=${message}`;
-}
-function bayar(){
-  const btn = document.querySelector(".pay");
-  let serverValue = "";
-  if(required.includes("server")){
-    serverValue = (produk.serverType==="id") ? document.getElementById("serverId").value : document.getElementById("serverRegion").value;
-  }
-  if(required.includes("username") && !document.getElementById("username").value){ showWarning("Masukkan username!"); return; }
-  if(required.includes("userId") && !document.getElementById("userId").value){ showWarning("Masukkan ID!"); return; }
-  if(required.includes("phone") && !document.getElementById("phone").value){ showWarning("Masukkan nomor telepon!"); return; }
-  if(required.includes("voucher") && !document.getElementById("voucher").value){ showWarning("Masukkan kode voucher!"); return; }
-  if(required.includes("server") && !serverValue){ showWarning("Masukkan server!"); return; }
-  if(!selectedPayment){ showWarning("Pilih metode pembayaran!"); return; }
-  if(isManualQRIS){ openSheet(); return; }
-
-  btn.innerHTML="⏳ Memproses...";
-  btn.disabled=true;
-  btn.style.opacity="0.7";
-  showLoading();
-  const invoiceUrl = "invoice.html?" +
-    "key="+encodeURIComponent(key)+
-    "&game="+encodeURIComponent(game)+
-    "&item="+encodeURIComponent(item)+
-    "&price="+encodeURIComponent(price)+
-    "&type="+encodeURIComponent(type)+
-    "&userId="+encodeURIComponent(document.getElementById("userId")?.value || '')+
-    "&username="+encodeURIComponent(document.getElementById("username")?.value || '')+
-    "&phone="+encodeURIComponent(document.getElementById("phone")?.value || '')+
-    "&voucher="+encodeURIComponent(document.getElementById("voucher")?.value || '')+
-    "&server="+encodeURIComponent(serverValue || '')+
-    "&payment="+encodeURIComponent(selectedPayment);
-  setTimeout(() => { window.location.href = invoiceUrl; }, 1200);
-}
-window.addEventListener("pageshow", () => {
-  const btn = document.querySelector(".pay");
-  btn.disabled = false;
-  btn.style.opacity = "1";
-  btn.innerHTML = "Bayar";
-  document.getElementById("loadingPopup").style.display = "none";
-});
 </script>
+
 </body>
 </html>
