@@ -128,23 +128,11 @@ outline:none;
   align-items: center;
   gap: 4px;
 }
-.desc-box {
-  background: #f8f9fa;
-  padding: 12px;
-  border-radius: 12px;
-  margin-top: 12px;
+.desc-card-content, .detail-card-content {
   font-size: 13px;
-  border-left: 3px solid #16a34a;
+  line-height: 1.5;
 }
-.detail-item {
-  background: #f8f9fa;
-  padding: 12px;
-  border-radius: 12px;
-  margin-top: 12px;
-  font-size: 13px;
-  border-left: 3px solid #16a34a;
-}
-.detail-item strong, .desc-box strong {
+.desc-card-content strong, .detail-card-content strong {
   color: #16a34a;
 }
 .view-desc {
@@ -496,6 +484,7 @@ to{transform:scale(1);opacity:1;}
   </div>
 </div>
 
+<!-- CARD 1: Produk utama + fitur + tombol deskripsi -->
 <div class="card">
   <div class="product">
     <img id="gameImage" onerror="this.src='default.png'">
@@ -505,20 +494,22 @@ to{transform:scale(1);opacity:1;}
       <div class="price" id="price"></div>
     </div>
   </div>
-  <!-- Fitur layanan -->
   <div class="features" id="featuresList">
     <span class="feature">✅ Layanan cepat</span>
     <span class="feature">⚡ Anti delay</span>
     <span class="feature">💬 Admin fast respon</span>
   </div>
-  <!-- Tombol lihat deskripsi (modal) -->
   <button class="view-desc" onclick="openInfo()">📄 Tekan untuk melihat deskripsi</button>
-  
-  <!-- DIV DESKRIPSI (terpisah) -->
-  <div id="descBox" class="desc-box" style="display:none;"></div>
-  
-  <!-- DIV DETAIL PRODUK (terpisah) -->
-  <div id="detailProductBox" class="detail-item" style="display:none;"></div>
+</div>
+
+<!-- CARD 2: Deskripsi produk (terpisah) -->
+<div id="descCard" class="card" style="display:none;">
+  <div id="descCardContent" class="desc-card-content"></div>
+</div>
+
+<!-- CARD 3: Detail produk / spesifikasi item (terpisah) -->
+<div id="detailCard" class="card" style="display:none;">
+  <div id="detailCardContent" class="detail-card-content"></div>
 </div>
 
 <div id="confirmSheet" class="sheet">
@@ -610,8 +601,10 @@ const voucherBox = document.getElementById("voucherBox");
 const serverBox = document.getElementById("serverBox");
 const mlServer = document.getElementById("mlServer");
 const genshinServer = document.getElementById("genshinServer");
-const descBox = document.getElementById("descBox");
-const detailProductBox = document.getElementById("detailProductBox");
+const descCard = document.getElementById("descCard");
+const descCardContent = document.getElementById("descCardContent");
+const detailCard = document.getElementById("detailCard");
+const detailCardContent = document.getElementById("detailCardContent");
 
 const game = params.get("game") || "";
 const item = params.get("item") || "";
@@ -627,15 +620,15 @@ document.getElementById("total").innerText = "Rp " + price.toLocaleString("id-ID
 document.getElementById("bill").innerText = "Rp " + price.toLocaleString("id-ID");
 document.getElementById("gameImage").src = image;
 
-// Tampilkan DESKRIPSI (dari produk.desc) di div terpisah
+// Tampilkan DESKRIPSI (dari produk.desc) di card terpisah
 if (produk.desc && produk.desc.trim() !== "") {
-  descBox.style.display = "block";
-  descBox.innerHTML = `<strong>📝 Deskripsi:</strong><br>${produk.desc}`;
+  descCard.style.display = "block";
+  descCardContent.innerHTML = `<strong>📝 Deskripsi:</strong><br>${produk.desc}`;
 } else {
-  descBox.style.display = "none";
+  descCard.style.display = "none";
 }
 
-// Tampilkan DETAIL PRODUK (spesifikasi item yang dipilih) di div terpisah
+// Tampilkan DETAIL PRODUK (spesifikasi item yang dipilih) di card terpisah
 let selectedItemDetail = null;
 if (produk.regular) {
   selectedItemDetail = produk.regular.find(p => p.name === item);
@@ -647,16 +640,16 @@ if (!selectedItemDetail && produk.membership) {
   selectedItemDetail = produk.membership.find(p => p.name === item);
 }
 if (selectedItemDetail) {
-  detailProductBox.style.display = "block";
+  detailCard.style.display = "block";
   let detailHtml = `<strong>📦 Detail Paket:</strong> ${selectedItemDetail.name}<br>`;
   detailHtml += `<strong>💰 Harga:</strong> Rp ${price.toLocaleString("id-ID")}<br>`;
   detailHtml += `<strong>⚡ Status:</strong> ${selectedItemDetail.status === 'online' ? 'Tersedia' : 'Habis'}`;
   if (produk.detail) {
     detailHtml += `<br><strong>ℹ️ Info Tambahan:</strong> ${produk.detail}`;
   }
-  detailProductBox.innerHTML = detailHtml;
+  detailCardContent.innerHTML = detailHtml;
 } else {
-  detailProductBox.style.display = "none";
+  detailCard.style.display = "none";
 }
 
 // Sembunyikan/tampilkan input berdasarkan require
@@ -713,7 +706,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ========== Fungsi untuk modal info (sama seperti sebelumnya) ==========
+// ========== Fungsi untuk modal info ==========
 function getPublisher(key) {
   const map = {
     ff: "Garena", ml: "Moonton", pubg: "Tencent", genshin: "Hoyoverse",
