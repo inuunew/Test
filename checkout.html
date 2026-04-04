@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checkout</title>
 <style>
-/* ========== SEMUA WARNA PERTAHANKAN (tidak diubah) ========== */
+/* ========== SEMUA WARNA PERTAHANKAN ========== */
 body{
 font-family: Arial, sans-serif;
 background:#f3f4f6;
@@ -127,6 +128,14 @@ outline:none;
   align-items: center;
   gap: 4px;
 }
+.desc-box {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 12px;
+  font-size: 13px;
+  border-left: 3px solid #16a34a;
+}
 .detail-item {
   background: #f8f9fa;
   padding: 12px;
@@ -135,7 +144,7 @@ outline:none;
   font-size: 13px;
   border-left: 3px solid #16a34a;
 }
-.detail-item strong {
+.detail-item strong, .desc-box strong {
   color: #16a34a;
 }
 .view-desc {
@@ -225,7 +234,7 @@ background:#f5f5f5;
   color: #999;
   cursor: not-allowed;
 }
-/* MODAL INFO (sama seperti sebelumnya) */
+/* MODAL INFO */
 .modal{
 position:fixed;
 top:0;
@@ -496,15 +505,19 @@ to{transform:scale(1);opacity:1;}
       <div class="price" id="price"></div>
     </div>
   </div>
-  <!-- Tambahan fitur layanan -->
+  <!-- Fitur layanan -->
   <div class="features" id="featuresList">
     <span class="feature">✅ Layanan cepat</span>
     <span class="feature">⚡ Anti delay</span>
     <span class="feature">💬 Admin fast respon</span>
   </div>
-  <!-- Tombol lihat deskripsi -->
+  <!-- Tombol lihat deskripsi (modal) -->
   <button class="view-desc" onclick="openInfo()">📄 Tekan untuk melihat deskripsi</button>
-  <!-- Detail produk spesifik (misal untuk panel) -->
+  
+  <!-- DIV DESKRIPSI (terpisah) -->
+  <div id="descBox" class="desc-box" style="display:none;"></div>
+  
+  <!-- DIV DETAIL PRODUK (terpisah) -->
   <div id="detailProductBox" class="detail-item" style="display:none;"></div>
 </div>
 
@@ -597,6 +610,7 @@ const voucherBox = document.getElementById("voucherBox");
 const serverBox = document.getElementById("serverBox");
 const mlServer = document.getElementById("mlServer");
 const genshinServer = document.getElementById("genshinServer");
+const descBox = document.getElementById("descBox");
 const detailProductBox = document.getElementById("detailProductBox");
 
 const game = params.get("game") || "";
@@ -613,8 +627,15 @@ document.getElementById("total").innerText = "Rp " + price.toLocaleString("id-ID
 document.getElementById("bill").innerText = "Rp " + price.toLocaleString("id-ID");
 document.getElementById("gameImage").src = image;
 
-// Tampilkan detail produk spesifik (misal untuk panel, VPS, atau item yang punya spesifikasi)
-// Cari item dari regular/items/membership yang sesuai dengan nama item
+// Tampilkan DESKRIPSI (dari produk.desc) di div terpisah
+if (produk.desc && produk.desc.trim() !== "") {
+  descBox.style.display = "block";
+  descBox.innerHTML = `<strong>📝 Deskripsi:</strong><br>${produk.desc}`;
+} else {
+  descBox.style.display = "none";
+}
+
+// Tampilkan DETAIL PRODUK (spesifikasi item yang dipilih) di div terpisah
 let selectedItemDetail = null;
 if (produk.regular) {
   selectedItemDetail = produk.regular.find(p => p.name === item);
@@ -626,15 +647,14 @@ if (!selectedItemDetail && produk.membership) {
   selectedItemDetail = produk.membership.find(p => p.name === item);
 }
 if (selectedItemDetail) {
-  // Tampilkan detail produk seperti "Paket: 5GB | Harga: Rp5000"
   detailProductBox.style.display = "block";
-  detailProductBox.innerHTML = `<strong>📦 Detail Paket:</strong> ${selectedItemDetail.name}<br>
-                                 <strong>💰 Harga:</strong> Rp ${price.toLocaleString("id-ID")}<br>
-                                 <strong>⚡ Status:</strong> ${selectedItemDetail.status === 'online' ? 'Tersedia' : 'Habis'}`;
-  // Jika produk memiliki deskripsi tambahan dari database, bisa ditampilkan
-  if (produk.desc) {
-    detailProductBox.innerHTML += `<br><strong>ℹ️ Info:</strong> ${produk.desc}`;
+  let detailHtml = `<strong>📦 Detail Paket:</strong> ${selectedItemDetail.name}<br>`;
+  detailHtml += `<strong>💰 Harga:</strong> Rp ${price.toLocaleString("id-ID")}<br>`;
+  detailHtml += `<strong>⚡ Status:</strong> ${selectedItemDetail.status === 'online' ? 'Tersedia' : 'Habis'}`;
+  if (produk.detail) {
+    detailHtml += `<br><strong>ℹ️ Info Tambahan:</strong> ${produk.detail}`;
   }
+  detailProductBox.innerHTML = detailHtml;
 } else {
   detailProductBox.style.display = "none";
 }
@@ -693,7 +713,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ========== Fungsi untuk modal info (sesuai screenshot sebelumnya) ==========
+// ========== Fungsi untuk modal info (sama seperti sebelumnya) ==========
 function getPublisher(key) {
   const map = {
     ff: "Garena", ml: "Moonton", pubg: "Tencent", genshin: "Hoyoverse",
