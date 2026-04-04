@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checkout</title>
 <style>
-/* ========== SEMUA WARNA PERTAHANKAN ========== */
+/* ========== SEMUA WARNA PERTAHANKAN (tidak diubah) ========== */
 body{
 font-family: Arial, sans-serif;
 background:#f3f4f6;
@@ -111,6 +111,43 @@ padding:12px;
 outline:none;
 }
 
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.feature {
+  background: #e6f7ed;
+  color: #1ea55b;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.detail-item {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 12px;
+  font-size: 13px;
+  border-left: 3px solid #16a34a;
+}
+.detail-item strong {
+  color: #16a34a;
+}
+.view-desc {
+  background: none;
+  border: none;
+  color: #16a34a;
+  cursor: pointer;
+  font-size: 13px;
+  margin-top: 8px;
+  padding: 0;
+  text-decoration: underline;
+}
 .row{
 display:flex;
 justify-content:space-between;
@@ -188,7 +225,7 @@ background:#f5f5f5;
   color: #999;
   cursor: not-allowed;
 }
-/* MODAL INFO dengan gaya persis screenshot */
+/* MODAL INFO (sama seperti sebelumnya) */
 .modal{
 position:fixed;
 top:0;
@@ -233,7 +270,6 @@ font-size:14px;
 color:#333;
 line-height:1.5;
 }
-/* gaya konten info seperti screenshot */
 .info-store {
   text-align: center;
   margin-bottom: 15px;
@@ -304,14 +340,10 @@ line-height:1.5;
   color: #16a34a;
   text-decoration: none;
 }
-.note a:hover {
-  text-decoration: underline;
-}
 @keyframes popup{
 from{transform:scale(0.9);opacity:0;}
 to{transform:scale(1);opacity:1;}
 }
-/* sheet */
 .sheet{
   position:fixed;
   bottom:-100%;
@@ -323,15 +355,12 @@ to{transform:scale(1);opacity:1;}
   transition:0.3s;
   z-index:9999;
 }
-
 .sheet.show{
   bottom:0;
 }
-
 .sheet-content{
   padding:15px;
 }
-
 .sheet-header{
   display:flex;
   justify-content:space-between;
@@ -350,7 +379,6 @@ to{transform:scale(1);opacity:1;}
   align-items:center;
   z-index:9999;
 }
-
 .popup-box{
   background:white;
   padding:20px;
@@ -360,22 +388,18 @@ to{transform:scale(1);opacity:1;}
   max-width:350px;
   animation:fadeIn 0.2s ease;
 }
-
 .popup-box .icon{
   font-size:50px;
   color:#f59e0b;
   margin-bottom:10px;
 }
-
 .popup-box h3{
   margin:5px 0;
 }
-
 .popup-box p{
   font-size:14px;
   color:#555;
 }
-
 .popup-box button{
   margin-top:15px;
   width:100%;
@@ -386,7 +410,6 @@ to{transform:scale(1);opacity:1;}
   border-radius:10px;
   cursor:pointer;
 }
-
 @keyframes fadeIn{
   from{transform:scale(0.8);opacity:0;}
   to{transform:scale(1);opacity:1;}
@@ -403,7 +426,6 @@ to{transform:scale(1);opacity:1;}
   align-items:center;
   z-index:9999;
 }
-
 .loading-box{
   background:white;
   padding:20px;
@@ -412,7 +434,6 @@ to{transform:scale(1);opacity:1;}
   width:80%;
   max-width:250px;
 }
-
 .spinner{
   width:40px;
   height:40px;
@@ -422,7 +443,6 @@ to{transform:scale(1);opacity:1;}
   margin:0 auto 10px;
   animation:spin 1s linear infinite;
 }
-
 @keyframes spin{
   0%{transform:rotate(0deg);}
   100%{transform:rotate(360deg);}
@@ -471,14 +491,21 @@ to{transform:scale(1);opacity:1;}
   <div class="product">
     <img id="gameImage" onerror="this.src='default.png'">
     <div>
-      <div class="badge">GAMES</div>
+      <div class="badge">PRODUK</div>
       <div id="itemName"></div>
       <div class="price" id="price"></div>
     </div>
   </div>
-  <div class="action-menu">
-    <div class="action-item" onclick="openInfo()">ℹ️ Info</div>
+  <!-- Tambahan fitur layanan -->
+  <div class="features" id="featuresList">
+    <span class="feature">✅ Layanan cepat</span>
+    <span class="feature">⚡ Anti delay</span>
+    <span class="feature">💬 Admin fast respon</span>
   </div>
+  <!-- Tombol lihat deskripsi -->
+  <button class="view-desc" onclick="openInfo()">📄 Tekan untuk melihat deskripsi</button>
+  <!-- Detail produk spesifik (misal untuk panel) -->
+  <div id="detailProductBox" class="detail-item" style="display:none;"></div>
 </div>
 
 <div id="confirmSheet" class="sheet">
@@ -570,6 +597,7 @@ const voucherBox = document.getElementById("voucherBox");
 const serverBox = document.getElementById("serverBox");
 const mlServer = document.getElementById("mlServer");
 const genshinServer = document.getElementById("genshinServer");
+const detailProductBox = document.getElementById("detailProductBox");
 
 const game = params.get("game") || "";
 const item = params.get("item") || "";
@@ -584,6 +612,32 @@ document.getElementById("subtotal").innerText = "Rp " + price.toLocaleString("id
 document.getElementById("total").innerText = "Rp " + price.toLocaleString("id-ID");
 document.getElementById("bill").innerText = "Rp " + price.toLocaleString("id-ID");
 document.getElementById("gameImage").src = image;
+
+// Tampilkan detail produk spesifik (misal untuk panel, VPS, atau item yang punya spesifikasi)
+// Cari item dari regular/items/membership yang sesuai dengan nama item
+let selectedItemDetail = null;
+if (produk.regular) {
+  selectedItemDetail = produk.regular.find(p => p.name === item);
+}
+if (!selectedItemDetail && produk.items) {
+  selectedItemDetail = produk.items.find(p => p.name === item);
+}
+if (!selectedItemDetail && produk.membership) {
+  selectedItemDetail = produk.membership.find(p => p.name === item);
+}
+if (selectedItemDetail) {
+  // Tampilkan detail produk seperti "Paket: 5GB | Harga: Rp5000"
+  detailProductBox.style.display = "block";
+  detailProductBox.innerHTML = `<strong>📦 Detail Paket:</strong> ${selectedItemDetail.name}<br>
+                                 <strong>💰 Harga:</strong> Rp ${price.toLocaleString("id-ID")}<br>
+                                 <strong>⚡ Status:</strong> ${selectedItemDetail.status === 'online' ? 'Tersedia' : 'Habis'}`;
+  // Jika produk memiliki deskripsi tambahan dari database, bisa ditampilkan
+  if (produk.desc) {
+    detailProductBox.innerHTML += `<br><strong>ℹ️ Info:</strong> ${produk.desc}`;
+  }
+} else {
+  detailProductBox.style.display = "none";
+}
 
 // Sembunyikan/tampilkan input berdasarkan require
 userIdBox.style.display = required.includes("userId") ? "block" : "none";
@@ -639,84 +693,38 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ========== Fungsi untuk mendapatkan publisher berdasarkan key (mirip screenshot) ==========
+// ========== Fungsi untuk modal info (sesuai screenshot sebelumnya) ==========
 function getPublisher(key) {
   const map = {
-    ff: "Garena",
-    ml: "Moonton",
-    pubg: "Tencent",
-    genshin: "Hoyoverse",
-    hok: "Level Infinite",
-    valorant: "Riot Games",
-    fcmobile: "EA Sports",
-    codm: "Activision",
-    asphalt9: "Gameloft",
-    roblox: "Roblox Corporation"
+    ff: "Garena", ml: "Moonton", pubg: "Tencent", genshin: "Hoyoverse",
+    hok: "Level Infinite", valorant: "Riot Games", fcmobile: "EA Sports",
+    codm: "Activision", asphalt9: "Gameloft", roblox: "Roblox Corporation",
+    panel: "Panel Bot", vps1: "Digital Ocean", do1: "Digital Ocean", alighm: "Alight Motion", viu: "Viu"
   };
-  return map[key] || "Official Store";
+  return map[key] || "Prima Store";
 }
 
-// ========== MODAL INFO dengan tampilan persis screenshot ==========
 function openInfo() {
   const modal = document.getElementById("infoModal");
   const body = document.getElementById("modalBody");
-  
-  // Nama game yang ditampilkan (gunakan produk.name atau key)
   let gameName = produk.name || game;
-  // Publisher
   let publisher = getPublisher(key);
-  
-  // Ambil detail sebagai bullet list (split by newline)
   let detailText = produk.detail || "Proses Cepat\nLayanan Chat 24/7\nProduk Resmi";
-  let bulletItems = detailText.split('\n').filter(line => line.trim().length > 0);
-  let bulletHtml = '<ul class="bullet-list">';
-  bulletItems.forEach(line => {
-    bulletHtml += `<li>${line.trim()}</li>`;
-  });
-  bulletHtml += '</ul>';
-  
-  // Deskripsi
+  let bulletItems = detailText.split('\n').filter(l => l.trim());
+  let bulletHtml = '<ul class="bullet-list">' + bulletItems.map(l => `<li>${l.trim()}</li>`).join('') + '</ul>';
   let descText = produk.desc || "Top up diamond harga paling murah, aman, cepat, dan terpercaya.";
-  
-  // Langkah-langkah sesuai screenshot (1-7)
-  const stepsHtml = `
+  const content = `
+    <div class="info-store"><h2>PRIMA STORE</h2><p>The Most Trusted & Safest Platform For TopUp Games</p></div>
+    <div class="info-game"><h3>${gameName.toUpperCase()}</h3><div class="sub">${publisher}</div></div>
+    ${bulletHtml}
     <div class="steps">
       <p><strong>Deskripsi dan cara melakukan transaksi</strong></p>
       <p>${descText}</p>
       <p><strong>Cara topup ${gameName}:</strong></p>
-      <ol>
-        <li>Masukkan Data Akun</li>
-        <li>Pilih Nominal</li>
-        <li>Pilih Pembayaran</li>
-        <li>Masukkan Kode Promo (jika ada)</li>
-        <li>Isi Detail Kontak</li>
-        <li>Klik Pesan Sekarang dan lakukan Pembayaran</li>
-        <li>Selesai</li>
-      </ol>
+      <ol><li>Masukkan Data Akun</li><li>Pilih Nominal</li><li>Pilih Pembayaran</li><li>Masukkan Kode Promo (jika ada)</li><li>Isi Detail Kontak</li><li>Klik Pesan Sekarang dan lakukan Pembayaran</li><li>Selesai</li></ol>
     </div>
+    <div class="note"><strong>Note:</strong> Jika Mengalami Kendala Silahkan hub CS IG <a href="#">Klik Disini</a> dan CS WhatsApp <a href="https://wa.me/6283160556330" target="_blank">Klik Disini</a></div>
   `;
-  
-  // Note dengan link CS (ganti dengan link asli Anda)
-  const noteHtml = `
-    <div class="note">
-      <strong>Note:</strong> Jika Mengalami Kendala Silahkan hub CS IG <a href="https://instagram.com/..." target="_blank">Klik Disini</a> dan CS WhatsApp <a href="https://wa.me/6283160556330" target="_blank">Klik Disini</a>
-    </div>
-  `;
-  
-  const content = `
-    <div class="info-store">
-      <h2>PRIMA STORE</h2>
-      <p>The Most Trusted & Safest Platform For TopUp Games</p>
-    </div>
-    <div class="info-game">
-      <h3>${gameName.toUpperCase()}</h3>
-      <div class="sub">${publisher}</div>
-    </div>
-    ${bulletHtml}
-    ${stepsHtml}
-    ${noteHtml}
-  `;
-  
   body.innerHTML = content;
   modal.style.display = "flex";
 }
@@ -726,19 +734,13 @@ function closeInfo() {
 }
 
 // Fungsi lain
-function showLoading(){
-  document.getElementById("loadingPopup").style.display = "flex";
-}
+function showLoading(){ document.getElementById("loadingPopup").style.display = "flex"; }
 function showWarning(text){
   document.getElementById("warningText").innerText = text;
   document.getElementById("warningPopup").style.display = "flex";
 }
-function closeWarning(){
-  document.getElementById("warningPopup").style.display = "none";
-}
-function goHome() {
-  window.location.href = "index.html";
-}
+function closeWarning(){ document.getElementById("warningPopup").style.display = "none"; }
+function goHome() { window.location.href = "index.html"; }
 function openSheet(){
   document.getElementById("confirmSheet").classList.add("show");
   document.getElementById("sheetImage").src = image;
@@ -748,9 +750,7 @@ function openSheet(){
   let userData = document.getElementById("userId")?.value || document.getElementById("username")?.value || document.getElementById("phone")?.value || document.getElementById("voucher")?.value || "-";
   document.getElementById("sheetUser").innerText = userData;
 }
-function closeSheet(){
-  document.getElementById("confirmSheet").classList.remove("show");
-}
+function closeSheet(){ document.getElementById("confirmSheet").classList.remove("show"); }
 function lanjutWA(){
   closeSheet();
   const waNumber = "6283160556330";
@@ -769,50 +769,24 @@ function lanjutWA(){
   );
   window.location.href = `https://wa.me/${waNumber}?text=${message}`;
 }
-
 function bayar(){
   const btn = document.querySelector(".pay");
   let serverValue = "";
   if(required.includes("server")){
-    serverValue = (produk.serverType==="id") 
-      ? document.getElementById("serverId").value 
-      : document.getElementById("serverRegion").value;
+    serverValue = (produk.serverType==="id") ? document.getElementById("serverId").value : document.getElementById("serverRegion").value;
   }
-
-  if(required.includes("username") && !document.getElementById("username").value){
-    showWarning("Masukkan username terlebih dahulu!");
-    return;
-  }
-  if(required.includes("userId") && !document.getElementById("userId").value){
-    showWarning("Masukkan ID terlebih dahulu!");
-    return;
-  }
-  if(required.includes("phone") && !document.getElementById("phone").value){
-    showWarning("Masukkan nomor telepon!");
-    return;
-  }
-  if(required.includes("voucher") && !document.getElementById("voucher").value){
-    showWarning("Masukkan kode voucher!");
-    return;
-  }
-  if(required.includes("server") && !serverValue){
-    showWarning("Masukkan server terlebih dahulu!");
-    return;
-  }
-  if(!selectedPayment){
-    showWarning("Pilih metode pembayaran!");
-    return;
-  }
-  if(isManualQRIS){
-    openSheet();
-    return;
-  }
+  if(required.includes("username") && !document.getElementById("username").value){ showWarning("Masukkan username!"); return; }
+  if(required.includes("userId") && !document.getElementById("userId").value){ showWarning("Masukkan ID!"); return; }
+  if(required.includes("phone") && !document.getElementById("phone").value){ showWarning("Masukkan nomor telepon!"); return; }
+  if(required.includes("voucher") && !document.getElementById("voucher").value){ showWarning("Masukkan kode voucher!"); return; }
+  if(required.includes("server") && !serverValue){ showWarning("Masukkan server!"); return; }
+  if(!selectedPayment){ showWarning("Pilih metode pembayaran!"); return; }
+  if(isManualQRIS){ openSheet(); return; }
 
   btn.innerHTML="⏳ Memproses...";
   btn.disabled=true;
   btn.style.opacity="0.7";
   showLoading();
-
   const invoiceUrl = "invoice.html?" +
     "key="+encodeURIComponent(key)+
     "&game="+encodeURIComponent(game)+
@@ -825,12 +799,8 @@ function bayar(){
     "&voucher="+encodeURIComponent(document.getElementById("voucher")?.value || '')+
     "&server="+encodeURIComponent(serverValue || '')+
     "&payment="+encodeURIComponent(selectedPayment);
-
-  setTimeout(() => {
-    window.location.href = invoiceUrl;
-  }, 1200);
+  setTimeout(() => { window.location.href = invoiceUrl; }, 1200);
 }
-
 window.addEventListener("pageshow", () => {
   const btn = document.querySelector(".pay");
   btn.disabled = false;
