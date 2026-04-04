@@ -83,7 +83,7 @@ body{
   display:flex;
   align-items:center;
   gap:15px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .product img{
@@ -619,15 +619,6 @@ body{
   <div id="detailCardContent" class="detail-card-content"></div>
 </div>
 
-<!-- RINCIAN TRANSAKSI DENGAN BIAYA ADMIN 1.5% -->
-<div class="card">
-  <h4 style="margin:0 0 12px 0;">📋 RINCIAN TRANSAKSI</h4>
-  <div class="row"><span>💰 Harga Produk</span><span id="hargaProduk"></span></div>
-  <div class="row"><span>⚙️ Biaya Admin (1.5%) <span class="admin-badge">termasuk pajak</span></span><span id="biayaAdmin"></span></div>
-  <hr style="margin:8px 0;">
-  <div class="row"><span>💎 TOTAL YANG HARUS DIBAYAR</span><span class="total" id="totalAmount"></span></div>
-</div>
-
 <!-- METODE BAYAR -->
 <div class="card">
 <h4 style="margin:0 0 12px 0;">💳 METODE PEMBAYARAN</h4>
@@ -637,6 +628,17 @@ body{
   <div class="payment-item" id="manualQrisItem">QRIS Manual (Order via WA)</div>
 </div>
 </div>
+
+<!-- RINCIAN TRANSAKSI DENGAN BIAYA ADMIN 1.5% -->
+<div class="card">
+  <h4 style="margin:0 0 12px 0;">📋 RINCIAN TRANSAKSI</h4>
+  <div class="row"><span>💰 Harga Produk</span><span id="hargaProduk"></span></div>
+  <div class="row"><span>⚙️ Biaya Admin (1.5%) <span class="admin-badge">termasuk pajak</span></span><span id="biayaAdmin"></span></div>
+  <hr style="margin:8px 0;">
+  <div class="row"><span>💎 TOTAL YANG HARUS DIBAYAR</span><span class="total" id="totalAmount"></span></div>
+</div>
+
+
 
 <div class="footer">
 <div><div style="font-size:12px;color:#5b6e8c;">TOTAL BAYAR</div><div class="bill" id="billFooter"></div></div>
