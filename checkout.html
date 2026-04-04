@@ -1,27 +1,33 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Checkout - Prima Store</title>
 <style>
 /* ========== SEMUA WARNA PERTAHANKAN ========== */
+* {
+  box-sizing: border-box;
+}
 body{
-font-family: Arial, sans-serif;
-background:#f3f4f6;
-margin:0;
-padding:0;
--webkit-tap-highlight-color: transparent;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  background:#f3f4f6;
+  margin:0;
+  padding:0;
+  padding-bottom: 85px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .header{
-display:flex;
-align-items:center;
-justify-content: space-between;
-padding:15px;
-background:white;
-box-shadow:0 2px 5px rgba(0,0,0,0.05);
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  padding:15px;
+  background:white;
+  box-shadow:0 2px 5px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 
 .header-left {
@@ -31,14 +37,17 @@ box-shadow:0 2px 5px rgba(0,0,0,0.05);
 }
 
 .back{
-font-size:22px;
-cursor:pointer;
+  font-size:22px;
+  cursor:pointer;
+  font-weight: 500;
+  transition: opacity 0.2s;
 }
+.back:active { opacity: 0.6; }
 
 .brand {
   font-weight: bold;
   font-size: 18px;
-  color: #333;
+  color: #1f2937;
 }
 
 .header-right {
@@ -48,6 +57,9 @@ cursor:pointer;
   display: flex;
   align-items: center;
   gap: 5px;
+  background: #f0f2f5;
+  padding: 5px 12px;
+  border-radius: 40px;
 }
 
 .chrome-icon {
@@ -59,57 +71,72 @@ cursor:pointer;
 }
 
 .card{
-background:white;
-margin:15px;
-padding:15px;
-border-radius:14px;
-box-shadow:0 2px 6px rgba(0,0,0,0.06);
+  background:white;
+  margin:15px;
+  padding:15px;
+  border-radius:20px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.03);
+  transition: all 0.1s ease;
 }
 
 .product{
-display:flex;
-align-items:center;
-gap:15px;
+  display:flex;
+  align-items:center;
+  gap:15px;
+  flex-wrap: wrap;
 }
 
 .product img{
-width:60px;
-border-radius:10px;
+  width:70px;
+  border-radius:16px;
+  background:#f8fafc;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .badge{
-background:#e6f7ed;
-color:#1ea55b;
-font-size:12px;
-padding:3px 8px;
-border-radius:6px;
-display:inline-block;
-margin-bottom:5px;
+  background:#e6f7ed;
+  color:#1ea55b;
+  font-size:12px;
+  padding:3px 8px;
+  border-radius:6px;
+  display:inline-block;
+  margin-bottom:5px;
 }
 
 .price{
-color:#555;
+  color:#555;
 }
 
 .label{
-font-weight:bold;
-margin-bottom:6px;
-display:block;
+  font-weight:600;
+  margin-bottom:8px;
+  display:block;
+  font-size: 14px;
+  color: #1e293b;
 }
 
 .input-group{
-display:flex;
-align-items:center;
-border:1px solid #ddd;
-border-radius:10px;
-overflow:hidden;
+  display:flex;
+  align-items:center;
+  border:1px solid #e2e8f0;
+  border-radius:16px;
+  overflow:hidden;
+  background: #fafcff;
 }
 
 .input-group input, .input-group select{
-flex:1;
-border:none;
-padding:12px;
-outline:none;
+  flex:1;
+  border:none;
+  padding:14px 16px;
+  outline:none;
+  font-size: 15px;
+  background: transparent;
+}
+
+.input-group:focus-within {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22,163,74,0.2);
 }
 
 .features {
@@ -122,164 +149,190 @@ outline:none;
   background: #e6f7ed;
   color: #1ea55b;
   font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 20px;
+  padding: 4px 10px;
+  border-radius: 30px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  font-weight: 500;
 }
 .desc-card-content, .detail-card-content {
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #2d3e50;
 }
 .desc-card-content strong, .detail-card-content strong {
   color: #16a34a;
 }
 .view-desc {
-  background: none;
-  border: none;
-  color: #16a34a;
+  background: #f0fdf4;
+  border: 1px solid #dcfce7;
+  border-radius: 40px;
+  color: #15803d;
   cursor: pointer;
   font-size: 13px;
-  margin-top: 8px;
-  padding: 0;
-  text-decoration: underline;
+  margin-top: 0px;
+  padding: 10px 16px;
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  transition: 0.2s;
+}
+.view-desc:active {
+  background: #dcfce7;
 }
 .row{
-display:flex;
-justify-content:space-between;
-margin:8px 0;
+  display:flex;
+  justify-content:space-between;
+  margin:10px 0;
+  font-size: 14px;
 }
-
 .total{
-font-size:20px;
-color:#16a34a;
-font-weight:bold;
+  font-size: 22px;
+  color:#16a34a;
+  font-weight:800;
 }
 
 .footer{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:white;
-padding:15px;
-box-shadow:0 -2px 10px rgba(0,0,0,0.05);
-display:flex;
-justify-content:space-between;
-align-items:center;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:white;
+  padding:12px 16px;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.08);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index: 15;
 }
 
 .pay{
-background:#16a34a;
-color:white;
-border:none;
-padding:12px 30px;
-border-radius:10px;
-font-size:16px;
-cursor:pointer;
+  background:#16a34a;
+  color:white;
+  border:none;
+  padding:12px 28px;
+  border-radius:40px;
+  font-size:16px;
+  font-weight: 600;
+  cursor:pointer;
+  transition: 0.2s;
+  box-shadow: 0 2px 8px rgba(22,163,74,0.3);
+}
+.pay:active {
+  transform: scale(0.97);
+  background: #15803d;
 }
 
 .bill{
-color:#16a34a;
-font-weight:bold;
-font-size:18px;
+  color:#16a34a;
+  font-weight:800;
+  font-size:20px;
 }
 
 .payment-select{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  border:1px solid #ddd;
-  padding:12px;
-  border-radius:10px;
+  border:1px solid #e2e8f0;
+  padding:14px 16px;
+  border-radius:20px;
   cursor:pointer;
-  background:#fafafa;
-  position: relative;
-  z-index: 10;
+  background:#ffffff;
+  transition: 0.1s;
 }
 
 .payment-list{
   display:none;
-  margin-top:10px;
-  position: relative;
-  z-index: 9;
+  margin-top:12px;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  border: 1px solid #edf2f7;
 }
 
 .payment-item{
-padding:10px;
-border:1px solid #eee;
-border-radius:10px;
-margin-bottom:8px;
-cursor:pointer;
+  padding:14px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  cursor:pointer;
+  transition: background 0.1s;
+}
+
+.payment-item:last-child {
+  border-bottom: none;
 }
 
 .payment-item:hover{
-background:#f5f5f5;
+  background:#f8fafc;
 }
 
 .payment-item.disabled{
-  color: #999;
+  color: #94a3b8;
   cursor: not-allowed;
+  background: #f8fafc;
 }
 /* MODAL INFO */
 .modal{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.5);
-display:none;
-justify-content:center;
-align-items:center;
-z-index:999;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+  backdrop-filter: blur(2px);
 }
 
 .modal-content{
-background:white;
-width:90%;
-max-width:420px;
-max-height:85%;
-overflow-y:auto;
-border-radius:20px;
-padding:0;
-animation:popup .2s ease;
+  background:white;
+  width:90%;
+  max-width:440px;
+  max-height:85%;
+  overflow-y:auto;
+  border-radius:32px;
+  padding:0;
+  animation:popup .2s ease;
 }
 
 .modal-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px;
-border-bottom:1px solid #eee;
-font-weight:bold;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 20px;
+  border-bottom:1px solid #eef2f6;
+  font-weight:700;
+  font-size: 18px;
 }
 
 .close{
-cursor:pointer;
-font-size:20px;
+  cursor:pointer;
+  font-size:22px;
+  opacity: 0.7;
 }
 
 .modal-body{
-padding:15px;
-font-size:14px;
-color:#333;
-line-height:1.5;
+  padding:20px;
+  font-size:14px;
+  color:#1e293b;
+  line-height:1.5;
 }
 .info-store {
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 .info-store h2 {
   margin: 0;
-  font-size: 22px;
-  color: #222;
+  font-size: 24px;
+  color: #0f172a;
 }
 .info-store p {
-  color: #666;
+  color: #475569;
   font-size: 12px;
-  margin-top: 5px;
+  margin-top: 6px;
 }
 .info-game {
   text-align: center;
@@ -289,57 +342,45 @@ line-height:1.5;
   margin: 0;
   font-size: 20px;
 }
-.info-game .sub {
-  color: #888;
-  font-size: 13px;
-}
 .bullet-list {
   list-style: none;
   padding: 0;
-  margin: 10px 0;
+  margin: 12px 0;
 }
 .bullet-list li {
-  margin: 8px 0;
+  margin: 10px 0;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 .bullet-list li:before {
-  content: "•";
+  content: "✓";
   color: #16a34a;
-  font-size: 18px;
+  font-weight: bold;
+  font-size: 16px;
 }
 .steps {
-  background: #f9f9f9;
-  padding: 10px 15px;
-  border-radius: 12px;
-  margin: 15px 0;
-}
-.steps p {
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-.steps ol {
-  margin: 0;
-  padding-left: 20px;
-}
-.steps li {
-  margin: 5px 0;
+  background: #f8fafc;
+  padding: 12px 18px;
+  border-radius: 24px;
+  margin: 20px 0;
 }
 .note {
-  background: #fff3e0;
-  padding: 10px;
-  border-radius: 10px;
+  background: #fffbeb;
+  padding: 12px;
+  border-radius: 20px;
   font-size: 13px;
-  margin-top: 15px;
+  margin-top: 18px;
+  border-left: 3px solid #f59e0b;
 }
 .note a {
   color: #16a34a;
   text-decoration: none;
+  font-weight: 500;
 }
 @keyframes popup{
-from{transform:scale(0.9);opacity:0;}
-to{transform:scale(1);opacity:1;}
+  from{transform:scale(0.92);opacity:0;}
+  to{transform:scale(1);opacity:1;}
 }
 .sheet{
   position:fixed;
@@ -347,22 +388,23 @@ to{transform:scale(1);opacity:1;}
   left:0;
   right:0;
   background:white;
-  border-radius:20px 20px 0 0;
-  box-shadow:0 -5px 20px rgba(0,0,0,0.1);
-  transition:0.3s;
+  border-radius:28px 28px 0 0;
+  box-shadow:0 -10px 30px rgba(0,0,0,0.2);
+  transition:0.3s ease;
   z-index:9999;
 }
 .sheet.show{
   bottom:0;
 }
 .sheet-content{
-  padding:15px;
+  padding:20px;
 }
 .sheet-header{
   display:flex;
   justify-content:space-between;
-  font-weight:bold;
-  margin-bottom:10px;
+  font-weight:700;
+  font-size: 18px;
+  margin-bottom:16px;
 }
 .popup-warning{
   position:fixed;
@@ -378,37 +420,30 @@ to{transform:scale(1);opacity:1;}
 }
 .popup-box{
   background:white;
-  padding:20px;
-  border-radius:15px;
+  padding:24px 20px;
+  border-radius:28px;
   text-align:center;
   width:85%;
-  max-width:350px;
+  max-width:340px;
   animation:fadeIn 0.2s ease;
 }
 .popup-box .icon{
-  font-size:50px;
-  color:#f59e0b;
-  margin-bottom:10px;
-}
-.popup-box h3{
-  margin:5px 0;
-}
-.popup-box p{
-  font-size:14px;
-  color:#555;
+  font-size:48px;
+  margin-bottom:8px;
 }
 .popup-box button{
-  margin-top:15px;
+  margin-top:18px;
   width:100%;
-  padding:10px;
+  padding:12px;
   border:none;
   background:#f59e0b;
   color:white;
-  border-radius:10px;
+  border-radius:40px;
+  font-weight: 600;
   cursor:pointer;
 }
 @keyframes fadeIn{
-  from{transform:scale(0.8);opacity:0;}
+  from{transform:scale(0.92);opacity:0;}
   to{transform:scale(1);opacity:1;}
 }
 .loading-popup{
@@ -425,24 +460,38 @@ to{transform:scale(1);opacity:1;}
 }
 .loading-box{
   background:white;
-  padding:20px;
-  border-radius:15px;
+  padding:28px 20px;
+  border-radius:32px;
   text-align:center;
   width:80%;
-  max-width:250px;
+  max-width:260px;
 }
 .spinner{
-  width:40px;
-  height:40px;
-  border:4px solid #eee;
-  border-top:4px solid #5b7cff;
+  width:44px;
+  height:44px;
+  border:4px solid #e2e8f0;
+  border-top:4px solid #16a34a;
   border-radius:50%;
-  margin:0 auto 10px;
-  animation:spin 1s linear infinite;
+  margin:0 auto 12px;
+  animation:spin 0.8s linear infinite;
 }
 @keyframes spin{
   0%{transform:rotate(0deg);}
   100%{transform:rotate(360deg);}
+}
+.voucher-message {
+  background: #fef9e3;
+  border-radius: 18px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+.voucher-message span:first-child {
+  font-size: 22px;
 }
 </style>
 </head>
@@ -451,15 +500,15 @@ to{transform:scale(1);opacity:1;}
 <div id="loadingPopup" class="loading-popup">
   <div class="loading-box">
     <div class="spinner"></div>
-    <p>Generate Qris...</p>
+    <p>Menyiapkan pembayaran...</p>
   </div>
 </div>
 <div id="warningPopup" class="popup-warning">
   <div class="popup-box">
-    <div class="icon">❗</div>
-    <h3>Peringatan</h3>
-    <p id="warningText">Harap isi data terlebih dahulu!</p>
-    <button onclick="closeWarning()">Oke</button>
+    <div class="icon">⚠️</div>
+    <h3>Perhatian</h3>
+    <p id="warningText">Harap lengkapi data terlebih dahulu!</p>
+    <button onclick="closeWarning()">Mengerti</button>
   </div>
 </div>
 
@@ -480,112 +529,119 @@ to{transform:scale(1);opacity:1;}
   </div>
   <div class="header-right">
     <span class="chrome-icon"></span>
-    <span>Chrome</span>
+    <span>Secure Checkout</span>
   </div>
 </div>
 
-<!-- CARD 1: Produk utama + fitur + tombol deskripsi -->
+<!-- CARD PRODUK UTAMA -->
 <div class="card">
   <div class="product">
-    <img id="gameImage" onerror="this.src='default.png'">
+    <img id="gameImage" onerror="this.src='https://placehold.co/70x70?text=Game'">
     <div>
-      <div id="itemName"></div>
-    <span class="feature">✅ Layanan cepat</span><br>
-    <span class="feature">⚡ Anti delay</span><br>
-    <span class="feature">💬 Admin fast respon</span>
+      <div id="itemName" style="font-weight:700; font-size:18px;"></div>
+      <div style="margin-top: 6px;">
+        <span class="feature">✅ Proses Cepat</span>
+        <span class="feature">⚡ Anti Delay</span>
+        <span class="feature">💬 Admin Fast Respon</span>
+      </div>
     </div>
   </div>
 </div>
 
-
-    <div class="card">
-     <button class="view-desc" onclick="openInfo()">📄 Tekan untuk melihat deskripsi</button>
-    </div>
+<div class="card">
+  <button class="view-desc" onclick="openInfo()">📄 Lihat Deskripsi & Panduan</button>
+</div>
 
 <div id="confirmSheet" class="sheet">
   <div class="sheet-content">
     <div class="sheet-header">
-      <span>Detail Pembayaran</span>
-      <span onclick="closeSheet()">▼</span>
+      <span>⚡ Konfirmasi Pesanan</span>
+      <span onclick="closeSheet()" style="font-size:20px;">✕</span>
     </div>
     <div class="sheet-body">
-      <div style="display:flex;gap:10px;align-items:center;">
-        <img id="sheetImage" style="width:50px;border-radius:8px;">
+      <div style="display:flex;gap:14px;align-items:center;">
+        <img id="sheetImage" style="width:55px;border-radius:14px;">
         <div>
-          <div id="sheetItem"></div>
-          <div id="sheetPrice" style="color:#555;"></div>
+          <div id="sheetItem" style="font-weight:700;"></div>
+          <div id="sheetPrice" style="color:#3b7c4c;"></div>
         </div>
       </div>
       <hr style="margin:15px 0;">
-      <div class="row"><span>Tujuan :</span><span id="sheetUser" style="color:red;"></span></div>
-      <div class="row"><span>Harga :</span><span id="sheetHarga"></span></div>
-      <div style="margin-top:15px;background:#f3f4f6;padding:10px;border-radius:10px;">
-        Pastikan data sudah benar agar tidak terjadi kesalahan.<br>Melanjutkan Berarti Membeli! admin akan blacklist orang yang tidak bersungguh-sungguh
+      <div class="row"><span>📌 Tujuan / ID :</span><span id="sheetUser" style="color:#b91c1c; font-weight:500;"></span></div>
+      <div class="row"><span>💰 Total tagihan :</span><span id="sheetHarga" style="font-weight:700;"></span></div>
+      <div style="margin-top:18px;background:#f0fdf4;padding:14px;border-radius:20px;font-size:13px;">
+        ✅ Pastikan data sudah benar. <br>📌 Melanjutkan berarti menyetujui pembelian, admin akan blacklist jika tidak serius.
       </div>
-      <button onclick="lanjutWA()" class="pay" style="width:100%;margin-top:15px;">Lanjutkan Pembelian</button>
-      <button onclick="closeSheet()" style="width:100%;margin-top:10px;padding:10px;border:none;border-radius:10px;">Kembali</button>
+      <button onclick="lanjutWA()" class="pay" style="width:100%;margin-top:18px;">Lanjut ke WhatsApp</button>
+      <button onclick="closeSheet()" style="width:100%;margin-top:10px;padding:12px;border:1px solid #ddd;border-radius:40px;background:white;">Kembali</button>
     </div>
   </div>
 </div>
 
+<!-- INPUT DATA USER -->
 <div class="card" id="userIdBox">
-<label class="label">USER ID</label>
-<div class="input-group"><input type="text" placeholder="Masukkan ID Player" id="userId"></div>
+<label class="label">🆔 USER ID / ID PLAYER</label>
+<div class="input-group"><input type="text" placeholder="Contoh: 12345678" id="userId"></div>
 </div>
 
 <div class="card" id="usernameBox" style="display:none;">
-<div style="display:flex; justify-content:space-between; align-items:center;"><label class="label">USERNAME PANEL</label></div>
+<label class="label">👤 USERNAME PANEL / AKUN</label>
 <div class="input-group"><input type="text" placeholder="Masukkan Username" id="username"></div>
 </div>
 
 <div class="card" id="phoneBox" style="display:none;">
-<label class="label">NOMOR TELEPON</label>
-<div class="input-group"><input type="tel" placeholder="Masukkan Nomor HP" id="phone"></div>
+<label class="label">📞 NOMOR TELEPON (Aktif)</label>
+<div class="input-group"><input type="tel" placeholder="08xxxxxxxx" id="phone"></div>
 </div>
 
+<!-- VOUCHER BOX: sekarang tidak input kode, melainkan informasi voucher akan dikirim admin -->
 <div class="card" id="voucherBox" style="display:none;">
-<label class="label">KODE VOUCHER</label>
-<div class="input-group"><input type="text" placeholder="Masukkan kode voucher" id="voucher"></div>
+  <div id="voucherInfoContainer"></div>
 </div>
 
 <div class="card" id="serverBox" style="display:none;">
-<label class="label">SERVER</label>
-<div class="input-group" id="mlServer" style="display:none;"><input type="number" placeholder="Server ID" id="serverId"></div>
-<div class="input-group" id="genshinServer" style="display:none;"><select id="serverRegion"><option value="">Pilih Server</option><option>Asia</option><option>America</option><option>Europe</option><option>TW / HK / MO</option></select></div>
+<label class="label">🌍 SERVER / ZONE</label>
+<div class="input-group" id="mlServer" style="display:none;"><input type="number" placeholder="Server ID (contoh: 1234)" id="serverId"></div>
+<div class="input-group" id="genshinServer" style="display:none;"><select id="serverRegion"><option value="">Pilih Server</option><option>Asia</option><option>America</option><option>Europe</option><option>TW/HK/MO</option></select></div>
 </div>
 
-<!-- CARD 3: Detail produk / spesifikasi item (terpisah) -->
+<!-- DETAIL SPESIFIKASI ITEM -->
 <div id="detailCard" class="card" style="display:none;">
   <div id="detailCardContent" class="detail-card-content"></div>
 </div>
 
+<!-- METODE BAYAR -->
 <div class="card">
-<h4>METODE PEMBAYARAN</h4>
-<div class="payment-select" onclick="togglePayment()"><div id="paymentSelected">Pilih Metode Pembayaran</div><div>▼</div></div>
+<h4 style="margin:0 0 12px 0;">💳 METODE PEMBAYARAN</h4>
+<div class="payment-select" onclick="togglePayment()"><div id="paymentSelected">Pilih Metode</div><div>▼</div></div>
 <div class="payment-list" id="paymentList">
-  <div class="payment-item" id="qrisAutoItem">QRIS Otomatis</div>
-  <div class="payment-item" onclick="selectPayment('QRIS Manual')">QRIS Manual (Order Via WhatsApp)</div>
+  <div class="payment-item" id="qrisAutoItem">QRIS Otomatis (Instant)</div>
+  <div class="payment-item" id="manualQrisItem">QRIS Manual (Order via WA)</div>
 </div>
 </div>
 
 <div class="card">
-<h4>RINCIAN TRANSAKSI</h4>
+<h4>📋 RINCIAN TRANSAKSI</h4>
 <div class="row"><span>Subtotal</span><span id="subtotal"></span></div>
-<hr>
+<hr style="margin:5px 0;">
 <div class="row"><span>Total</span><span class="total" id="total"></span></div>
 </div>
 
 <div class="footer">
-<div><div style="font-size:12px;color:#777;">TOTAL</div><div class="bill" id="bill"></div></div>
-<button class="pay" onclick="bayar()">Bayar</button>
+<div><div style="font-size:12px;color:#5b6e8c;">TOTAL BAYAR</div><div class="bill" id="bill"></div></div>
+<button class="pay" id="bayarBtn">Bayar Sekarang</button>
 </div>
 
 <script src="database.js"></script>
 <script>
-// ========== Ambil data dari URL dan database eksternal ==========
+// ========== AMBIL DATA PRODUK ==========
 const params = new URLSearchParams(window.location.search);
 const key = params.get("key");
-let produk = database[key] || databaseOther[key] || databasePanel[key] || {};
+let produk = (typeof database !== 'undefined' && database[key]) ? database[key] : {};
+if (typeof databaseOther !== 'undefined' && databaseOther[key]) produk = databaseOther[key];
+if (typeof databasePanel !== 'undefined' && databasePanel[key]) produk = databasePanel[key];
+if (!produk || Object.keys(produk).length === 0) produk = {};
+
 let required = produk.require || [];
 
 // Elemen DOM
@@ -593,56 +649,72 @@ const userIdBox = document.getElementById("userIdBox");
 const usernameBox = document.getElementById("usernameBox");
 const phoneBox = document.getElementById("phoneBox");
 const voucherBox = document.getElementById("voucherBox");
+const voucherInfoContainer = document.getElementById("voucherInfoContainer");
 const serverBox = document.getElementById("serverBox");
 const mlServer = document.getElementById("mlServer");
 const genshinServer = document.getElementById("genshinServer");
 const detailCard = document.getElementById("detailCard");
 const detailCardContent = document.getElementById("detailCardContent");
 
-const game = params.get("game") || "";
-const item = params.get("item") || "";
+const game = params.get("game") || produk.name || "Game";
+const item = params.get("item") || "Item";
 const price = Number(params.get("price")) || 0;
-const image = params.get("image") || "default.png";
+const image = params.get("image") || "https://placehold.co/70x70?text=Item";
 const type = params.get("type") || "";
 
-// Tampilkan info produk
+// Tampilkan info produk utama
 document.getElementById("itemName").innerText = game + " " + item;
 document.getElementById("subtotal").innerText = "Rp " + price.toLocaleString("id-ID");
 document.getElementById("total").innerText = "Rp " + price.toLocaleString("id-ID");
 document.getElementById("bill").innerText = "Rp " + price.toLocaleString("id-ID");
 document.getElementById("gameImage").src = image;
 
-
-// Tampilkan DETAIL PRODUK (spesifikasi item yang dipilih) di card terpisah
+// Tampilkan detail item jika ada (spesifikasi)
 let selectedItemDetail = null;
-if (produk.regular) {
-  selectedItemDetail = produk.regular.find(p => p.name === item);
-}
-if (!selectedItemDetail && produk.items) {
-  selectedItemDetail = produk.items.find(p => p.name === item);
-}
-if (!selectedItemDetail && produk.membership) {
-  selectedItemDetail = produk.membership.find(p => p.name === item);
-}
+if (produk.regular) selectedItemDetail = produk.regular.find(p => p.name === item);
+if (!selectedItemDetail && produk.items) selectedItemDetail = produk.items.find(p => p.name === item);
+if (!selectedItemDetail && produk.membership) selectedItemDetail = produk.membership.find(p => p.name === item);
 if (selectedItemDetail) {
   detailCard.style.display = "block";
-  let detailHtml = `<strong>📦 Detail Paket:</strong> ${selectedItemDetail.name}<br>`;
+  let statusText = selectedItemDetail.status === 'online' ? '✅ Tersedia' : '⛔ Habis';
+  let detailHtml = `<strong>📦 Paket:</strong> ${selectedItemDetail.name}<br>`;
   detailHtml += `<strong>💰 Harga:</strong> Rp ${price.toLocaleString("id-ID")}<br>`;
-  detailHtml += `<strong>⚡ Status:</strong> ${selectedItemDetail.status === 'online' ? 'Tersedia' : 'Habis'}`;
-  if (produk.detail) {
-    detailHtml += `<br><strong>ℹ️ Info Tambahan:</strong> ${produk.detail}`;
-  }
+  detailHtml += `<strong>⚡ Status:</strong> ${statusText}`;
   detailCardContent.innerHTML = detailHtml;
 } else {
   detailCard.style.display = "none";
 }
 
-// Sembunyikan/tampilkan input berdasarkan require
+// ========== FUNGSI VOUCHER: TIDAK ADA INPUT, HANYA INFORMASI ==========
+function setupVoucherField() {
+  if (required.includes("voucher")) {
+    voucherBox.style.display = "block";
+    // Tampilkan pesan bahwa ini adalah produk VOUCHER dan kode akan dikirim admin
+    voucherInfoContainer.innerHTML = `
+      <div class="voucher-message">
+        <span>🎫</span>
+        <div>
+          <strong style="display:block; margin-bottom:4px;">Voucher Digital</strong>
+          <span style="font-size:13px;">Kode voucher akan dikirimkan oleh admin setelah pembayaran berhasil melalui WhatsApp/Email.</span>
+          <span style="font-size:12px; display:inline-block; margin-top:6px;">✔️ Tidak perlu memasukkan kode apapun.</span>
+        </div>
+      </div>
+    `;
+    // Hapus attribute required pada voucher karena user tidak perlu isi
+    // Juga kita tidak akan mengirim nilai voucher dari input, melainkan flag otomatis
+  } else {
+    voucherBox.style.display = "none";
+  }
+}
+
+// Tampilkan field berdasarkan require (tanpa input voucher)
 userIdBox.style.display = required.includes("userId") ? "block" : "none";
 usernameBox.style.display = required.includes("username") ? "block" : "none";
 phoneBox.style.display = required.includes("phone") ? "block" : "none";
-voucherBox.style.display = required.includes("voucher") ? "block" : "none";
 serverBox.style.display = required.includes("server") ? "block" : "none";
+
+// Handle field voucher secara spesial (tidak pakai input)
+setupVoucherField();
 
 if(required.includes("server")){
   if(produk.serverType === "id"){ 
@@ -663,35 +735,40 @@ function togglePayment() {
 }
 
 function selectPayment(name){
-  const paymentSelected = document.getElementById("paymentSelected");
+  const paymentSelectedElem = document.getElementById("paymentSelected");
   if(name === "QRIS Otomatis" && !produk.qris){
-    alert("QRIS otomatis sedang error, silakan pilih metode lain!");
+    showWarning("QRIS otomatis sedang error, silakan pilih QRIS Manual (Order WA).");
     return;
   }
   selectedPayment = name;
-  paymentSelected.innerText = name;
+  paymentSelectedElem.innerText = name;
   document.getElementById("paymentList").style.display = "none";
-  isManualQRIS = (name === "QRIS Manual");
+  isManualQRIS = (name === "QRIS Manual (Order via WA)");
 }
 
+// Inisialisasi event listener untuk metode pembayaran
 document.addEventListener("DOMContentLoaded", () => {
-  const qrisItem = document.getElementById("qrisAutoItem");
-  if(qrisItem){
+  const qrisAuto = document.getElementById("qrisAutoItem");
+  const manualQris = document.getElementById("manualQrisItem");
+  if(qrisAuto){
     if(!produk.qris){
-      qrisItem.innerText = "QRIS Otomatis (sedang error)";
-      qrisItem.classList.add("disabled");
-      qrisItem.addEventListener("click", (e) => {
+      qrisAuto.innerText = "QRIS Otomatis (sedang error)";
+      qrisAuto.classList.add("disabled");
+      qrisAuto.addEventListener("click", (e) => {
         e.stopPropagation();
-        alert("QRIS otomatis sedang error, silakan pilih metode lain!");
+        showWarning("QRIS otomatis sedang error, gunakan QRIS Manual.");
       });
     } else {
-      qrisItem.innerText = "QRIS Otomatis";
-      qrisItem.addEventListener("click", () => selectPayment("QRIS Otomatis"));
+      qrisAuto.innerText = "QRIS Otomatis (Instant)";
+      qrisAuto.addEventListener("click", () => selectPayment("QRIS Otomatis"));
     }
+  }
+  if(manualQris){
+    manualQris.addEventListener("click", () => selectPayment("QRIS Manual (Order via WA)"));
   }
 });
 
-// ========== Fungsi untuk modal info ==========
+// ========== MODAL INFORMASI PRODUK ==========
 function getPublisher(key) {
   const map = {
     ff: "Garena", ml: "Moonton", pubg: "Tencent", genshin: "Hoyoverse",
@@ -707,48 +784,48 @@ function openInfo() {
   const body = document.getElementById("modalBody");
   let gameName = produk.name || game;
   let publisher = getPublisher(key);
-  let detailText = produk.detail || "Proses Cepat\nLayanan Chat 24/7\nProduk Resmi";
+  let detailText = produk.detail || "Proses Cepat\nLayanan Chat 24/7\nProduk Resmi 100%";
   let bulletItems = detailText.split('\n').filter(l => l.trim());
   let bulletHtml = '<ul class="bullet-list">' + bulletItems.map(l => `<li>${l.trim()}</li>`).join('') + '</ul>';
-  let descText = produk.desc || "Top up diamond harga paling murah, aman, cepat, dan terpercaya.";
+  let descText = produk.desc || "Top up termurah, aman, dan terpercaya. Voucher dikirim otomatis oleh admin setelah pembayaran.";
   const content = `
-    <div class="info-store"><h2>PRIMA STORE</h2><p>The Most Trusted & Safest Platform For TopUp Games</p></div>
+    <div class="info-store"><h2>PRIMA STORE</h2><p>The Most Trusted Platform for TopUp & Voucher</p></div>
     <div class="info-game"><h3>${gameName.toUpperCase()}</h3><div class="sub">${publisher}</div></div>
     ${bulletHtml}
     <div class="steps">
-      <p><strong>Deskripsi dan cara melakukan transaksi</strong></p>
+      <p><strong>📌 Cara transaksi :</strong></p>
+      <ol><li>Masukkan ID / Username yang valid</li><li>Pilih nominal / item</li><li>Pilih metode pembayaran</li><li>Jika produk VOUCHER, kode akan dikirim admin via WhatsApp</li><li>Klik Bayar & lakukan pembayaran</li><li>Proses otomatis/max 15 menit</li></ol>
       <p>${descText}</p>
-      <p><strong>Cara topup ${gameName}:</strong></p>
-      <ol><li>Masukkan Data Akun</li><li>Pilih Nominal</li><li>Pilih Pembayaran</li><li>Masukkan Kode Promo (jika ada)</li><li>Isi Detail Kontak</li><li>Klik Pesan Sekarang dan lakukan Pembayaran</li><li>Selesai</li></ol>
     </div>
-    <div class="note"><strong>Note:</strong> Jika Mengalami Kendala Silahkan hub CS IG <a href="#">Klik Disini</a> dan CS WhatsApp <a href="https://wa.me/6283160556330" target="_blank">Klik Disini</a></div>
+    <div class="note"><strong>💡 Catatan:</strong> Untuk pembelian voucher, kode akan dikirim oleh admin setelah status lunas. Hubungi CS jika belum diterima dalam 1x24 jam. <a href="https://wa.me/6283160556330" target="_blank">Klik CS WhatsApp</a></div>
   `;
   body.innerHTML = content;
   modal.style.display = "flex";
 }
+function closeInfo() { document.getElementById("infoModal").style.display = "none"; }
 
-function closeInfo() {
-  document.getElementById("infoModal").style.display = "none";
-}
-
-// Fungsi lain
+// Helper notifikasi
 function showLoading(){ document.getElementById("loadingPopup").style.display = "flex"; }
+function hideLoading(){ document.getElementById("loadingPopup").style.display = "none"; }
 function showWarning(text){
   document.getElementById("warningText").innerText = text;
   document.getElementById("warningPopup").style.display = "flex";
 }
 function closeWarning(){ document.getElementById("warningPopup").style.display = "none"; }
 function goHome() { window.location.href = "index.html"; }
+
+// Sheet manual QRIS
 function openSheet(){
   document.getElementById("confirmSheet").classList.add("show");
   document.getElementById("sheetImage").src = image;
   document.getElementById("sheetItem").innerText = game + " " + item;
   document.getElementById("sheetPrice").innerText = "Rp " + price.toLocaleString("id-ID");
-  document.getElementById("sheetHarga").innerText = "Rp " + price.toLocaleString("id-ID");
-  let userData = document.getElementById("userId")?.value || document.getElementById("username")?.value || document.getElementById("phone")?.value || document.getElementById("voucher")?.value || "-";
+  document.getElementById("sheetHarga").innerHTML = "Rp " + price.toLocaleString("id-ID");
+  let userData = document.getElementById("userId")?.value || document.getElementById("username")?.value || document.getElementById("phone")?.value || "Data akan dikirim via WA";
   document.getElementById("sheetUser").innerText = userData;
 }
 function closeSheet(){ document.getElementById("confirmSheet").classList.remove("show"); }
+
 function lanjutWA(){
   closeSheet();
   const waNumber = "6283160556330";
@@ -756,35 +833,62 @@ function lanjutWA(){
   if(required.includes("server")){
     serverVal = (produk.serverType==="id") ? document.getElementById("serverId").value : document.getElementById("serverRegion").value;
   }
+  // Karena voucher tidak diinput user, kita kasih keterangan bahwa user membeli voucher
+  let voucherInfoForWA = "";
+  if(required.includes("voucher")){
+    voucherInfoForWA = "✅ PRODUK VOUCHER (Kode akan dikirim oleh admin setelah pembayaran lunas)";
+  } else {
+    voucherInfoForWA = document.getElementById("voucher")?.value || "Tidak ada voucher";
+  }
   const message = encodeURIComponent(
-    `Halo, saya ingin melakukan pembayaran memakai qris manual untuk:\n`+
+    `*ORDER PRIMA STORE* 🛒\n\n`+
     `Game: ${game}\nItem: ${item}\nHarga: Rp ${price.toLocaleString("id-ID")}\n`+
-    `UserID: ${document.getElementById("userId")?.value || ''}\n`+
-    `Username: ${document.getElementById("username")?.value || ''}\n`+
-    `Phone: ${document.getElementById("phone")?.value || ''}\n`+
-    `Voucher: ${document.getElementById("voucher")?.value || ''}\n`+
-    `Server: ${serverVal}`
+    `User ID: ${document.getElementById("userId")?.value || '-'}\n`+
+    `Username: ${document.getElementById("username")?.value || '-'}\n`+
+    `No. Telepon: ${document.getElementById("phone")?.value || '-'}\n`+
+    `Server: ${serverVal || '-'}\n`+
+    `Metode: QRIS Manual (WhatsApp)\n`+
+    `Keterangan Voucher: ${voucherInfoForWA}\n\n`+
+    `*Pembeli mohon konfirmasi setelah transfer.*`
   );
   window.location.href = `https://wa.me/${waNumber}?text=${message}`;
 }
+
+// PROSES BAYAR UTAMA
 function bayar(){
-  const btn = document.querySelector(".pay");
+  const btn = document.getElementById("bayarBtn");
   let serverValue = "";
   if(required.includes("server")){
     serverValue = (produk.serverType==="id") ? document.getElementById("serverId").value : document.getElementById("serverRegion").value;
   }
+  
+  // Validasi field wajib (kecuali voucher karena tidak perlu input)
   if(required.includes("username") && !document.getElementById("username").value){ showWarning("Masukkan username!"); return; }
-  if(required.includes("userId") && !document.getElementById("userId").value){ showWarning("Masukkan ID!"); return; }
-  if(required.includes("phone") && !document.getElementById("phone").value){ showWarning("Masukkan nomor telepon!"); return; }
-  if(required.includes("voucher") && !document.getElementById("voucher").value){ showWarning("Masukkan kode voucher!"); return; }
-  if(required.includes("server") && !serverValue){ showWarning("Masukkan server!"); return; }
+  if(required.includes("userId") && !document.getElementById("userId").value){ showWarning("Masukkan ID Player!"); return; }
+  if(required.includes("phone") && !document.getElementById("phone").value){ showWarning("Masukkan nomor telepon aktif!"); return; }
+  if(required.includes("server") && !serverValue){ showWarning("Pilih / masukkan server!"); return; }
   if(!selectedPayment){ showWarning("Pilih metode pembayaran!"); return; }
-  if(isManualQRIS){ openSheet(); return; }
-
-  btn.innerHTML="⏳ Memproses...";
-  btn.disabled=true;
-  btn.style.opacity="0.7";
+  
+  // Jika metode adalah QRIS Manual, buka sheet konfirmasi WA
+  if(isManualQRIS){
+    openSheet();
+    return;
+  }
+  
+  // QRIS Otomatis
+  btn.innerHTML = "⏳ Memproses...";
+  btn.disabled = true;
+  btn.style.opacity = "0.7";
   showLoading();
+  
+  // Karena voucher tidak ada input user, kita lewatkan parameter voucher kosong atau flag "voucher_auto"
+  let voucherParam = "";
+  if(required.includes("voucher")){
+    voucherParam = "voucher=admin_kirim_setelah_bayar";
+  } else {
+    voucherParam = "voucher=" + encodeURIComponent(document.getElementById("voucher")?.value || '');
+  }
+  
   const invoiceUrl = "invoice.html?" +
     "key="+encodeURIComponent(key)+
     "&game="+encodeURIComponent(game)+
@@ -794,18 +898,34 @@ function bayar(){
     "&userId="+encodeURIComponent(document.getElementById("userId")?.value || '')+
     "&username="+encodeURIComponent(document.getElementById("username")?.value || '')+
     "&phone="+encodeURIComponent(document.getElementById("phone")?.value || '')+
-    "&voucher="+encodeURIComponent(document.getElementById("voucher")?.value || '')+
+    "&"+voucherParam+
     "&server="+encodeURIComponent(serverValue || '')+
     "&payment="+encodeURIComponent(selectedPayment);
-  setTimeout(() => { window.location.href = invoiceUrl; }, 1200);
+  
+  setTimeout(() => { window.location.href = invoiceUrl; }, 1300);
 }
+
+// Event binding tombol bayar
+document.getElementById("bayarBtn").addEventListener("click", bayar);
+
+// Reset loading jika halaman kembali (pageshow)
 window.addEventListener("pageshow", () => {
-  const btn = document.querySelector(".pay");
-  btn.disabled = false;
-  btn.style.opacity = "1";
-  btn.innerHTML = "Bayar";
-  document.getElementById("loadingPopup").style.display = "none";
+  const btn = document.getElementById("bayarBtn");
+  if(btn){
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    btn.innerHTML = "Bayar Sekarang";
+  }
+  hideLoading();
 });
+
+// Jika ada field userId dan game Mobile Legends, bisa auto placeholder
+if(game.toLowerCase().includes("mobile legend") || game.toLowerCase().includes("ml")){
+  const userIdInput = document.getElementById("userId");
+  if(userIdInput && !userIdInput.placeholder.includes("ZoneID")){
+    userIdInput.placeholder = "ID Player | Zone ID (contoh: 12345678|1234)";
+  }
+}
 </script>
 </body>
 </html>
