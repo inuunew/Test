@@ -1,10 +1,11 @@
 // main.js
 // ==================== GLOBAL VARIABLES ====================
 let currentGame = null, currentType = 'regular', selectedItem = null, isOtherProduct = false, isPanel = false;
+/*
 let audioPlayer = null;
 let currentSongIndex = 0;
 let songsData = [];
-
+*/
 // ==================== LOAD PAGE SYSTEM ====================
 function loadPage(page) {
   fetch(`pages/${page}.html`)
@@ -333,37 +334,26 @@ function initPengumuman() {
   });
 }
 
-// ==================== GLOBAL AUDIO PLAYER ====================
+// ==================== GLOBAL AUDIO PLAYER (CLEAN) ====================
 let globalAudio = new Audio();
 let globalSongsData = [];
 let globalCurrentIndex = 0;
 let isGlobalPlaying = false;
+let cassetteWrapper = null;
+let progressInterval = null;
 
-// ✅ Tambahkan ini SEKALI setelah globalAudio dibuat
 globalAudio.addEventListener('ended', () => {
-    nextGlobalSong();  // Akan lanjut ke lagu berikutnya, dan jika sudah terakhir kembali ke awal
+    nextGlobalSong();
 });
 
-// ... sisanya tetap seperti kode Anda, tapi hapus event listener yang ada di dalam initMusicGlobal ...
-
-// Fungsi untuk memuat lagu ke globalAudio
 function loadGlobalSong(index) {
   if (!globalSongsData[index]) return;
   const song = globalSongsData[index];
   globalAudio.src = song.src;
   globalAudio.load();
   if (isGlobalPlaying) globalAudio.play();
-  // Simpan metadata untuk UI nanti
-  window.currentSongMeta = {
-    title: song.title,
-    artist: song.artist,
-    cover: song.cover,
-    lyrics: song.lyrics,
-    index: index
-  };
 }
 
-// Fungsi untuk toggle play/pause global
 function toggleGlobalPlay() {
   if (globalAudio.paused) {
     globalAudio.play();
@@ -372,11 +362,9 @@ function toggleGlobalPlay() {
     globalAudio.pause();
     isGlobalPlaying = false;
   }
-  // Update UI music jika halaman music sedang aktif
   updateMusicUI();
 }
 
-// Fungsi untuk next lagu
 function nextGlobalSong() {
   if (globalSongsData.length === 0) return;
   globalCurrentIndex = (globalCurrentIndex + 1) % globalSongsData.length;
@@ -395,24 +383,23 @@ function prevGlobalSong() {
   updateMusicUI();
 }
 
-// Fungsi untuk menyinkronkan UI music.html dengan global player
 function updateMusicUI() {
   const musicPage = document.querySelector('.music-page');
-  if (!musicPage) return; // Halaman music tidak aktif
-  
+  if (!musicPage) return;
+
   const song = globalSongsData[globalCurrentIndex];
   if (!song) return;
-  
-  document.getElementById('songTitle').innerText = song.title;
-  document.getElementById('artist').innerText = song.artist;
-  document.getElementById('musicCover').src = song.cover;
-  
+
+  const titleEl = document.getElementById('songTitle');
+  const artistEl = document.getElementById('artist');
+  if (titleEl) titleEl.innerText = song.title;
+  if (artistEl) artistEl.innerText = song.artist;
+
   const playPauseIcon = document.getElementById('playPauseIcon');
   if (playPauseIcon) {
     playPauseIcon.className = globalAudio.paused ? 'fas fa-play' : 'fas fa-pause';
   }
-  
-  // Update lyrics
+
   const lyricsContainer = document.getElementById('lyricsContainer');
   if (lyricsContainer && song.lyrics) {
     lyricsContainer.innerHTML = '';
@@ -422,16 +409,25 @@ function updateMusicUI() {
       lyricsContainer.appendChild(p);
     });
   }
-  
-  // Update progress bar secara berkala jika halaman aktif
-  if (window.progressInterval) clearInterval(window.progressInterval);
-  window.progressInterval = setInterval(() => {
+
+  if (!cassetteWrapper) {
+    cassetteWrapper = document.querySelector('.cassette-wrapper');
+  }
+  if (cassetteWrapper) {
+    if (!globalAudio.paused) {
+      cassetteWrapper.classList.add('playing');
+    } else {
+      cassetteWrapper.classList.remove('playing');
+    }
+  }
+
+  if (progressInterval) clearInterval(progressInterval);
+  progressInterval = setInterval(() => {
     if (!globalAudio.duration) return;
     const percent = (globalAudio.currentTime / globalAudio.duration) * 100;
     const progressBar = document.getElementById('musicProgress');
     if (progressBar) progressBar.style.width = percent + '%';
-    
-    // Update lyrics highlight
+
     const currentSong = globalSongsData[globalCurrentIndex];
     if (currentSong && currentSong.lyrics) {
       const lines = document.querySelectorAll('#lyricsContainer p');
@@ -451,7 +447,6 @@ function updateMusicUI() {
   }, 200);
 }
 
-// Inisialisasi music (load data JSON) hanya sekali
 function initMusicGlobal() {
   if (globalSongsData.length > 0) return Promise.resolve();
   return fetch('listmusic.json')
@@ -460,19 +455,11 @@ function initMusicGlobal() {
       globalSongsData = data.songs;
       if (globalSongsData.length > 0 && !globalAudio.src) {
         loadGlobalSong(0);
+        isGlobalPlaying = false;
+        globalAudio.pause();
       }
     })
     .catch(err => console.error('Gagal load music:', err));
-}
-
-// ==================== MUSIC ====================
-function initMusic() {
-  initMusicGlobal().then(() => {
-    // Tampilkan UI sesuai global player
-    updateMusicUI();
-    // Pasang event listener untuk kontrol tombol di music.html
-    attachMusicControls();
-  });
 }
 
 function attachMusicControls() {
@@ -480,7 +467,7 @@ function attachMusicControls() {
   const prevBtn = document.getElementById('prevBtn');
   const nextBtn = document.getElementById('nextBtn');
   const progressContainer = document.getElementById('progressContainer');
-  
+
   if (playBtn) playBtn.onclick = () => toggleGlobalPlay();
   if (prevBtn) prevBtn.onclick = () => prevGlobalSong();
   if (nextBtn) nextBtn.onclick = () => nextGlobalSong();
@@ -495,106 +482,9 @@ function attachMusicControls() {
   }
 }
 
-function setupMusicPlayer() {
-  const audioHtml = '<audio id="musicAudio"></audio>';
-  if (!document.getElementById('musicAudio')) {
-    document.querySelector('.music-page .player').insertAdjacentHTML('beforeend', audioHtml);
-  }
-  audioPlayer = document.getElementById('musicAudio');
-  if (!audioPlayer) return;
-  
-  // Event listener untuk progress
-  audioPlayer.addEventListener('timeupdate', updateProgress);
-  audioPlayer.addEventListener('ended', nextSong);
-}
-
-function loadSong(index) {
-  if (!songsData[index]) return;
-  const song = songsData[index];
-  document.getElementById('songTitle').innerText = song.title;
-  document.getElementById('artist').innerText = song.artist;
-  document.getElementById('musicCover').src = song.cover;
-  audioPlayer.src = song.src;
-  audioPlayer.load();
-  audioPlayer.play();
-  document.getElementById('playPauseIcon').classList.replace('fa-play', 'fa-pause');
-  
-  // Render lyrics
-  const lyricsContainer = document.getElementById('lyricsContainer');
-  if (lyricsContainer && song.lyrics) {
-    lyricsContainer.innerHTML = '';
-    song.lyrics.forEach(line => {
-      const p = document.createElement('p');
-      p.innerText = line.text;
-      lyricsContainer.appendChild(p);
-    });
-  }
-  
-  // Update active playlist
-  document.querySelectorAll('.playlist-item').forEach((item, idx) => {
-    if (idx === index) item.classList.add('active');
-    else item.classList.remove('active');
-  });
-}
-
-function updateProgress() {
-  if (!audioPlayer.duration) return;
-  const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-  const progressBar = document.getElementById('musicProgress');
-  if (progressBar) progressBar.style.width = percent + '%';
-  
-  // Update lyrics highlight
-  const currentSong = songsData[currentSongIndex];
-  if (currentSong && currentSong.lyrics) {
-    const lines = document.querySelectorAll('#lyricsContainer p');
-    let activeIndex = -1;
-    for (let i = 0; i < currentSong.lyrics.length; i++) {
-      if (audioPlayer.currentTime >= currentSong.lyrics[i].time) {
-        activeIndex = i;
-      } else break;
-    }
-    lines.forEach((line, idx) => {
-      if (idx === activeIndex) line.classList.add('active');
-      else line.classList.remove('active');
-    });
-    if (activeIndex >= 0) {
-      lines[activeIndex]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }
-}
-
-window.togglePlay = function() {
-  if (audioPlayer.paused) {
-    audioPlayer.play();
-    document.getElementById('playPauseIcon').classList.replace('fa-play', 'fa-pause');
-  } else {
-    audioPlayer.pause();
-    document.getElementById('playPauseIcon').classList.replace('fa-pause', 'fa-play');
-  }
-};
-
-window.nextSong = function() {
-  currentSongIndex = (currentSongIndex + 1) % songsData.length;
-  loadSong(currentSongIndex);
-};
-
-window.prevSong = function() {
-  currentSongIndex = (currentSongIndex - 1 + songsData.length) % songsData.length;
-  loadSong(currentSongIndex);
-};
-
-window.setProgress = function(e) {
-  const width = e.currentTarget.clientWidth;
-  const clickX = e.offsetX;
-  if (audioPlayer.duration) {
-    audioPlayer.currentTime = (clickX / width) * audioPlayer.duration;
-  }
-};
-
 // ==================== PLAYLIST BOTTOM SHEET ====================
 function initPlaylistSheet() {
   if (document.getElementById('playlistSheet')) return;
-  
   const sheetHTML = `
     <div id="playlistSheet" class="bottom-sheet" style="display: none;">
       <div class="bottom-sheet-overlay"></div>
@@ -609,36 +499,21 @@ function initPlaylistSheet() {
     </div>
   `;
   document.body.insertAdjacentHTML('beforeend', sheetHTML);
-  
   const sheet = document.getElementById('playlistSheet');
   const overlay = sheet.querySelector('.bottom-sheet-overlay');
   const closeBtn = sheet.querySelector('.sheet-close');
-  
   const closeSheet = () => {
     sheet.classList.remove('show');
-    setTimeout(() => {
-      if (!sheet.classList.contains('show')) sheet.style.display = 'none';
-    }, 300);
+    setTimeout(() => { if (!sheet.classList.contains('show')) sheet.style.display = 'none'; }, 300);
   };
-  
   overlay.onclick = closeSheet;
   closeBtn.onclick = closeSheet;
-  
-  // Optional: swipe down to close (touch)
-  let startY = 0;
-  const container = sheet.querySelector('.bottom-sheet-container');
-  container.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; });
-  container.addEventListener('touchmove', (e) => {
-    const deltaY = e.touches[0].clientY - startY;
-    if (deltaY > 50) closeSheet();
-  });
 }
 
 function showPlaylistSheet() {
   const sheet = document.getElementById('playlistSheet');
   const container = document.getElementById('playlistSheetItems');
   if (!container) return;
-  
   container.innerHTML = '';
   if (globalSongsData.length === 0) {
     container.innerHTML = '<div class="empty-playlist">Belum ada lagu</div>';
@@ -646,22 +521,17 @@ function showPlaylistSheet() {
     setTimeout(() => sheet.classList.add('show'), 10);
     return;
   }
-  
   globalSongsData.forEach((song, idx) => {
     const item = document.createElement('div');
     item.className = 'playlist-sheet-item';
     if (idx === globalCurrentIndex) item.classList.add('active');
-    
     item.innerHTML = `
       <div class="playlist-item-info">
         <div class="playlist-item-title">${escapeHtml(song.title)}</div>
         <div class="playlist-item-artist">${escapeHtml(song.artist)}</div>
       </div>
-      <button class="playlist-item-play" data-index="${idx}">
-        <i class="fas fa-play"></i>
-      </button>
+      <button class="playlist-item-play" data-index="${idx}"><i class="fas fa-play"></i></button>
     `;
-    
     const playBtn = item.querySelector('.playlist-item-play');
     playBtn.onclick = (e) => {
       e.stopPropagation();
@@ -672,10 +542,8 @@ function showPlaylistSheet() {
       updateMusicUI();
       closeSheet();
     };
-    
     container.appendChild(item);
   });
-  
   sheet.style.display = 'flex';
   setTimeout(() => sheet.classList.add('show'), 10);
 }
@@ -684,9 +552,7 @@ function closeSheet() {
   const sheet = document.getElementById('playlistSheet');
   if (sheet) {
     sheet.classList.remove('show');
-    setTimeout(() => {
-      if (!sheet.classList.contains('show')) sheet.style.display = 'none';
-    }, 300);
+    setTimeout(() => { if (!sheet.classList.contains('show')) sheet.style.display = 'none'; }, 300);
   }
 }
 
@@ -700,22 +566,23 @@ function escapeHtml(str) {
   });
 }
 
-// ==================== OVERRIDE attachMusicControls ====================
-const originalAttachMusicControls = attachMusicControls;
+// Override tombol playlist (setelah attachMusicControls)
+const originalAttach = attachMusicControls;
 attachMusicControls = function() {
-  originalAttachMusicControls();
+  originalAttach();
   const playlistBtn = document.getElementById('playlistBtn');
-  if (playlistBtn) {
-    playlistBtn.onclick = () => showPlaylistSheet();
-  }
+  if (playlistBtn) playlistBtn.onclick = () => showPlaylistSheet();
 };
 
-// ==================== OVERRIDE initMusic ====================
-const originalInitMusic = initMusic;
-initMusic = function() {
-  initPlaylistSheet();   // buat bottom sheet
-  originalInitMusic();
-};
+// Init music utama
+function initMusic() {
+  initPlaylistSheet();
+  initMusicGlobal().then(() => {
+    updateMusicUI();
+    attachMusicControls();
+  });
+}
+
 // ==================== BANTUAN ====================
 function initBantuan() {
   // Tidak ada inisialisasi khusus, hanya konten statis
