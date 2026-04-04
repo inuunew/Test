@@ -658,6 +658,78 @@ body {
   cursor: pointer;
 }
 
+.music-page .modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.music-page .modal-container {
+  background: #1e1e2f;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  max-height: 80%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: fadeInUp 0.2s ease;
+}
+.music-page .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #333;
+}
+.music-page .modal-close {
+  font-size: 28px;
+  cursor: pointer;
+}
+.music-page .modal-playlist {
+  overflow-y: auto;
+  padding: 10px 0;
+}
+.music-page .modal-playlist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.music-page .modal-playlist-item:hover {
+  background: #2a2a3a;
+}
+.music-page .modal-playlist-item.active {
+  background: #3a2c4a;
+  border-left: 3px solid #ff9800;
+}
+.music-page .modal-item-cover {
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.music-page .modal-item-info {
+  flex: 1;
+}
+.music-page .modal-item-title {
+  font-weight: bold;
+}
+.music-page .modal-item-artist {
+  font-size: 12px;
+  color: #aaa;
+}
+.music-page .empty-playlist {
+  text-align: center;
+  padding: 40px;
+  color: #aaa;
+}
 /* ========== STYLE KHUSUS BANTUAN ========== */
 .bantuan-page .bantuan-wrapper {
   background: white;
