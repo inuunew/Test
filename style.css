@@ -658,6 +658,77 @@ body {
   cursor: pointer;
 }
 
+/* CARD ABU-ABU DOUBLE BACKGROUND */
+.player {
+  background: linear-gradient(145deg, #3a3a3a, #1f1f1f);
+  border-radius: 28px;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 8px 8px 16px rgba(0,0,0,0.4), 
+              -4px -4px 8px rgba(255,255,255,0.08);
+  /* double background: gradien + bayangan ganda */
+  transition: all 0.3s ease;
+}
+
+/* KASET WRAPPER */
+.cassette-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* BADAN KASET */
+.cassette {
+  position: relative;
+  width: 200px;
+  height: 120px;
+  background: #4a2a1a;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 2px #6b4c2c, 0 8px 16px rgba(0,0,0,0.5);
+}
+
+/* REEL (bagian yang berputar) */
+.reel {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  background: radial-gradient(circle, #d4d4d4, #8a8a8a);
+  border-radius: 50%;
+  top: 35px;
+  box-shadow: inset 0 0 0 3px #333, 0 2px 6px rgba(0,0,0,0.4);
+  animation: spinReel 2s linear infinite;
+  animation-play-state: paused;
+}
+
+.left-reel {
+  left: 28px;
+}
+.right-reel {
+  right: 28px;
+}
+
+/* JENDELA KASET */
+.tape-window {
+  position: absolute;
+  width: 90px;
+  height: 36px;
+  background: rgba(0,0,0,0.35);
+  bottom: 12px;
+  left: 55px;
+  border-radius: 8px;
+  border: 1px solid #b87c4a;
+}
+
+/* ANIMASI PUTAR */
+@keyframes spinReel {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* SAAT LAGU DIPUTAR, REEL BERPUTAR */
+.cassette-wrapper.playing .reel {
+  animation-play-state: running;
+}
 /* Bottom Sheet Playlist - global */
 .bottom-sheet {
   position: fixed;
