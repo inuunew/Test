@@ -602,15 +602,29 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;   /* tinggi penuh layar */
+  flex-direction: column;
+  min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
 }
 
 
 .music-page .player {
+  background: linear-gradient(145deg, #3a3a3a, #1f1f1f);
+  border-radius: 28px;
   padding: 20px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 8px 8px 16px rgba(0,0,0,0.4), -4px -4px 8px rgba(255,255,255,0.08);
+  margin: 0 auto;
   text-align: center;
+}
+
+.music-page .lyrics {
+  height: 150px;
+  overflow-y: auto;
+  margin-top: 10px;
+  scroll-behavior: auto; /* tidak ada smooth paksa */
 }
 .music-page .song-title {
   font-weight: bold;
@@ -668,18 +682,10 @@ body {
 
 /* CARD ABU-ABU DOUBLE BACKGROUND */
 /* Card player abu-abu double background - DI TENGAH */
-.player {
-  background: linear-gradient(145deg, #3a3a3a, #1f1f1f);
-  border-radius: 28px;
-  padding: 20px;
-  width: 100%;
-  max-width: 360px;     /* lebar maksimal agar tidak terlalu lebar di desktop */
-  box-shadow: 8px 8px 16px rgba(0,0,0,0.4), 
-              -4px -4px 8px rgba(255,255,255,0.08);
-  margin: 0 auto;       /* ini yang membuat card di tengah secara horizontal */
-  transition: all 0.3s ease;
-}
 
+
+
+/* Container lirik tetap memiliki tinggi dan scroll manual */
 /* Jika Anda ingin card vertikal juga di tengah (tengah layar penuh), 
    tambahkan margin top/bottom auto juga, tapi pastikan parent-nya sudah flex */
 
