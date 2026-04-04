@@ -732,11 +732,25 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
+  flex-wrap: nowrap;  /* <- kunci: jangan pindah baris */
 }
+
 .checkout-page .product img {
   width: 60px;
   border-radius: 10px;
+  flex-shrink: 0;     /* gambar tidak mengecil */
 }
+
+.checkout-page .product > div {
+  flex: 1;            /* teks mengambil sisa ruang */
+  min-width: 0;       /* mencegah overflow, teks bisa wrap dalam satu baris */
+}
+
+.checkout-page .product #itemName {
+  word-break: break-word;
+  white-space: normal; /* teks panjang bisa pindah baris tetapi tetap di samping gambar */
+}
+
 .checkout-page .badge {
   background: #e6f7ed;
   color: #1ea55b;
