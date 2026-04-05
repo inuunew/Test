@@ -22,6 +22,7 @@ function loadPage(page) {
       if (page === 'beranda') initBeranda();
       else if (page === 'pengumuman') initPengumuman();
       else if (page === 'music') initMusic();
+      else if (page === 'kalkulator') initKalkulator();
       else if (page === 'bantuan') initBantuan();
       else if (page === 'checkout') initCheckout();
       
@@ -590,15 +591,227 @@ function initBantuan() {
   // Tidak ada inisialisasi khusus, hanya konten statis
 }
 
-// ==================== CHECKOUT ====================
-function initCheckout() {
-  // Kode checkout akan dijalankan dari dalam file checkout.html
-  // Namun kita panggil fungsi yang ada di global scope
-  if (typeof window.initCheckoutForm === 'function') {
-    window.initCheckoutForm();
-  }
-}
+// ==================== KALKULATOR ====================
+// Data default setiap mode
+// ==================== KALKULATOR ====================
+function initKalkulator() {
+    // Data default setiap mode
+    const defaultValues = {
+        winrate: {
+            totalMatches: 500,
+            currentWR: 52.5,
+            targetWR: 55.0
+        },
+        magic: {
+            currentCore: 0
+        },
+        zodiac: {
+            currentSP: 0,
+            bonusSkin: 0
+        }
+    };
 
+    let currentTab = "winrate";
+    let activeSliders = []; // untuk menyimpan listener slider sementara
+
+    const formContainer = document.getElementById("formContainer");
+    const resetBtn = document.getElementById("resetBtn");
+    const hitungBtn = document.getElementById("hitungBtn");
+    const resultArea = document.getElementById("resultArea");
+
+    // Fungsi render form berdasarkan tab
+    function renderForm() {
+        if (currentTab === "winrate") {
+            formContainer.innerHTML = `
+                <div class="input-group">
+                    <label>📊 Total Match</label>
+                    <input type="number" id="totalMatches" value="${defaultValues.winrate.totalMatches}" step="1" min="0">
+                </div>
+                <div class="input-group">
+                    <label>🎯 Win Rate Saat Ini (%)</label>
+                    <input type="number" id="currentWR" value="${defaultValues.winrate.currentWR}" step="0.1" min="0" max="100">
+                </div>
+                <div class="input-group">
+                    <label>⭐ Target Win Rate (%)</label>
+                    <input type="number" id="targetWR" value="${defaultValues.winrate.targetWR}" step="0.1" min="0" max="100">
+                </div>
+            `;
+        } 
+        else if (currentTab === "magic") {
+            formContainer.innerHTML = `
+                <div class="input-group">
+                    <label>🔮 Poin Magic Wheel : <span id="magicCoreLabel">${defaultValues.magic.currentCore}</span></label>
+                    <input type="range" id="magicCore" min="0" max="199" value="${defaultValues.magic.currentCore}" step="1">
+                    <div class="range-value">
+                        <span class="badge-hint">Saat ini: ${defaultValues.magic.currentCore}</span>
+                        <span class="badge-hint">Target: 200</span>
+                    </div>
+                </div>
+            `;
+            const slider = document.getElementById("magicCore");
+            const label = document.getElementById("magicCoreLabel");
+            const updateLabel = () => { label.innerText = slider.value; };
+            slider.addEventListener("input", updateLabel);
+            activeSliders.push({ slider, updateLabel });
+        } 
+        else if (currentTab === "zodiac") {
+            formContainer.innerHTML = `
+                <div class="input-group">
+                    <label>✨ Star Power Saat Ini : <span id="starPowerLabel">${defaultValues.zodiac.currentSP}</span></label>
+                    <input type="range" id="starPower" min="0" max="99" value="${defaultValues.zodiac.currentSP}" step="1">
+                    <div class="range-value">
+                        <span class="badge-hint">Saat ini: ${defaultValues.zodiac.currentSP}</span>
+                        <span class="badge-hint">Target: 100</span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>🎁 Bonus Skin Zodiac Dimiliki</label>
+                    <select id="bonusSkin">
+                        <option value="0" ${defaultValues.zodiac.bonusSkin === 0 ? "selected" : ""}>0 skin (+0 SP)</option>
+                        <option value="1" ${defaultValues.zodiac.bonusSkin === 1 ? "selected" : ""}>1 skin (+10 SP)</option>
+                        <option value="2" ${defaultValues.zodiac.bonusSkin === 2 ? "selected" : ""}>2 skin (+20 SP)</option>
+                        <option value="3" ${defaultValues.zodiac.bonusSkin === 3 ? "selected" : ""}>3 skin (+30 SP)</option>
+                        <option value="4" ${defaultValues.zodiac.bonusSkin === 4 ? "selected" : ""}>4 skin (+40 SP)</option>
+                        <option value="5" ${defaultValues.zodiac.bonusSkin === 5 ? "selected" : ""}>5 skin (+50 SP)</option>
+                        <option value="6" ${defaultValues.zodiac.bonusSkin === 6 ? "selected" : ""}>6+ skin (+60 SP)</option>
+                    </select>
+                </div>
+            `;
+            const slider = document.getElementById("starPower");
+            const label = document.getElementById("starPowerLabel");
+            const updateLabel = () => { label.innerText = slider.value; };
+            slider.addEventListener("input", updateLabel);
+            activeSliders.push({ slider, updateLabel });
+        }
+    }
+
+    // Reset form
+    function resetForm() {
+        if (currentTab === "winrate") {
+            const totalInput = document.getElementById("totalMatches");
+            const wrInput = document.getElementById("currentWR");
+            const targetInput = document.getElementById("targetWR");
+            if (totalInput) totalInput.value = defaultValues.winrate.totalMatches;
+            if (wrInput) wrInput.value = defaultValues.winrate.currentWR;
+            if (targetInput) targetInput.value = defaultValues.winrate.targetWR;
+        } 
+        else if (currentTab === "magic") {
+            const slider = document.getElementById("magicCore");
+            if (slider) {
+                slider.value = defaultValues.magic.currentCore;
+                const label = document.getElementById("magicCoreLabel");
+                if (label) label.innerText = defaultValues.magic.currentCore;
+            }
+        } 
+        else if (currentTab === "zodiac") {
+            const slider = document.getElementById("starPower");
+            if (slider) {
+                slider.value = defaultValues.zodiac.currentSP;
+                const label = document.getElementById("starPowerLabel");
+                if (label) label.innerText = defaultValues.zodiac.currentSP;
+            }
+            const bonusSelect = document.getElementById("bonusSkin");
+            if (bonusSelect) bonusSelect.value = defaultValues.zodiac.bonusSkin;
+        }
+        if (resultArea) {
+            resultArea.innerHTML = `<div class="result-placeholder">Data telah direset.<br>Tekan HITUNG untuk melihat hasil.</div>`;
+        }
+    }
+
+    // Hitung berdasarkan tab
+    function hitung() {
+        if (currentTab === "winrate") {
+            const total = parseFloat(document.getElementById("totalMatches")?.value);
+            const wrNow = parseFloat(document.getElementById("currentWR")?.value);
+            const target = parseFloat(document.getElementById("targetWR")?.value);
+            if (isNaN(total) || isNaN(wrNow) || isNaN(target) || total < 0) {
+                resultArea.innerHTML = `<div class="result-placeholder">⚠️ Input tidak valid!</div>`;
+                return;
+            }
+            if (target <= wrNow) {
+                resultArea.innerHTML = `<div class="result-value">✅ Target sudah tercapai!</div><div class="result-desc">Tidak perlu kemenangan beruntun.</div>`;
+                return;
+            }
+            const currentWins = (wrNow / 100) * total;
+            const leftCoeff = 1 - (target / 100);
+            const rightSide = (target * total) / 100 - currentWins;
+            let neededWins = Math.ceil(rightSide / leftCoeff);
+            neededWins = Math.max(0, neededWins);
+            resultArea.innerHTML = `<div class="result-value">${neededWins.toLocaleString()} kemenangan beruntun</div>
+                                    <div class="result-desc">Dibutuhkan untuk mencapai ${target}% WR dari ${wrNow}% (${total} match)</div>`;
+        } 
+        else if (currentTab === "magic") {
+            let currentCore = parseInt(document.getElementById("magicCore")?.value);
+            if (isNaN(currentCore)) currentCore = 0;
+            let needCore = 200 - currentCore;
+            if (needCore <= 0) {
+                resultArea.innerHTML = `<div class="result-value">✅ Magic Core sudah cukup!</div><div class="result-desc">Skin Legend siap diklaim.</div>`;
+                return;
+            }
+            let fiveDrawsNeeded = Math.ceil(needCore / 5);
+            let totalDiamond = fiveDrawsNeeded * 270;
+            resultArea.innerHTML = `<div class="result-value">💎 ${totalDiamond.toLocaleString()} Diamond</div>
+                                    <div class="result-desc">Maksimal yang dibutuhkan untuk mendapatkan Skin Legend (worst case: 5 core per 5x draw)</div>`;
+        } 
+        else if (currentTab === "zodiac") {
+            let currentSP = parseInt(document.getElementById("starPower")?.value);
+            let bonus = parseInt(document.getElementById("bonusSkin")?.value);
+            if (isNaN(currentSP)) currentSP = 0;
+            if (isNaN(bonus)) bonus = 0;
+            let totalSP = currentSP + bonus;
+            let needSP = 100 - totalSP;
+            if (needSP <= 0) {
+                resultArea.innerHTML = `<div class="result-value">✅ Star Power sudah cukup!</div><div class="result-desc">Skin Zodiac siap diklaim.</div>`;
+                return;
+            }
+            let totalDiamond = needSP * 60;
+            resultArea.innerHTML = `<div class="result-value">💎 ${totalDiamond.toLocaleString()} Diamond</div>
+                                    <div class="result-desc">Maksimal yang dibutuhkan (worst case: 1 SP per draw, 60💎/draw)</div>`;
+        }
+    }
+
+    // Bersihkan event listener slider lama
+    function cleanupSliders() {
+        activeSliders.forEach(({ slider, updateLabel }) => {
+            slider.removeEventListener("input", updateLabel);
+        });
+        activeSliders = [];
+    }
+
+    // Pasang event listener untuk tab
+    const tabBtns = document.querySelectorAll('.kalkulator-page .tab-btn');
+    tabBtns.forEach(btn => {
+        btn.removeEventListener('click', tabClickHandler);
+        btn.addEventListener('click', tabClickHandler);
+    });
+
+    function tabClickHandler(e) {
+        const btn = e.currentTarget;
+        if (btn.classList.contains('active')) return;
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTab = btn.getAttribute('data-tab');
+        cleanupSliders();
+        renderForm();
+        if (resultArea) {
+            resultArea.innerHTML = `<div class="result-placeholder">Masukkan data terlebih dahulu ya!<br>Hasil akan ditampilkan di sini.</div>`;
+        }
+    }
+
+    // Pasang event listener tombol reset & hitung
+    if (resetBtn) {
+        resetBtn.removeEventListener('click', resetForm);
+        resetBtn.addEventListener('click', resetForm);
+    }
+    if (hitungBtn) {
+        hitungBtn.removeEventListener('click', hitung);
+        hitungBtn.addEventListener('click', hitung);
+    }
+
+    // Inisialisasi pertama
+    cleanupSliders();
+    renderForm();
+}
 // ==================== SIDEBAR & NAVBAR FUNCTIONS ====================
 window.toggleMenu = function() {
   document.getElementById('sidebar').classList.add('active');
