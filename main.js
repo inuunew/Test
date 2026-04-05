@@ -733,12 +733,12 @@ function initKalkulator() {
                     <label><i class="fas fa-gift"></i> Bonus Skin Zodiac Dimiliki</label>
                     <select id="bonusSkin">
                         <option value="0">0 skin (+0 SP)</option>
-                        <option value="1">1 skin (+10 SP)</option>
-                        <option value="2">2 skin (+20 SP)</option>
-                        <option value="3">3 skin (+30 SP)</option>
-                        <option value="4">4 skin (+40 SP)</option>
-                        <option value="5">5 skin (+50 SP)</option>
-                        <option value="6">6+ skin (+60 SP)</option>
+                        <option value="1">1 skin (+1 SP)</option>
+                        <option value="2">2 skin (+2 SP)</option>
+                        <option value="3">3 skin (+3 SP)</option>
+                        <option value="4">4 skin (+4 SP)</option>
+                        <option value="5">5 skin (+5 SP)</option>
+                        <option value="6">6+ skin (+6 SP)</option>
                     </select>
                 </div>
             `;
