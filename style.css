@@ -900,12 +900,13 @@ body {
 /* ========== KALKULATOR MLBB ========== */
 /* ========== KALKULATOR STYLE MIRIP SCREENSHOT ========== */
 .kalkulator-page {
-    background: linear-gradient(145deg, #3a3a3a, #1f1f1f);
-    padding: 20px;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .kalkulator-page .calculator-card {
