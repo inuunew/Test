@@ -663,25 +663,32 @@ function initKalkulator() {
 
     // ========== RENDER FORM & PASANG AUTO LISTENER ==========
     function renderForm() {
-        if (currentTab === "winrate") {
-            formContainer.innerHTML = `
-                <div class="input-group">
-                    <label>📊 Total Match</label>
-                    <input type="number" id="totalMatches" value="${defaultValues.winrate.totalMatches}" step="1" min="0">
-                </div>
-                <div class="input-group">
-                    <label>🎯 Win Rate Saat Ini (%)</label>
-                    <input type="number" id="currentWR" value="${defaultValues.winrate.currentWR}" step="0.1" min="0" max="100">
-                </div>
-                <div class="input-group">
-                    <label>⭐ Target Win Rate (%)</label>
-                    <input type="number" id="targetWR" value="${defaultValues.winrate.targetWR}" step="0.1" min="0" max="100">
-                </div>
-            `;
-            // Pasang listener untuk semua input number
-            const inputs = formContainer.querySelectorAll('input');
-            inputs.forEach(inp => inp.addEventListener('input', () => hitung()));
-        } 
+else if (currentTab === "winrate") {
+    const total = parseFloat(document.getElementById("totalMatches")?.value);
+    const wrNow = parseFloat(document.getElementById("currentWR")?.value);
+    const target = parseFloat(document.getElementById("targetWR")?.value);
+    if (isNaN(total) || isNaN(wrNow) || isNaN(target) || total < 0) {
+        resultArea.innerHTML = `<div class="result-placeholder">⚠️ Input tidak valid!</div>`;
+        return;
+    }
+    formContainer.innerHTML = `
+        <div class="input-group">
+            <label>📊 Total Match</label>
+            <input type="number" id="totalMatches" value="${defaultValues.winrate.totalMatches}" step="1" min="1">
+        </div>
+        <div class="input-group">
+            <label>🎯 Win Rate Saat Ini (%)</label>
+            <input type="number" id="currentWR" value="${defaultValues.winrate.currentWR}" step="0.1" min="0" max="100">
+        </div>
+        <div class="input-group">
+            <label>⭐ Target Win Rate (%)</label>
+            <input type="number" id="targetWR" value="${defaultValues.winrate.targetWR}" step="0.1" min="0" max="100">
+        </div>
+    `;
+    const inputs = formContainer.querySelectorAll('input');
+    inputs.forEach(inp => inp.addEventListener('input', () => hitung()));
+    hitung(); // langsung hitung setelah render
+}
         else if (currentTab === "magic") {
             formContainer.innerHTML = `
                 <div class="input-group">
