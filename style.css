@@ -900,7 +900,7 @@ body {
 /* ========== KALKULATOR MLBB ========== */
 /* ========== KALKULATOR STYLE MIRIP SCREENSHOT ========== */
 .kalkulator-page {
-    background: #f0f2f5;  /* latar abu-abu terang seperti screenshot kebanyakan */
+    background: linear-gradient(145deg, #3a3a3a, #1f1f1f);
     padding: 20px;
     min-height: 100vh;
     display: flex;
