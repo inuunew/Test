@@ -549,10 +549,11 @@ body {
   border-radius: 12px;
   object-fit: cover;
 }
-.pengumuman-page .info .title {
-  font-weight: 600;
-  font-size: 14px;
-  color: #111827;
+.beranda-page .info-text {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #32CD32; /* lime green - sedikit tua dari neon */
 }
 .pengumuman-page .meta {
   font-size: 12px;
