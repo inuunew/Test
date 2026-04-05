@@ -618,7 +618,7 @@ function initKalkulator() {
             const target = document.getElementById("targetWR")?.value;
 
             if (total === "" || wrNow === "" || target === "") {
-                resultArea.innerHTML = `<div class="result-placeholder">⚠️ Harap isi semua data terlebih dahulu</div>`;
+                resultArea.innerHTML = `<div class="result-placeholder"><i class="fas fa-exclamation-triangle"></i> Harap isi semua data terlebih dahulu</div>`;
                 return;
             }
 
@@ -627,19 +627,19 @@ function initKalkulator() {
             const targetNum = parseFloat(target);
 
             if (isNaN(totalNum) || isNaN(wrNum) || isNaN(targetNum)) {
-                resultArea.innerHTML = `<div class="result-placeholder">⚠️ Input tidak valid!</div>`;
+                resultArea.innerHTML = `<div class="result-placeholder"><i class="fas fa-times-circle"></i> Input tidak valid!</div>`;
                 return;
             }
             if (totalNum < 1) {
-                resultArea.innerHTML = `<div class="result-placeholder">⚠️ Minimal total match adalah 1</div>`;
+                resultArea.innerHTML = `<div class="result-placeholder"><i class="fas fa-info-circle"></i> Minimal total match adalah 1</div>`;
                 return;
             }
             if (wrNum < 0 || wrNum > 100 || targetNum < 0 || targetNum > 100) {
-                resultArea.innerHTML = `<div class="result-placeholder">⚠️ Win rate harus antara 0-100%</div>`;
+                resultArea.innerHTML = `<div class="result-placeholder"><i class="fas fa-chart-simple"></i> Win rate harus antara 0-100%</div>`;
                 return;
             }
             if (targetNum <= wrNum) {
-                resultArea.innerHTML = `<div class="result-value">✅ Target sudah tercapai!</div><div class="result-desc">Tidak perlu kemenangan beruntun.</div>`;
+                resultArea.innerHTML = `<div class="result-value"><i class="fas fa-check-circle"></i> Target sudah tercapai!</div><div class="result-desc">Tidak perlu kemenangan beruntun.</div>`;
                 return;
             }
             const currentWins = (wrNum / 100) * totalNum;
@@ -647,7 +647,7 @@ function initKalkulator() {
             const rightSide = (targetNum * totalNum) / 100 - currentWins;
             let neededWins = Math.ceil(rightSide / leftCoeff);
             neededWins = Math.max(0, neededWins);
-            resultArea.innerHTML = `<div class="result-value">${neededWins.toLocaleString()} kemenangan beruntun</div>
+            resultArea.innerHTML = `<div class="result-value"><i class="fas fa-chart-line"></i> ${neededWins.toLocaleString()} kemenangan beruntun</div>
                                     <div class="result-desc">Dibutuhkan untuk mencapai ${targetNum}% WR dari ${wrNum}% (${totalNum} match)</div>`;
         } 
         else if (currentTab === "magic") {
@@ -655,12 +655,12 @@ function initKalkulator() {
             if (isNaN(currentCore)) currentCore = 0;
             let needCore = 200 - currentCore;
             if (needCore <= 0) {
-                resultArea.innerHTML = `<div class="result-value">✅ Magic Core sudah cukup!</div><div class="result-desc">Skin Legend siap diklaim.</div>`;
+                resultArea.innerHTML = `<div class="result-value"><i class="fas fa-check-circle"></i> Magic Core sudah cukup!</div><div class="result-desc">Skin Legend siap diklaim.</div>`;
                 return;
             }
             let fiveDrawsNeeded = Math.ceil(needCore / 5);
             let totalDiamond = fiveDrawsNeeded * 270;
-            resultArea.innerHTML = `<div class="result-value">💎 ${totalDiamond.toLocaleString()} Diamond</div>
+            resultArea.innerHTML = `<div class="result-value"><i class="fas fa-gem"></i> ${totalDiamond.toLocaleString()} Diamond</div>
                                     <div class="result-desc">Maksimal yang dibutuhkan (worst case: 5 core per 5x draw)</div>`;
         } 
         else if (currentTab === "zodiac") {
@@ -671,11 +671,11 @@ function initKalkulator() {
             let totalSP = currentSP + bonus;
             let needSP = 100 - totalSP;
             if (needSP <= 0) {
-                resultArea.innerHTML = `<div class="result-value">✅ Star Power sudah cukup!</div><div class="result-desc">Skin Zodiac siap diklaim.</div>`;
+                resultArea.innerHTML = `<div class="result-value"><i class="fas fa-check-circle"></i> Star Power sudah cukup!</div><div class="result-desc">Skin Zodiac siap diklaim.</div>`;
                 return;
             }
             let totalDiamond = needSP * 60;
-            resultArea.innerHTML = `<div class="result-value">💎 ${totalDiamond.toLocaleString()} Diamond</div>
+            resultArea.innerHTML = `<div class="result-value"><i class="fas fa-gem"></i> ${totalDiamond.toLocaleString()} Diamond</div>
                                     <div class="result-desc">Maksimal yang dibutuhkan (worst case: 1 SP per draw, 60💎/draw)</div>`;
         }
     }
@@ -685,26 +685,26 @@ function initKalkulator() {
         if (currentTab === "winrate") {
             formContainer.innerHTML = `
                 <div class="input-group">
-                    <label>📊 Total Match</label>
+                    <label><i class="fas fa-chart-line"></i> Total Match</label>
                     <input type="number" id="totalMatches" placeholder="Masukkan total match" step="1" min="1">
                 </div>
                 <div class="input-group">
-                    <label>🎯 Win Rate Saat Ini (%)</label>
+                    <label><i class="fas fa-bullseye"></i> Win Rate Saat Ini (%)</label>
                     <input type="number" id="currentWR" placeholder="Masukkan win rate saat ini (%)" step="0.1" min="0" max="100">
                 </div>
                 <div class="input-group">
-                    <label>⭐ Target Win Rate (%)</label>
+                    <label><i class="fas fa-star"></i> Target Win Rate (%)</label>
                     <input type="number" id="targetWR" placeholder="Masukkan target win rate (%)" step="0.1" min="0" max="100">
                 </div>
             `;
             const inputs = formContainer.querySelectorAll('input');
             inputs.forEach(inp => inp.addEventListener('input', () => hitung()));
-            hitung(); // akan tampil pesan "Harap isi semua data"
+            hitung();
         } 
         else if (currentTab === "magic") {
             formContainer.innerHTML = `
                 <div class="input-group">
-                    <label>🔮 Poin Magic Wheel : <span id="magicCoreLabel">${defaultValues.magic.currentCore}</span></label>
+                    <label><i class="fas fa-magic"></i> Poin Magic Wheel : <span id="magicCoreLabel">${defaultValues.magic.currentCore}</span></label>
                     <input type="range" id="magicCore" min="0" max="199" value="${defaultValues.magic.currentCore}" step="1">
                     <div class="range-value">
                         <span class="badge-hint">Saat ini: ${defaultValues.magic.currentCore}</span>
@@ -722,7 +722,7 @@ function initKalkulator() {
         else if (currentTab === "zodiac") {
             formContainer.innerHTML = `
                 <div class="input-group">
-                    <label>✨ Star Power Saat Ini : <span id="starPowerLabel">${defaultValues.zodiac.currentSP}</span></label>
+                    <label><i class="fas fa-star-of-life"></i> Star Power Saat Ini : <span id="starPowerLabel">${defaultValues.zodiac.currentSP}</span></label>
                     <input type="range" id="starPower" min="0" max="99" value="${defaultValues.zodiac.currentSP}" step="1">
                     <div class="range-value">
                         <span class="badge-hint">Saat ini: ${defaultValues.zodiac.currentSP}</span>
@@ -730,7 +730,7 @@ function initKalkulator() {
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>🎁 Bonus Skin Zodiac Dimiliki</label>
+                    <label><i class="fas fa-gift"></i> Bonus Skin Zodiac Dimiliki</label>
                     <select id="bonusSkin">
                         <option value="0">0 skin (+0 SP)</option>
                         <option value="1">1 skin (+10 SP)</option>
@@ -764,7 +764,7 @@ function initKalkulator() {
             if (totalInput) totalInput.value = '';
             if (wrInput) wrInput.value = '';
             if (targetInput) targetInput.value = '';
-            hitung(); // akan tampil pesan kosong
+            hitung();
         } 
         else if (currentTab === "magic") {
             const slider = document.getElementById("magicCore");
