@@ -612,13 +612,13 @@ function initKalkulator() {
     // ========== FUNGSI HITUNG ==========
     function hitung() {
         if (currentTab === "winrate") {
-            const total = parseFloat(document.getElementById("totalMatches")?.value);
-            const wrNow = parseFloat(document.getElementById("currentWR")?.value);
-            const target = parseFloat(document.getElementById("targetWR")?.value);
-            if (isNaN(total) || isNaN(wrNow) || isNaN(target) || total < 0) {
-                resultArea.innerHTML = `<div class="result-placeholder">⚠️ Input tidak valid!</div>`;
-                return;
-            }
+    const total = parseFloat(document.getElementById("totalMatches")?.value);
+    const wrNow = parseFloat(document.getElementById("currentWR")?.value);
+    const target = parseFloat(document.getElementById("targetWR")?.value);
+    if (isNaN(total) || isNaN(wrNow) || isNaN(target) || total < 0) {
+        resultArea.innerHTML = `<div class="result-placeholder">⚠️ Input tidak valid!</div>`;
+        return;
+    }
             if (target <= wrNow) {
                 resultArea.innerHTML = `<div class="result-value">✅ Target sudah tercapai!</div><div class="result-desc">Tidak perlu kemenangan beruntun.</div>`;
                 return;
@@ -664,13 +664,6 @@ function initKalkulator() {
     // ========== RENDER FORM & PASANG AUTO LISTENER ==========
     function renderForm() {
 else if (currentTab === "winrate") {
-    const total = parseFloat(document.getElementById("totalMatches")?.value);
-    const wrNow = parseFloat(document.getElementById("currentWR")?.value);
-    const target = parseFloat(document.getElementById("targetWR")?.value);
-    if (isNaN(total) || isNaN(wrNow) || isNaN(target) || total < 0) {
-        resultArea.innerHTML = `<div class="result-placeholder">⚠️ Input tidak valid!</div>`;
-        return;
-    }
     formContainer.innerHTML = `
         <div class="input-group">
             <label>📊 Total Match</label>
