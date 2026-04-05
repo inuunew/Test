@@ -403,7 +403,7 @@ body {
   flex: 1;
   overflow: hidden;
   white-space: nowrap;
-  color: #39FF14; /* hijau muda neon */
+  color: #32CD32; /* lime green - sedikit tua dari neon */
 }
 .beranda-page .info-text::before {
   content: attr(data-text);
@@ -549,11 +549,10 @@ body {
   border-radius: 12px;
   object-fit: cover;
 }
-.beranda-page .info-text {
-  flex: 1;
-  overflow: hidden;
-  white-space: nowrap;
-  color: #32CD32; /* lime green - sedikit tua dari neon */
+.pengumuman-page .info .title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #111827;
 }
 .pengumuman-page .meta {
   font-size: 12px;
@@ -897,221 +896,186 @@ body {
 }
 .bantuan-page .arrow { color: #9ca3af; }
 
-/* ========== STYLE KHUSUS CHECKOUT ========== */
-.checkout-page .header {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  background: white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-.checkout-page .back {
-  font-size: 22px;
-  margin-right: 10px;
-  cursor: pointer;
-}
-.checkout-page .title {
-  font-weight: bold;
-  font-size: 18px;
-}
-.checkout-page .card {
-  background: white;
-  margin: 15px;
-  padding: 15px;
-  border-radius: 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-}
-.checkout-page .product {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  flex-wrap: nowrap;  /* <- kunci: jangan pindah baris */
+/* ========== STYLE KHUSUS KALKULATOR ========== */
+/* ========== KALKULATOR MLBB ========== */
+.kalkulator-page {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, 'Segoe UI', 'Poppins', sans-serif;
 }
 
-.checkout-page .product img {
-  width: 60px;
-  border-radius: 10px;
-  flex-shrink: 0;     /* gambar tidak mengecil */
+.kalkulator-page .app {
+    max-width: 550px;
+    width: 100%;
+    margin: auto;
 }
 
-.checkout-page .product > div {
-  flex: 1;            /* teks mengambil sisa ruang */
-  min-width: 0;       /* mencegah overflow, teks bisa wrap dalam satu baris */
+.kalkulator-page .header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    background: rgba(0,0,0,0.3);
+    border-radius: 2rem;
+    padding: 12px;
+    backdrop-filter: blur(4px);
+}
+.kalkulator-page .brand {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #FFD966, #FFB347);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.kalkulator-page .brand span {
+    font-weight: 900;
+    color: #FFB347;
+    background: none;
+}
+.kalkulator-page .sub-brand {
+    font-size: 0.7rem;
+    color: #ffb347aa;
+    margin-top: 5px;
 }
 
-.checkout-page .product #itemName {
-  word-break: break-word;
-  white-space: normal; /* teks panjang bisa pindah baris tetapi tetap di samping gambar */
+.kalkulator-page .tab-bar {
+    display: flex;
+    gap: 10px;
+    background: rgba(18, 25, 45, 0.6);
+    padding: 8px;
+    border-radius: 3rem;
+    margin-bottom: 1.8rem;
+    backdrop-filter: blur(4px);
 }
-.checkout-page .badge {
-  background: #e6f7ed;
-  color: #1ea55b;
-  font-size: 12px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  display: inline-block;
-  margin-bottom: 5px;
+.kalkulator-page .tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 10px 0;
+    border-radius: 2rem;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #9aa4bf;
+    cursor: pointer;
+    transition: all 0.2s;
 }
-.checkout-page .price { color: #555; }
-.checkout-page .label {
-  font-weight: bold;
-  margin-bottom: 6px;
-  display: block;
+.kalkulator-page .tab-btn.active {
+    background: linear-gradient(95deg, #f5a623, #f7b53b);
+    color: #0a0f1e;
+    box-shadow: 0 4px 10px rgba(245,166,35,0.3);
 }
-.checkout-page .input-group {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  overflow: hidden;
+
+.kalkulator-page .form-card {
+    background: rgba(18, 25, 45, 0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 1.8rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255,215,0,0.2);
 }
-.checkout-page .input-group input, .checkout-page .input-group select {
-  flex: 1;
-  border: none;
-  padding: 12px;
-  outline: none;
+.kalkulator-page .input-group {
+    margin-bottom: 1.2rem;
 }
-.checkout-page .row {
-  display: flex;
-  justify-content: space-between;
-  margin: 8px 0;
+.kalkulator-page .input-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #e2e8f0;
+    margin-bottom: 6px;
 }
-.checkout-page .total {
-  font-size: 20px;
-  color: #16a34a;
-  font-weight: bold;
+.kalkulator-page .input-group input,
+.kalkulator-page .input-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 1.2rem;
+    border: 1px solid #2a345a;
+    background: #0f1424;
+    color: white;
+    font-size: 1rem;
+    outline: none;
 }
-.checkout-page .footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  padding: 15px;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 10;
+.kalkulator-page .input-group input:focus,
+.kalkulator-page .input-group select:focus {
+    border-color: #ffb347;
+    box-shadow: 0 0 0 2px rgba(255,180,71,0.3);
 }
-.checkout-page .pay {
-  background: #16a34a;
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
+.kalkulator-page .input-group input[type="range"] {
+    padding: 0;
+    accent-color: #f5a623;
 }
-.checkout-page .bill {
-  color: #16a34a;
-  font-weight: bold;
-  font-size: 18px;
+.kalkulator-page .range-value {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 0.75rem;
+    color: #ffd966;
 }
-.checkout-page .payment-select {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid #ddd;
-  padding: 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  background: #fafafa;
+.kalkulator-page .badge-hint {
+    background: #1e2a44;
+    border-radius: 50px;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    color: #ffd966;
+    display: inline-block;
 }
-.checkout-page .payment-list {
-  display: none;
-  margin-top: 10px;
+
+.kalkulator-page .action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 1.8rem;
 }
-.checkout-page .payment-item {
-  padding: 10px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  margin-bottom: 8px;
-  cursor: pointer;
+.kalkulator-page .btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 2rem;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.2s;
 }
-.checkout-page .payment-item.disabled {
-  color: #999;
-  cursor: not-allowed;
+.kalkulator-page .btn:active {
+    transform: scale(0.97);
 }
-.checkout-page .sheet {
-  position: fixed;
-  bottom: -100%;
-  left: 0;
-  right: 0;
-  background: white;
-  border-radius: 20px 20px 0 0;
-  box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
-  transition: 0.3s;
-  z-index: 9999;
+.kalkulator-page .reset-btn {
+    background: #2a345a;
+    color: #e2e8f0;
 }
-.checkout-page .sheet.show { bottom: 0; }
-.checkout-page .sheet-content { padding: 15px; }
-.checkout-page .sheet-header {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  margin-bottom: 10px;
+.kalkulator-page .reset-btn:hover {
+    background: #3a466e;
 }
-.checkout-page .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
+.kalkulator-page .hitung-btn {
+    background: linear-gradient(95deg, #f5a623, #f7b53b);
+    color: #0a0f1e;
+    box-shadow: 0 4px 12px rgba(245,166,35,0.3);
 }
-.checkout-page .modal-content {
-  background: white;
-  width: 90%;
-  max-width: 400px;
-  border-radius: 14px;
-  padding: 15px;
+
+.kalkulator-page .result-area {
+    background: rgba(11, 16, 32, 0.9);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    border-left: 4px solid #ffb347;
 }
-.checkout-page .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-  margin-bottom: 10px;
+.kalkulator-page .result-placeholder {
+    color: #8e99b5;
+    font-size: 0.9rem;
 }
-.checkout-page .close {
-  cursor: pointer;
-  font-size: 18px;
+.kalkulator-page .result-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #FFE484;
+    word-break: break-word;
+    margin-bottom: 6px;
 }
-.checkout-page .loading-popup, .checkout-page .popup-warning {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+.kalkulator-page .result-desc {
+    font-size: 0.8rem;
+    color: #9aa4bf;
 }
-.checkout-page .loading-box, .checkout-page .popup-box {
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-  text-align: center;
-  width: 80%;
-  max-width: 250px;
-}
-.checkout-page .spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #eee;
-  border-top: 4px solid #5b7cff;
-  border-radius: 50%;
-  margin: 0 auto 10px;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+
+@media (max-width: 480px) {
+    .kalkulator-page .form-card { padding: 1.2rem; }
+    .kalkulator-page .result-value { font-size: 1.3rem; }
+    .kalkulator-page .tab-btn { font-size: 0.8rem; }
 }
