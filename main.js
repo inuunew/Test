@@ -598,7 +598,7 @@ function initBantuan() {
 // ==================== KALKULATOR (AUTO-HITUNG) ====================
 function initKalkulator() {
     const defaultValues = {
-        winrate: { totalMatches: 500, currentWR: 52.5, targetWR: 55.0 },
+        winrate: { totalMatches: '', currentWR: '', targetWR: '' },
         magic: { currentCore: 0 },
         zodiac: { currentSP: 0, bonusSkin: 0 }
     };
@@ -613,33 +613,42 @@ function initKalkulator() {
     // ========== FUNGSI HITUNG ==========
     function hitung() {
         if (currentTab === "winrate") {
-            const total = parseFloat(document.getElementById("totalMatches")?.value);
-            const wrNow = parseFloat(document.getElementById("currentWR")?.value);
-            const target = parseFloat(document.getElementById("targetWR")?.value);
+            const total = document.getElementById("totalMatches")?.value;
+            const wrNow = document.getElementById("currentWR")?.value;
+            const target = document.getElementById("targetWR")?.value;
 
-            if (isNaN(total) || isNaN(wrNow) || isNaN(target)) {
+            if (total === "" || wrNow === "" || target === "") {
+                resultArea.innerHTML = `<div class="result-placeholder">⚠️ Harap isi semua data terlebih dahulu</div>`;
+                return;
+            }
+
+            const totalNum = parseFloat(total);
+            const wrNum = parseFloat(wrNow);
+            const targetNum = parseFloat(target);
+
+            if (isNaN(totalNum) || isNaN(wrNum) || isNaN(targetNum)) {
                 resultArea.innerHTML = `<div class="result-placeholder">⚠️ Input tidak valid!</div>`;
                 return;
             }
-            if (total < 1) {
+            if (totalNum < 1) {
                 resultArea.innerHTML = `<div class="result-placeholder">⚠️ Minimal total match adalah 1</div>`;
                 return;
             }
-            if (wrNow < 0 || wrNow > 100 || target < 0 || target > 100) {
+            if (wrNum < 0 || wrNum > 100 || targetNum < 0 || targetNum > 100) {
                 resultArea.innerHTML = `<div class="result-placeholder">⚠️ Win rate harus antara 0-100%</div>`;
                 return;
             }
-            if (target <= wrNow) {
+            if (targetNum <= wrNum) {
                 resultArea.innerHTML = `<div class="result-value">✅ Target sudah tercapai!</div><div class="result-desc">Tidak perlu kemenangan beruntun.</div>`;
                 return;
             }
-            const currentWins = (wrNow / 100) * total;
-            const leftCoeff = 1 - (target / 100);
-            const rightSide = (target * total) / 100 - currentWins;
+            const currentWins = (wrNum / 100) * totalNum;
+            const leftCoeff = 1 - (targetNum / 100);
+            const rightSide = (targetNum * totalNum) / 100 - currentWins;
             let neededWins = Math.ceil(rightSide / leftCoeff);
             neededWins = Math.max(0, neededWins);
             resultArea.innerHTML = `<div class="result-value">${neededWins.toLocaleString()} kemenangan beruntun</div>
-                                    <div class="result-desc">Dibutuhkan untuk mencapai ${target}% WR dari ${wrNow}% (${total} match)</div>`;
+                                    <div class="result-desc">Dibutuhkan untuk mencapai ${targetNum}% WR dari ${wrNum}% (${totalNum} match)</div>`;
         } 
         else if (currentTab === "magic") {
             let currentCore = parseInt(document.getElementById("magicCore")?.value);
@@ -677,20 +686,20 @@ function initKalkulator() {
             formContainer.innerHTML = `
                 <div class="input-group">
                     <label>📊 Total Match</label>
-                    <input type="number" id="totalMatches" value="${defaultValues.winrate.totalMatches}" step="1" min="1">
+                    <input type="number" id="totalMatches" placeholder="Masukkan total match" step="1" min="1">
                 </div>
                 <div class="input-group">
                     <label>🎯 Win Rate Saat Ini (%)</label>
-                    <input type="number" id="currentWR" value="${defaultValues.winrate.currentWR}" step="0.1" min="0" max="100">
+                    <input type="number" id="currentWR" placeholder="Masukkan win rate saat ini (%)" step="0.1" min="0" max="100">
                 </div>
                 <div class="input-group">
                     <label>⭐ Target Win Rate (%)</label>
-                    <input type="number" id="targetWR" value="${defaultValues.winrate.targetWR}" step="0.1" min="0" max="100">
+                    <input type="number" id="targetWR" placeholder="Masukkan target win rate (%)" step="0.1" min="0" max="100">
                 </div>
             `;
             const inputs = formContainer.querySelectorAll('input');
             inputs.forEach(inp => inp.addEventListener('input', () => hitung()));
-            hitung();
+            hitung(); // akan tampil pesan "Harap isi semua data"
         } 
         else if (currentTab === "magic") {
             formContainer.innerHTML = `
@@ -752,10 +761,10 @@ function initKalkulator() {
             const totalInput = document.getElementById("totalMatches");
             const wrInput = document.getElementById("currentWR");
             const targetInput = document.getElementById("targetWR");
-            if (totalInput) totalInput.value = defaultValues.winrate.totalMatches;
-            if (wrInput) wrInput.value = defaultValues.winrate.currentWR;
-            if (targetInput) targetInput.value = defaultValues.winrate.targetWR;
-            hitung();
+            if (totalInput) totalInput.value = '';
+            if (wrInput) wrInput.value = '';
+            if (targetInput) targetInput.value = '';
+            hitung(); // akan tampil pesan kosong
         } 
         else if (currentTab === "magic") {
             const slider = document.getElementById("magicCore");
