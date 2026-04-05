@@ -403,6 +403,7 @@ body {
   flex: 1;
   overflow: hidden;
   white-space: nowrap;
+  color: #39FF14; /* hijau muda neon */
 }
 .beranda-page .info-text::before {
   content: attr(data-text);
