@@ -1,0 +1,8 @@
+{
+  "name": "vercel-email-sender",
+  "version": "1.0.0",
+  "dependencies": {
+    "nodemailer": "^6.9.0",
+    "multer": "^1.4.5-lts.1"
+  }
+}
