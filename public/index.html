@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirim Email Vercel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Kirim Email</h2>
+        <form action="/api/send" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium">Gmail Pengirim:</label>
+                <input type="email" name="senderEmail" class="w-full border p-2 rounded" required placeholder="anda@gmail.com">
+            </div>
+            <div>
+                <label class="block text-sm font-medium">App Password:</label>
+                <input type="password" name="appPassword" class="w-full border p-2 rounded" required>
+                <p class="text-xs text-gray-500 mt-1">*Gunakan App Password dari Google Account.</p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Gmail Penerima:</label>
+                <input type="email" name="receiverEmail" class="w-full border p-2 rounded" required>
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Pesan:</label>
+                <textarea name="message" class="w-full border p-2 rounded" rows="4" required></textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium">Lampiran (Opsional):</label>
+                <input type="file" name="attachments" multiple class="text-sm">
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Kirim Sekarang</button>
+        </form>
+    </div>
+</body>
+</html>
