@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Sender Pro</title>
+    <title>Inuu Market - Email Sender</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
@@ -12,46 +12,58 @@
         <h1 class="text-2xl font-bold text-slate-800 mb-6 text-center">Kirim Email via Gmail</h1>
         
         <form id="emailForm" class="space-y-4">
-<div>
-    <label class="block text-sm font-semibold text-slate-700">Email Pengirim</label>
-    <input type="email" name="senderEmail" required 
-        value="choirulazzamibnu@gmail.com" 
-        class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500">
-</div>
-
-<div>
-    <label class="block text-sm font-semibold text-slate-700">App Password (16 Digit)</label>
-    <input type="password" name="appPassword" required 
-        value="xusd ndax gbcq gtwx" 
-        class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500">
-</div>
-
+            <div>
+                <label class="block text-sm font-semibold text-slate-700">Email Pengirim</label>
+                <input type="email" name="senderEmail" required 
+                    value="choirulazzamibnu@gmail.com" 
+                    class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-slate-700">App Password (16 Digit)</label>
+                <input type="password" name="appPassword" required 
+                    value="xusdndaxgbcqgtwx" 
+                    class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
             <hr class="my-4">
+
             <div>
                 <label class="block text-sm font-semibold text-slate-700">Email Penerima</label>
-                <input type="email" name="receiverEmail" required placeholder="tujuan@gmail.com" class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="email" name="receiverEmail" required placeholder="tujuan@gmail.com" 
+                    class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500">
             </div>
+
             <div>
-                <label class="block text-sm font-semibold text-slate-700">Pesan</label>
-                <textarea name="message" required rows="4" class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                <label class="block text-sm font-semibold text-slate-700">Subjek Email</label>
+                <input type="text" name="subject" required 
+                    value="📦 Pesanan Terkirim - Inuu Market" 
+                    class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500">
             </div>
+
             <div>
-                <label class="block text-sm font-semibold text-slate-700">Lampiran</label>
+                <label class="block text-sm font-semibold text-slate-700">Isi Pesan</label>
+                <textarea name="message" required rows="4" placeholder="Tulis rincian produk di sini..." 
+                    class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-slate-700">Lampiran (Gambar/Dokumen)</label>
                 <input type="file" name="attachments" multiple class="w-full mt-1 text-sm text-slate-500">
             </div>
 
-            <button type="submit" id="btnSubmit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition">
+            <button type="submit" id="btnSubmit" 
+                class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200">
                 Kirim Email
             </button>
         </form>
     </div>
 
-    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg p-6 max-w-sm w-full text-center shadow-2xl">
-            <div id="modalIcon" class="text-5xl mb-4"></div>
-            <h2 id="modalTitle" class="text-xl font-bold mb-2"></h2>
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl p-8 max-w-sm w-full text-center shadow-2xl scale-95 transition-transform duration-300">
+            <div id="modalIcon" class="text-6xl mb-4"></div>
+            <h2 id="modalTitle" class="text-2xl font-bold mb-2"></h2>
             <p id="modalMessage" class="text-gray-600 mb-6"></p>
-            <button onclick="closeModal()" class="bg-slate-800 text-white px-6 py-2 rounded-md hover:bg-slate-700">Tutup</button>
+            <button onclick="closeModal()" class="w-full bg-slate-800 text-white py-2 rounded-md font-semibold hover:bg-slate-700">Oke, Mengerti</button>
         </div>
     </div>
 
@@ -62,9 +74,7 @@
 
         form.onsubmit = async (e) => {
             e.preventDefault();
-            
-            // Loading State
-            btnSubmit.innerText = "Sedang Mengirim...";
+            btnSubmit.innerText = "⏳ Sedang Mengirim...";
             btnSubmit.disabled = true;
 
             const formData = new FormData(form);
@@ -78,13 +88,14 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    showModal('✅', 'Berhasil!', 'Email Anda telah terkirim ke tujuan.');
-                    form.reset();
+                    showModal('✅', 'Berhasil Terkirim!', 'Pesanan Inuu Market sudah sukses dikirim ke konsumen.');
+                    form.querySelector('[name="message"]').value = ""; // Reset isi pesan saja
+                    form.querySelector('[name="receiverEmail"]').value = ""; 
                 } else {
-                    showModal('❌', 'Gagal!', result.error || 'Terjadi kesalahan sistem.');
+                    showModal('❌', 'Gagal Kirim', result.error || 'Terjadi kesalahan sistem.');
                 }
             } catch (err) {
-                showModal('⚠️', 'Error!', 'Koneksi gagal atau server bermasalah.');
+                showModal('⚠️', 'Error Koneksi', 'Gagal terhubung ke server. Periksa internet Anda.');
             } finally {
                 btnSubmit.innerText = "Kirim Email";
                 btnSubmit.disabled = false;
