@@ -45,9 +45,17 @@ export default async function handler(req, res) {
             }))
         };
 
+        // ... kode atas tetap sama sampai bagian transporter.sendMail ...
+
         await transporter.sendMail(mailOptions);
-        res.status(200).send('Email berhasil terkirim!');
+        
+        // Kirim respon sukses dalam format JSON
+        return res.status(200).json({ message: 'Email berhasil dikirim' });
+
     } catch (error) {
-        res.status(500).send('Error: ' + error.message);
+        console.error(error);
+        // Kirim respon error dalam format JSON
+        return res.status(500).json({ error: 'Gagal mengirim: ' + error.message });
     }
 }
+
