@@ -37,7 +37,7 @@ export default async function handler(req, res) {
         const mailOptions = {
             from: senderEmail,
             to: receiverEmail,
-            subject: 'Pesan dari Website (Vercel)',
+            subject: 'Product terkirim dari InuuMarket',
             text: message,
             attachments: req.files.map(file => ({
                 filename: file.originalname,
