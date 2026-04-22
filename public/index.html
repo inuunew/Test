@@ -3,36 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kirim Email Vercel</title>
+    <title>Email Sender Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold mb-4">Kirim Email</h2>
-        <form action="/api/send" method="POST" enctype="multipart/form-data" class="space-y-4">
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold text-slate-800 mb-6 text-center">Kirim Email via Gmail</h1>
+        
+        <form id="emailForm" class="space-y-4">
+<div>
+    <label class="block text-sm font-semibold text-slate-700">Email Pengirim</label>
+    <input type="email" name="senderEmail" required 
+        value="choirulazzamibnu@gmail.com" 
+        class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500">
+</div>
+
+<div>
+    <label class="block text-sm font-semibold text-slate-700">App Password (16 Digit)</label>
+    <input type="password" name="appPassword" required 
+        value="xusd ndax gbcq gtwx" 
+        class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500">
+</div>
+
+            <hr class="my-4">
             <div>
-                <label class="block text-sm font-medium">Gmail Pengirim:</label>
-                <input type="email" name="senderEmail" class="w-full border p-2 rounded" required placeholder="anda@gmail.com">
+                <label class="block text-sm font-semibold text-slate-700">Email Penerima</label>
+                <input type="email" name="receiverEmail" required placeholder="tujuan@gmail.com" class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500">
             </div>
             <div>
-                <label class="block text-sm font-medium">App Password:</label>
-                <input type="password" name="appPassword" class="w-full border p-2 rounded" required>
-                <p class="text-xs text-gray-500 mt-1">*Gunakan App Password dari Google Account.</p>
+                <label class="block text-sm font-semibold text-slate-700">Pesan</label>
+                <textarea name="message" required rows="4" class="w-full mt-1 p-2 border rounded-md outline-none focus:ring-2 focus:ring-blue-500"></textarea>
             </div>
             <div>
-                <label class="block text-sm font-medium">Gmail Penerima:</label>
-                <input type="email" name="receiverEmail" class="w-full border p-2 rounded" required>
+                <label class="block text-sm font-semibold text-slate-700">Lampiran</label>
+                <input type="file" name="attachments" multiple class="w-full mt-1 text-sm text-slate-500">
             </div>
-            <div>
-                <label class="block text-sm font-medium">Pesan:</label>
-                <textarea name="message" class="w-full border p-2 rounded" rows="4" required></textarea>
-            </div>
-            <div>
-                <label class="block text-sm font-medium">Lampiran (Opsional):</label>
-                <input type="file" name="attachments" multiple class="text-sm">
-            </div>
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Kirim Sekarang</button>
+
+            <button type="submit" id="btnSubmit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition">
+                Kirim Email
+            </button>
         </form>
     </div>
+
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg p-6 max-w-sm w-full text-center shadow-2xl">
+            <div id="modalIcon" class="text-5xl mb-4"></div>
+            <h2 id="modalTitle" class="text-xl font-bold mb-2"></h2>
+            <p id="modalMessage" class="text-gray-600 mb-6"></p>
+            <button onclick="closeModal()" class="bg-slate-800 text-white px-6 py-2 rounded-md hover:bg-slate-700">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('emailForm');
+        const modal = document.getElementById('modal');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            
+            // Loading State
+            btnSubmit.innerText = "Sedang Mengirim...";
+            btnSubmit.disabled = true;
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/api/send', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showModal('✅', 'Berhasil!', 'Email Anda telah terkirim ke tujuan.');
+                    form.reset();
+                } else {
+                    showModal('❌', 'Gagal!', result.error || 'Terjadi kesalahan sistem.');
+                }
+            } catch (err) {
+                showModal('⚠️', 'Error!', 'Koneksi gagal atau server bermasalah.');
+            } finally {
+                btnSubmit.innerText = "Kirim Email";
+                btnSubmit.disabled = false;
+            }
+        };
+
+        function showModal(icon, title, msg) {
+            document.getElementById('modalIcon').innerText = icon;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = msg;
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
