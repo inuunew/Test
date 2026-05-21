@@ -313,7 +313,7 @@
             }
         }
 
-        // ========== CORE: SEARCH (TETAP SAMA) ==========
+        // ========== CORE: SEARCH (UPDATED ENDPOINT & PARSING) ==========
         async function searchMusic() {
             const query = document.getElementById('search-input').value.trim();
             const list = document.getElementById('song-list');
@@ -324,18 +324,14 @@
             list.innerHTML = ''; loading.style.display = 'block'; document.getElementById('search-input').blur();
 
             try {
-                const res = await fetch(`https://api.inuutyz.web.id/api/search/spotify?q=${encodeURIComponent(query)}`);
+                const res = await fetch(`https://api.inuutyz.web.id/api/search/spotify-search?q=${encodeURIComponent(query)}`);
                 const data = await res.json();
                 loading.style.display = 'none';
 
-                // Cek struktur respons: biasanya { status: true, result: { result: [...] } }
+                // Struktur respons: { status: true, result: { tracks: [...] } }
                 let results = [];
-                if (data.status && data.result) {
-                    if (Array.isArray(data.result)) {
-                        results = data.result;
-                    } else if (data.result.result && Array.isArray(data.result.result)) {
-                        results = data.result.result;
-                    }
+                if (data.status && data.result && data.result.tracks) {
+                    results = data.result.tracks;
                 }
 
                 if (results.length === 0) {
