@@ -204,8 +204,7 @@
         <div class="sidebar" id="sidebar">
             <h2 style="margin-bottom: 20px; color: var(--accent-cyan); border-bottom: 1px solid #333; padding-bottom: 10px;">My Playlists</h2>
             <div id="playlist-container">
-                <!-- Diisi oleh JavaScript -->
-            </div>
+                </div>
             <div class="create-pl-group">
                 <input type="text" id="new-pl-input" placeholder="Nama Playlist Baru">
                 <button onclick="createNewPlaylist()"><i class="fa-solid fa-plus"></i></button>
@@ -253,27 +252,8 @@
                 t.innerText = msg;
                 t.classList.add('show');
                 setTimeout(() => t.classList.remove('show'), 3000);
-            },
-            escAttr: (str) => str ? str.replace(/'/g, "&#39;").replace(/"/g, "&quot;") : ""
-        };
-
-        // ========== FETCH DENGAN CORS PROXY FALLBACK ==========
-        async function fetchWithProxy(url) {
-            const proxy = 'https://corsproxy.io/?';
-            try {
-                // Coba langsung dulu
-                const directRes = await fetch(url);
-                if (directRes.ok) {
-                    return await directRes.json();
-                }
-                throw new Error('Direct fetch not ok');
-            } catch (e) {
-                console.log('Direct fetch failed, trying CORS proxy...');
-                const res = await fetch(proxy + encodeURIComponent(url));
-                if (!res.ok) throw new Error(`Proxy fetch failed: ${res.status}`);
-                return await res.json();
             }
-        }
+        };
 
         // ========== STATE ==========
         let currentQueue = [];
@@ -322,7 +302,10 @@
             
             try {
                 const apiUrl = `https://api.inuutyz.web.id/api/download/spotify-dl?url=${encodeURIComponent(spotifyUrl)}`;
-                const data = await fetchWithProxy(apiUrl);
+                const res = await fetch(apiUrl);
+                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+                
+                const data = await res.json();
 
                 if (!data.status || !data.result || !data.result.dl) {
                     throw new Error("Gagal mendapatkan link download");
@@ -366,7 +349,10 @@
 
             try {
                 const apiUrl = `https://api.inuutyz.web.id/api/search/spotify-search?q=${encodeURIComponent(query)}`;
-                const data = await fetchWithProxy(apiUrl);
+                const res = await fetch(apiUrl);
+                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+                
+                const data = await res.json();
                 loading.style.display = 'none';
 
                 let results = [];
@@ -388,16 +374,24 @@
                     const card = document.createElement('div');
                     card.className = 'song-item';
                     
-                    const songDataStr = utils.escAttr(JSON.stringify({ title, artist, img, url }));
-
                     card.innerHTML = `
-                        <img src="${img}" class="song-img" onclick="loadAndPlay('${url}', '${utils.escAttr(title)}', '${utils.escAttr(artist)}', '${img}')">
-                        <div class="song-info" onclick="loadAndPlay('${url}', '${utils.escAttr(title)}', '${utils.escAttr(artist)}', '${img}')">
+                        <img src="${img}" class="song-img">
+                        <div class="song-info">
                             <div class="song-title">${title}</div>
                             <div class="song-artist">${artist}</div>
                         </div>
-                        <button class="song-action" onclick="openModal('${songDataStr}')"><i class="fa-solid fa-plus"></i></button>
+                        <button class="song-action"><i class="fa-solid fa-plus"></i></button>
                     `;
+
+                    // Amankan Event Listener (Solusi bebas Bug Tanda Kutip)
+                    const playHandler = () => loadAndPlay(url, title, artist, img);
+                    card.querySelector('.song-img').addEventListener('click', playHandler);
+                    card.querySelector('.song-info').addEventListener('click', playHandler);
+                    
+                    card.querySelector('.song-action').addEventListener('click', () => {
+                        openModal({ title, artist, img, url });
+                    });
+
                     list.appendChild(card);
                 });
             } catch (e) {
@@ -429,19 +423,26 @@
 
             Object.keys(data).forEach(plName => {
                 const count = data[plName].length;
-                container.innerHTML += `
-                    <div class="playlist-box">
-                        <div class="playlist-info">
-                            <div class="playlist-name">${plName}</div>
-                            <div class="playlist-count">${count} Lagu</div>
-                        </div>
-                        <div class="playlist-actions">
-                            <button class="btn-play-all" onclick="playEntirePlaylist('${utils.escAttr(plName)}')"><i class="fa-solid fa-play"></i></button>
-                            <button class="btn-view" onclick="viewPlaylist('${utils.escAttr(plName)}')"><i class="fa-solid fa-eye"></i></button>
-                            <button class="btn-delete-playlist" onclick="confirmDeletePlaylist('${utils.escAttr(plName)}')"><i class="fa-solid fa-trash"></i></button>
-                        </div>
+                
+                const box = document.createElement('div');
+                box.className = 'playlist-box';
+                box.innerHTML = `
+                    <div class="playlist-info">
+                        <div class="playlist-name">${plName}</div>
+                        <div class="playlist-count">${count} Lagu</div>
+                    </div>
+                    <div class="playlist-actions">
+                        <button class="btn-play-all"><i class="fa-solid fa-play"></i></button>
+                        <button class="btn-view"><i class="fa-solid fa-eye"></i></button>
+                        <button class="btn-delete-playlist"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 `;
+
+                box.querySelector('.btn-play-all').addEventListener('click', () => playEntirePlaylist(plName));
+                box.querySelector('.btn-view').addEventListener('click', () => viewPlaylist(plName));
+                box.querySelector('.btn-delete-playlist').addEventListener('click', () => confirmDeletePlaylist(plName));
+
+                container.appendChild(box);
             });
         }
 
@@ -482,33 +483,47 @@
             
             document.getElementById('search-card').style.display = 'none';
             const mainList = document.getElementById('song-list');
-            
-            let html = `
-                <div style="color:var(--accent-cyan); cursor:pointer; margin-bottom:15px;" onclick="backToSearch()">
-                    <i class="fa-solid fa-arrow-left"></i> Kembali
-                </div>
-                <h2 style="margin-bottom:15px;">${plName}</h2>
-            `;
+            mainList.innerHTML = '';
+
+            const backBtn = document.createElement('div');
+            backBtn.style.color = 'var(--accent-cyan)';
+            backBtn.style.cursor = 'pointer';
+            backBtn.style.marginBottom = '15px';
+            backBtn.innerHTML = `<i class="fa-solid fa-arrow-left"></i> Kembali`;
+            backBtn.addEventListener('click', backToSearch);
+            mainList.appendChild(backBtn);
+
+            const titleEl = document.createElement('h2');
+            titleEl.style.marginBottom = '15px';
+            titleEl.innerText = plName;
+            mainList.appendChild(titleEl);
 
             if(!list || list.length === 0) {
-                html += '<div class="status-msg">Belum ada lagu.</div>';
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'status-msg';
+                emptyMsg.innerText = 'Belum ada lagu.';
+                mainList.appendChild(emptyMsg);
             } else {
                 list.forEach((song, idx) => {
-                    html += `
-                        <div class="song-item">
-                            <img src="${song.img}" class="song-img" onclick="loadAndPlay('${song.url}', '${utils.escAttr(song.title)}', '${utils.escAttr(song.artist)}', '${song.img}')">
-                            <div class="song-info" onclick="loadAndPlay('${song.url}', '${utils.escAttr(song.title)}', '${utils.escAttr(song.artist)}', '${song.img}')">
-                                <div class="song-title">${song.title}</div>
-                                <div class="song-artist">${song.artist}</div>
-                            </div>
-                            <button class="song-action" style="color:#ff5555;" onclick="removeFromPlaylist('${utils.escAttr(plName)}', ${idx})">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
+                    const card = document.createElement('div');
+                    card.className = 'song-item';
+                    card.innerHTML = `
+                        <img src="${song.img}" class="song-img">
+                        <div class="song-info">
+                            <div class="song-title">${song.title}</div>
+                            <div class="song-artist">${song.artist}</div>
                         </div>
+                        <button class="song-action" style="color:#ff5555;"><i class="fa-solid fa-trash"></i></button>
                     `;
+
+                    const playHandler = () => loadAndPlay(song.url, song.title, song.artist, song.img);
+                    card.querySelector('.song-img').addEventListener('click', playHandler);
+                    card.querySelector('.song-info').addEventListener('click', playHandler);
+                    card.querySelector('.song-action').addEventListener('click', () => removeFromPlaylist(plName, idx));
+
+                    mainList.appendChild(card);
                 });
             }
-            mainList.innerHTML = html;
         }
 
         function backToSearch() {
@@ -540,7 +555,6 @@
             pendingDeletePlaylist = null;
         }
 
-        // Jalankan saat tombol "Ya" diklik
         document.getElementById('confirm-yes').addEventListener('click', () => {
             if (!pendingDeletePlaylist) return;
             const data = getPlaylists();
@@ -548,7 +562,6 @@
             savePlaylists(data);
             utils.toast(`Playlist "${pendingDeletePlaylist}" dihapus.`);
             
-            // Jika sedang melihat playlist yang dihapus, kembali ke pencarian
             const mainList = document.getElementById('song-list');
             if (mainList.innerHTML.includes(pendingDeletePlaylist)) {
                 backToSearch();
@@ -558,14 +571,18 @@
         });
 
         // ========== MODAL TAMBAH LAGU KE PLAYLIST ==========
-        function openModal(songDataStr) {
-            pendingSongData = JSON.parse(songDataStr);
+        function openModal(songObject) {
+            pendingSongData = songObject;
             const data = getPlaylists();
             const listDiv = document.getElementById('modal-pl-list');
             listDiv.innerHTML = '';
             
             Object.keys(data).forEach(plName => {
-                listDiv.innerHTML += `<div class="pl-option" onclick="addToPlaylist('${utils.escAttr(plName)}')">${plName}</div>`;
+                const option = document.createElement('div');
+                option.className = 'pl-option';
+                option.innerText = plName;
+                option.addEventListener('click', () => addToPlaylist(plName));
+                listDiv.appendChild(option);
             });
             
             document.getElementById('add-modal').classList.add('active');
