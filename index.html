@@ -266,7 +266,7 @@
             }
         }
 
-        // ========== CORE: FETCH AND PLAY ==========
+        // ========== CORE: FETCH AND PLAY (UPDATED ENDPOINT) ==========
         async function loadAndPlay(spotifyUrl, title, artist, img, fromQueue = false) {
             if (!fromQueue) isQueueActive = false; // Batalkan antrean jika user nge-klik manual
 
@@ -276,14 +276,19 @@
             document.getElementById('mini-player').classList.add('active');
             
             try {
-                const res = await fetch(`https://api.inuutyz.web.id/api/download/spotify?url=${encodeURIComponent(spotifyUrl)}`);
+                const res = await fetch(`https://api.inuutyz.web.id/api/download/spotify-dl?url=${encodeURIComponent(spotifyUrl)}`);
                 const data = await res.json();
 
-                if (!data.status || !data.result || !data.result.result || !data.result.result.download) {
-                    throw new Error("Gagal parsing MP3");
+                if (!data.status || !data.result || !data.result.dl) {
+                    throw new Error("Gagal mendapatkan link download");
                 }
 
-                const audioUrl = data.result.result.download.url;
+                const audioUrl = data.result.dl;
+                
+                // Gunakan cover dari endpoint jika tersedia (fallback)
+                if (data.result.cover) {
+                    document.getElementById('mp-img').src = data.result.cover;
+                }
                 
                 audio.src = audioUrl;
                 audio.play();
@@ -308,7 +313,7 @@
             }
         }
 
-        // ========== CORE: SEARCH ==========
+        // ========== CORE: SEARCH (TETAP SAMA) ==========
         async function searchMusic() {
             const query = document.getElementById('search-input').value.trim();
             const list = document.getElementById('song-list');
@@ -323,10 +328,20 @@
                 const data = await res.json();
                 loading.style.display = 'none';
 
-                if (!data.status || !data.result || !data.result.result) return list.innerHTML = '<div class="status-msg">Lagu tidak ditemukan.</div>';
-                
-                const results = data.result.result;
-                if (results.length === 0) return list.innerHTML = '<div class="status-msg">Lagu tidak ditemukan.</div>';
+                // Cek struktur respons: biasanya { status: true, result: { result: [...] } }
+                let results = [];
+                if (data.status && data.result) {
+                    if (Array.isArray(data.result)) {
+                        results = data.result;
+                    } else if (data.result.result && Array.isArray(data.result.result)) {
+                        results = data.result.result;
+                    }
+                }
+
+                if (results.length === 0) {
+                    list.innerHTML = '<div class="status-msg">Lagu tidak ditemukan.</div>';
+                    return;
+                }
 
                 results.forEach(song => {
                     const img = (song.album && song.album.images && song.album.images.length > 0) ? song.album.images[0].url : 'https://via.placeholder.com/300';
