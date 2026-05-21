@@ -135,6 +135,9 @@
         .playlist-actions { display: flex; gap: 10px; }
         .btn-play-all { color: #00f3ff; background: rgba(0, 243, 255, 0.1); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; }
         .btn-view { color: #fff; background: rgba(255, 255, 255, 0.1); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; }
+        .btn-delete-playlist {
+            color: #ff5555; background: rgba(255,85,85,0.1); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
+        }
 
         .create-pl-group { display: flex; gap: 5px; margin-top: 10px; }
         .create-pl-group input { flex: 1; background: #111; border: 1px solid #333; padding: 10px; border-radius: 8px; color: white; }
@@ -156,6 +159,19 @@
         }
         .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
         .status-msg { text-align: center; padding: 30px; color: #777; font-size: 0.8rem; }
+
+        /* Konfirmasi dialog sederhana */
+        .confirm-dialog {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #1a1a1a; border: 1px solid var(--accent-cyan); padding: 20px; border-radius: 16px;
+            z-index: 2001; text-align: center; display: none; flex-direction: column; gap: 15px;
+        }
+        .confirm-dialog.active { display: flex; }
+        .confirm-dialog button {
+            padding: 10px 20px; margin: 0 5px; border: none; border-radius: 8px; cursor: pointer;
+        }
+        .btn-yes { background: var(--primary-purple); color: white; }
+        .btn-no { background: #333; color: white; }
     </style>
 </head>
 <body>
@@ -188,7 +204,8 @@
         <div class="sidebar" id="sidebar">
             <h2 style="margin-bottom: 20px; color: var(--accent-cyan); border-bottom: 1px solid #333; padding-bottom: 10px;">My Playlists</h2>
             <div id="playlist-container">
-                </div>
+                <!-- Diisi oleh JavaScript -->
+            </div>
             <div class="create-pl-group">
                 <input type="text" id="new-pl-input" placeholder="Nama Playlist Baru">
                 <button onclick="createNewPlaylist()"><i class="fa-solid fa-plus"></i></button>
@@ -200,6 +217,14 @@
             <h3 style="color: var(--accent-cyan); text-align: center;">Pilih Playlist</h3>
             <div id="modal-pl-list"></div>
             <button style="padding: 10px; background: #333; color: white; border: none; border-radius: 8px; margin-top: 10px;" onclick="closeModal()">Batal</button>
+        </div>
+
+        <div class="confirm-dialog" id="confirm-dialog">
+            <p id="confirm-message">Yakin ingin menghapus?</p>
+            <div>
+                <button class="btn-yes" id="confirm-yes">Ya</button>
+                <button class="btn-no" onclick="closeConfirm()">Tidak</button>
+            </div>
         </div>
 
         <div class="mini-player" id="mini-player">
@@ -221,6 +246,7 @@
     </div>
 
     <script>
+        // ========== UTILS ==========
         const utils = {
             toast: (msg) => {
                 const t = document.getElementById('toast');
@@ -231,17 +257,36 @@
             escAttr: (str) => str ? str.replace(/'/g, "&#39;").replace(/"/g, "&quot;") : ""
         };
 
-        // ========== SYSTEM QUEUE (PLAYLIST AUTO-PLAY & LOOP) ==========
+        // ========== FETCH DENGAN CORS PROXY FALLBACK ==========
+        async function fetchWithProxy(url) {
+            const proxy = 'https://corsproxy.io/?';
+            try {
+                // Coba langsung dulu
+                const directRes = await fetch(url);
+                if (directRes.ok) {
+                    return await directRes.json();
+                }
+                throw new Error('Direct fetch not ok');
+            } catch (e) {
+                console.log('Direct fetch failed, trying CORS proxy...');
+                const res = await fetch(proxy + encodeURIComponent(url));
+                if (!res.ok) throw new Error(`Proxy fetch failed: ${res.status}`);
+                return await res.json();
+            }
+        }
+
+        // ========== STATE ==========
         let currentQueue = [];
         let queueIndex = 0;
         let isQueueActive = false;
         let pendingSongData = null;
+        let pendingDeletePlaylist = null; // Nama playlist yang akan dihapus
 
         const audio = document.getElementById('audio-player');
         const playIcon = document.getElementById('play-icon');
         const mpImg = document.getElementById('mp-img');
 
-        // Logic Loop Playlist
+        // ========== LOOP PLAYLIST ==========
         audio.addEventListener('ended', () => {
             playIcon.className = "fa-solid fa-play";
             mpImg.classList.remove('playing');
@@ -250,7 +295,7 @@
                 if (queueIndex < currentQueue.length - 1) {
                     queueIndex++; 
                 } else {
-                    queueIndex = 0; // Reset ke lagu pertama jika sudah habis (Loop)
+                    queueIndex = 0;
                     utils.toast("Playlist diulang dari awal");
                 }
                 const nextSong = currentQueue[queueIndex];
@@ -266,9 +311,9 @@
             }
         }
 
-        // ========== CORE: FETCH AND PLAY (UPDATED ENDPOINT) ==========
+        // ========== PLAY SONG ==========
         async function loadAndPlay(spotifyUrl, title, artist, img, fromQueue = false) {
-            if (!fromQueue) isQueueActive = false; // Batalkan antrean jika user nge-klik manual
+            if (!fromQueue) isQueueActive = false;
 
             document.getElementById('mp-title').innerText = title;
             document.getElementById('mp-artist').innerText = "Loading audio...";
@@ -276,16 +321,14 @@
             document.getElementById('mini-player').classList.add('active');
             
             try {
-                const res = await fetch(`https://api.inuutyz.web.id/api/download/spotify-dl?url=${encodeURIComponent(spotifyUrl)}`);
-                const data = await res.json();
+                const apiUrl = `https://api.inuutyz.web.id/api/download/spotify-dl?url=${encodeURIComponent(spotifyUrl)}`;
+                const data = await fetchWithProxy(apiUrl);
 
                 if (!data.status || !data.result || !data.result.dl) {
                     throw new Error("Gagal mendapatkan link download");
                 }
 
                 const audioUrl = data.result.dl;
-                
-                // Gunakan cover dari endpoint jika tersedia (fallback)
                 if (data.result.cover) {
                     document.getElementById('mp-img').src = data.result.cover;
                 }
@@ -295,11 +338,9 @@
                 document.getElementById('mp-artist').innerText = artist;
                 playIcon.className = "fa-solid fa-pause";
                 mpImg.classList.add('playing');
-                
-                // Update link download
                 document.getElementById('mp-dl').href = audioUrl;
                 
-                // Media Session Update
+                // Media Session API
                 if ('mediaSession' in navigator) {
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title: title, artist: artist, album: 'InuuTyzDev Music',
@@ -309,11 +350,11 @@
             } catch (e) {
                 utils.toast("Gagal memuat lagu dari server.");
                 document.getElementById('mp-artist').innerText = "Error!";
-                if(fromQueue) audio.dispatchEvent(new Event('ended')); // Lewati jika error di playlist
+                if(fromQueue) audio.dispatchEvent(new Event('ended'));
             }
         }
 
-        // ========== CORE: SEARCH (UPDATED ENDPOINT & PARSING) ==========
+        // ========== SEARCH ==========
         async function searchMusic() {
             const query = document.getElementById('search-input').value.trim();
             const list = document.getElementById('song-list');
@@ -324,11 +365,10 @@
             list.innerHTML = ''; loading.style.display = 'block'; document.getElementById('search-input').blur();
 
             try {
-                const res = await fetch(`https://api.inuutyz.web.id/api/search/spotify-search?q=${encodeURIComponent(query)}`);
-                const data = await res.json();
+                const apiUrl = `https://api.inuutyz.web.id/api/search/spotify-search?q=${encodeURIComponent(query)}`;
+                const data = await fetchWithProxy(apiUrl);
                 loading.style.display = 'none';
 
-                // Struktur respons: { status: true, result: { tracks: [...] } }
                 let results = [];
                 if (data.status && data.result && data.result.tracks) {
                     results = data.result.tracks;
@@ -370,6 +410,7 @@
         function getPlaylists() {
             return JSON.parse(localStorage.getItem('inuutyzPlaylists')) || { "Playlist 1": [] };
         }
+
         function savePlaylists(data) {
             localStorage.setItem('inuutyzPlaylists', JSON.stringify(data));
             renderSidebar();
@@ -395,8 +436,9 @@
                             <div class="playlist-count">${count} Lagu</div>
                         </div>
                         <div class="playlist-actions">
-                            <button class="btn-play-all" onclick="playEntirePlaylist('${plName}')"><i class="fa-solid fa-play"></i></button>
-                            <button class="btn-view" onclick="viewPlaylist('${plName}')"><i class="fa-solid fa-eye"></i></button>
+                            <button class="btn-play-all" onclick="playEntirePlaylist('${utils.escAttr(plName)}')"><i class="fa-solid fa-play"></i></button>
+                            <button class="btn-view" onclick="viewPlaylist('${utils.escAttr(plName)}')"><i class="fa-solid fa-eye"></i></button>
+                            <button class="btn-delete-playlist" onclick="confirmDeletePlaylist('${utils.escAttr(plName)}')"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 `;
@@ -404,21 +446,26 @@
         }
 
         function createNewPlaylist() {
-            const name = document.getElementById('new-pl-input').value.trim();
+            const input = document.getElementById('new-pl-input');
+            const name = input.value.trim();
             if(!name) return;
             const data = getPlaylists();
-            if(data[name]) return utils.toast("Playlist sudah ada!");
+            if(data[name]) {
+                utils.toast("Playlist sudah ada!");
+                return;
+            }
             data[name] = [];
             savePlaylists(data);
-            document.getElementById('new-pl-input').value = '';
+            input.value = '';
+            utils.toast(`Playlist "${name}" dibuat.`);
         }
 
         function playEntirePlaylist(plName) {
             const data = getPlaylists();
             const list = data[plName];
-            if(list.length === 0) return utils.toast("Playlist kosong!");
+            if(!list || list.length === 0) return utils.toast("Playlist kosong!");
 
-            currentQueue = list;
+            currentQueue = [...list];
             queueIndex = 0;
             isQueueActive = true;
             toggleSidebar(); 
@@ -443,22 +490,24 @@
                 <h2 style="margin-bottom:15px;">${plName}</h2>
             `;
 
-            if(list.length === 0) html += `<div class="status-msg">Belum ada lagu.</div>`;
-
-            list.forEach((song, idx) => {
-                html += `
-                    <div class="song-item">
-                        <img src="${song.img}" class="song-img" onclick="loadAndPlay('${song.url}', '${utils.escAttr(song.title)}', '${utils.escAttr(song.artist)}', '${song.img}')">
-                        <div class="song-info" onclick="loadAndPlay('${song.url}', '${utils.escAttr(song.title)}', '${utils.escAttr(song.artist)}', '${song.img}')">
-                            <div class="song-title">${song.title}</div>
-                            <div class="song-artist">${song.artist}</div>
+            if(!list || list.length === 0) {
+                html += '<div class="status-msg">Belum ada lagu.</div>';
+            } else {
+                list.forEach((song, idx) => {
+                    html += `
+                        <div class="song-item">
+                            <img src="${song.img}" class="song-img" onclick="loadAndPlay('${song.url}', '${utils.escAttr(song.title)}', '${utils.escAttr(song.artist)}', '${song.img}')">
+                            <div class="song-info" onclick="loadAndPlay('${song.url}', '${utils.escAttr(song.title)}', '${utils.escAttr(song.artist)}', '${song.img}')">
+                                <div class="song-title">${song.title}</div>
+                                <div class="song-artist">${song.artist}</div>
+                            </div>
+                            <button class="song-action" style="color:#ff5555;" onclick="removeFromPlaylist('${utils.escAttr(plName)}', ${idx})">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </div>
-                        <button class="song-action" style="color:#ff5555;" onclick="removeFromPlaylist('${plName}', ${idx})">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
             mainList.innerHTML = html;
         }
 
@@ -470,11 +519,45 @@
 
         function removeFromPlaylist(plName, index) {
             const data = getPlaylists();
+            if (!data[plName]) return;
             data[plName].splice(index, 1);
             savePlaylists(data);
             viewPlaylist(plName); 
+            utils.toast("Lagu dihapus dari playlist.");
         }
 
+        // ========== HAPUS PLAYLIST DENGAN KONFIRMASI ==========
+        function confirmDeletePlaylist(plName) {
+            pendingDeletePlaylist = plName;
+            document.getElementById('confirm-message').innerText = `Yakin ingin menghapus playlist "${plName}"?`;
+            document.getElementById('confirm-dialog').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function closeConfirm() {
+            document.getElementById('confirm-dialog').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+            pendingDeletePlaylist = null;
+        }
+
+        // Jalankan saat tombol "Ya" diklik
+        document.getElementById('confirm-yes').addEventListener('click', () => {
+            if (!pendingDeletePlaylist) return;
+            const data = getPlaylists();
+            delete data[pendingDeletePlaylist];
+            savePlaylists(data);
+            utils.toast(`Playlist "${pendingDeletePlaylist}" dihapus.`);
+            
+            // Jika sedang melihat playlist yang dihapus, kembali ke pencarian
+            const mainList = document.getElementById('song-list');
+            if (mainList.innerHTML.includes(pendingDeletePlaylist)) {
+                backToSearch();
+            }
+            
+            closeConfirm();
+        });
+
+        // ========== MODAL TAMBAH LAGU KE PLAYLIST ==========
         function openModal(songDataStr) {
             pendingSongData = JSON.parse(songDataStr);
             const data = getPlaylists();
@@ -482,7 +565,7 @@
             listDiv.innerHTML = '';
             
             Object.keys(data).forEach(plName => {
-                listDiv.innerHTML += `<div class="pl-option" onclick="addToPlaylist('${plName}')">${plName}</div>`;
+                listDiv.innerHTML += `<div class="pl-option" onclick="addToPlaylist('${utils.escAttr(plName)}')">${plName}</div>`;
             });
             
             document.getElementById('add-modal').classList.add('active');
@@ -510,17 +593,17 @@
             closeModal();
         }
 
-        // ========== INIT & PWA REGISTRATION ==========
+        // ========== INIT ==========
         window.addEventListener('load', () => {
             if(!localStorage.getItem('inuutyzPlaylists')) {
                 savePlaylists({ "Playlist 1": [] });
             }
+            renderSidebar();
             
-            // Registrasi Service Worker untuk PWA
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('InuuTyz Service Worker aktif!', reg.scope))
-                    .catch(err => console.error('InuuTyz SW gagal:', err));
+                    .then(reg => console.log('Service Worker aktif!', reg.scope))
+                    .catch(err => console.error('SW gagal:', err));
             }
         });
     </script>
