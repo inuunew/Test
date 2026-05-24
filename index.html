@@ -424,16 +424,17 @@ async function loadAndPlay(spotifyUrl, title, artist, img, fromQueue = false) {
 
     try {
         const encoded = encodeURIComponent(spotifyUrl);
-        const res  = await fetch(`https://api.inuutyz.web.id/api/download/spotify?url=${encoded}`);
+        const res  = await fetch(`https://api.yupra.my.id/api/downloader/spotify?url=${encoded}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
 
-        if (!data.status || !data.result?.result?.download?.url) {
-            throw new Error("Link download tidak tersedia");
-        }
+        // yupra: response.data.data || response.data
+        const resultData = data.data || data;
+        const dlUrl = resultData?.result?.download?.url || resultData?.download?.url;
+        if (!dlUrl) throw new Error("Link download tidak tersedia");
 
-        const audioUrl = data.result.result.download.url;
-        const cover    = data.result.result.image || img;
+        const audioUrl = dlUrl;
+        const cover    = resultData?.result?.image || resultData?.image || img;
 
         document.getElementById('mp-img').src          = cover;
         document.getElementById('mp-artist').innerText = artist;
@@ -478,14 +479,14 @@ async function searchMusic() {
     document.getElementById('search-input').blur();
 
     try {
-        const res  = await fetch(`https://api.inuutyz.web.id/api/search/spotify?q=${encodeURIComponent(query)}`);
+        const res  = await fetch(`https://api.yupra.my.id/api/search/spotify?q=${encodeURIComponent(query)}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
 
         loading.style.display = 'none';
 
-        // Response: data.result.result (array)
-        const results = data?.result?.result;
+        // yupra search: data.result (array) — creator/status stripped by proxy, but direct has them at root
+        const results = data?.result || [];
 
         if (!results || results.length === 0) {
             list.innerHTML = '<div class="status-msg">Lagu tidak ditemukan.</div>';
