@@ -29,19 +29,16 @@
 
     <!-- Loading Indicator -->
     <div id="loading" class="hidden text-center text-slate-400 text-sm">
-      Memproses video, mohon tunggu...
+      Memproses audio, mohon tunggu...
     </div>
 
     <!-- Result Card -->
     <div id="result" class="hidden space-y-4 pt-4 border-t border-slate-700">
-      <img id="thumb" class="w-full h-48 object-cover rounded-xl" src="" alt="Thumbnail" />
-      <h2 id="videoTitle" class="font-semibold text-sm line-clamp-2"></h2>
-      <p id="duration" class="text-xs text-slate-400"></p>
-      
       <a 
         id="downloadBtn" 
         href="#" 
         target="_blank"
+        rel="noopener noreferrer"
         class="block text-center w-full bg-green-600 hover:bg-green-500 text-white font-medium py-3 rounded-xl transition duration-200"
       >
         Unduh MP3
@@ -66,21 +63,11 @@
         const response = await fetch(`/api/convert?url=${encodeURIComponent(urlInput)}`);
         const data = await response.json();
 
-        if (data.status && data.result) {
-          document.getElementById('thumb').src = data.result.thumbnail;
-          document.getElementById('videoTitle').innerText = data.result.title;
-          document.getElementById('duration').innerText = `Durasi: ${data.result.duration} detik`;
-
-          const streamUrl = data.result.audio.url;
-          const title = data.result.title;
-
-          // Arahkan link download ke endpoint proxy backend
-          const proxyDownloadUrl = `/api/download?url=${encodeURIComponent(streamUrl)}&title=${encodeURIComponent(title)}`;
-          document.getElementById('downloadBtn').href = proxyDownloadUrl;
-
+        if (data.status && data.downloadUrl) {
+          document.getElementById('downloadBtn').href = data.downloadUrl;
           result.classList.remove('hidden');
         } else {
-          alert('Gagal mengambil data video. Pastikan link benar.');
+          alert(data.message || 'Gagal mengambil audio. Pastikan link benar.');
         }
       } catch (err) {
         alert('Terjadi kesalahan koneksi.');
