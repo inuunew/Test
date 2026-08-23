@@ -5,7 +5,7 @@ module.exports = async (req, res) => {
     try {
         const engine = new VeloflixEngine();
         const feed = await engine.getHomepageFullFeed();
-        res.status(200).json(cleanJson({ status: 200, creator: 'Lann', ...feed }));
+        res.status(200).json(cleanJson({ status: 200, ...feed }));
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
