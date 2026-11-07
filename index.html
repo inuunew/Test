@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InuuTyzDev - Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="assets/theme.css">
+<script>try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
+</head>
+<body class="mp-open">
+
+<div class="bg-lyrics" id="inuutyzLyricsBackground" aria-hidden="true"></div>
+
+<div class="top-actions"><button class="icon-btn theme-btn" aria-label="Ganti tema terang/gelap"><i class="fas fa-moon theme-icon"></i></button></div>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a href="#/" class="brand"><span class="brand-dot"><i class="fas fa-bolt"></i></span>Developer Modal Ai</a>
+    <nav class="nav-links" aria-label="Menu utama">
+      <a href="#/" data-nav="home">Beranda</a><a href="#/tentang" data-nav="tentang">Tentang</a><a href="#/proyek" data-nav="proyek">Proyek</a><a href="#/blog" data-nav="blog">Blog</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="#/kontak" class="btn btn-coral nav-cta" data-nav="kontak" style="padding:.8rem 1.3rem">Hubungi Saya</a>
+      <button class="icon-btn theme-btn" aria-label="Ganti tema terang/gelap"><i class="fas fa-moon theme-icon"></i></button>
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Buka menu" aria-expanded="false"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer class="footer">
+  <div class="wrap footer-in">
+    <span>&copy; <span id="y"></span> InuuTyzDev</span>
+    <span style="display:flex;gap:1.5rem;flex-wrap:wrap"><a href="#/tentang">Tentang</a><a href="#/proyek">Proyek</a><a href="#/blog">Blog</a><a href="#/kontak">Kontak</a></span>
+  </div>
+</footer>
+
+<!-- Pemutar musik: berada di luar #app, jadi lagu tidak putus saat pindah halaman -->
+<aside class="mp" id="inuutyzMusicPlayer" aria-label="Pemutar musik">
+  <button class="mp-close" id="inuutyzMusicCloseBtn" aria-label="Kecilkan pemutar"><i class="fas fa-times"></i></button>
+  <div class="mp-head">
+    <img src="" alt="Sampul album" class="mp-art" id="albumArt">
+    <div class="mp-info"><div class="mp-title" id="songTitle">Song Title</div><div class="mp-artist" id="artist">Artist Name</div></div>
+  </div>
+  <div class="mp-lyrics" id="lyrics"></div>
+  <div class="mp-row">
+    <button class="mp-play" id="playPauseBtn" aria-label="Putar atau jeda"><i class="fas fa-play" id="playPauseIcon"></i></button>
+    <div class="mp-bar-wrap">
+      <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="mp-time"><span id="currentTime">0:00</span><span id="totalTime">0:00</span></div>
+    </div>
+  </div>
+  <audio id="audioPlayer" preload="metadata"></audio>
+</aside>
+<button class="mp-min" id="minimizedMusicPlayerIcon" aria-label="Buka pemutar musik"><i class="fas fa-music"></i></button>
+
+<script src="database-profil.js"></script>
+<script src="database-proyek.js"></script>
+<script src="database-blog.js"></script>
+<script src="api/api.js" onerror="void 0"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
