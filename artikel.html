@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baca Artikel | InuuTyzDev</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body>
+<div id="loading-layar" aria-hidden="true">
+  <i class="fas fa-robot"></i>
+  <div class="dots"><span></span><span></span><span></span></div>
+  <b>Memuat halaman…</b>
+</div>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a href="index.html" class="brand transisi-ai"><span class="brand-dot"><i class="fas fa-bolt"></i></span>Developer Modal Ai</a>
+    <nav class="nav-links" aria-label="Menu utama">
+      <a href="index.html" class="transisi-ai">Beranda</a><a href="tentang.html" class="transisi-ai">Tentang</a><a href="proyek.html" class="transisi-ai">Proyek</a><a href="blog.html" class="transisi-ai" aria-current="page">Blog</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="kontak.html" class="btn btn-coral nav-cta transisi-ai" style="padding:.8rem 1.3rem">Hubungi Saya</a>
+      <button class="icon-btn" id="themeToggleBtn" aria-label="Ganti tema terang/gelap"><i id="themeIcon" class="fas fa-moon"></i></button>
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Buka menu" aria-expanded="false"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+</header>
+<main class="section" style="flex:1">
+  <div class="wrap-narrow" id="root-artikel"><p class="muted">Memuat artikel…</p></div>
+  <div class="center" style="margin-top:4rem"><a href="blog.html" class="btn btn-primary transisi-ai"><i class="fas fa-arrow-left"></i>Kembali ke Blog</a></div>
+</main>
+<footer class="footer">
+  <div class="wrap footer-in">
+    <span>&copy; <span id="y"></span> InuuTyzDev</span>
+    <span style="display:flex;gap:1.5rem;flex-wrap:wrap"><a href="tentang.html" class="transisi-ai">Tentang</a><a href="proyek.html" class="transisi-ai">Proyek</a><a href="blog.html" class="transisi-ai">Blog</a><a href="kontak.html" class="transisi-ai">Kontak</a></span>
+  </div>
+</footer>
+<script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+<script src="assets/site.js"></script>
+<script src="database-blog.js"></script>
+<script>
+const id = new URLSearchParams(window.location.search).get('id');
+const post = databaseBlog.find(p => p.id === id);
+const root = document.getElementById('root-artikel');
+if (post) {
+  root.innerHTML = `
+    <div class="rise" style="display:flex;flex-direction:column;gap:1.5rem;margin-bottom:2.5rem">
+      <span class="chip lemon" style="align-self:flex-start">${post.kategori}</span>
+      <h1 style="font-size:var(--fs-h2)">${post.judulArtikel}</h1>
+      <div class="meta"><span>Oleh Danendra N Rs</span><span>${post.tanggal}</span><span>${post.durasi}</span></div>
+    </div>
+    <div class="card-banner rise" style="--d:.1s;background-color:${post.warna};border:2px solid var(--line);border-radius:28px;box-shadow:var(--shadow-lg);min-height:clamp(200px,34vw,340px);font-size:clamp(1.8rem,4vw,3rem);margin-bottom:3rem">${post.judulBanner}</div>
+    <article>
+      <p style="font-size:1.35rem;line-height:1.7;font-weight:600;border-left:6px solid var(--indigo);padding-left:1.2rem;margin-bottom:2.5rem">${post.deskripsi}</p>
+      <div class="artikel-body">${post.isi}</div>
+    </article>
+    <div style="margin-top:3.5rem;padding-top:2rem;border-top:2px solid var(--line);display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between">
+      <b style="font-size:1.15rem">Bagikan artikel</b>
+      <div style="display:flex;gap:.7rem">
+        <a href="#" class="icon-btn" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="icon-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="icon-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="icon-btn" aria-label="Salin tautan"><i class="fas fa-link"></i></a>
+      </div>
+    </div>`;
+  document.title = `${post.judulArtikel} | InuuTyzDev`;
+} else {
+  root.innerHTML = '<h1 style="font-size:var(--fs-h2)">Artikel tidak ditemukan.</h1><p class="lead" style="margin-top:1rem">Periksa tautannya, atau pilih artikel dari halaman blog.</p>';
+}
+</script>
+</body>
+</html>
