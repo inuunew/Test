@@ -145,11 +145,11 @@ function viewTentang() {
   </section>
   <section class="section"><div class="wrap">
     ${sliderHead('Karya Terpilih', 'slider-proyek')}
-    <div class="slider" id="slider-proyek">${databaseProyek.map(p => proyekCard(p, false)).join('')}${moreSlide('#/proyek', 'Lihat Semua Proyek')}</div>
+    <div class="slider" id="slider-proyek">${databaseProyek.slice(0, 3).map(p => proyekCard(p, false)).join('')}${moreSlide('#/proyek', 'Lihat Semua Proyek')}</div>
   </div></section>
   <section class="section" style="padding-top:0"><div class="wrap">
     ${sliderHead('Tulisan Terbaru', 'slider-blog')}
-    <div class="slider" id="slider-blog">${databaseBlog.map(p => blogCard(p, false)).join('')}${moreSlide('#/blog', 'Lihat Semua Artikel')}</div>
+    <div class="slider" id="slider-blog">${databaseBlog.slice(0, 3).map(p => blogCard(p, false)).join('')}${moreSlide('#/blog', 'Lihat Semua Artikel')}</div>
   </div></section>`;
 }
 
