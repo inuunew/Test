@@ -140,7 +140,7 @@ a.card, .card.hover:hover { text-decoration: none; }
 .g4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
 
 /* ---------- Navigasi ---------- */
-.nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 2px solid var(--line); }
+.nav { position: sticky; top: 0; z-index: 100; background: var(--paper); border-bottom: 2px solid var(--line); }
 .nav-in { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .85rem; }
 .brand { font: 800 1.35rem/1 var(--font-head); text-decoration: none; display: inline-flex; align-items: center; gap: .6rem; letter-spacing: -.02em; }
 .brand-dot { width: 2rem; height: 2rem; border-radius: 10px; background: var(--indigo); border: 2px solid var(--line); box-shadow: 2px 2px 0 var(--line); display: grid; place-items: center; color: #fff; font-size: .9rem; }
@@ -274,5 +274,9 @@ html.dark .lyrics-line.active { color: #a9a0ff; }
   .mp.hidden { transform: translateX(-50%) scale(.7) translateY(40px); }
   .mp-min { left: auto; right: 1.25rem; }
 }
-.nav, #app, .footer { position: relative; z-index: 1; }
-.nav { position: sticky; }
+#app, .footer { position: relative; z-index: 1; }
+.nav { position: sticky; top: 0; z-index: 100; background: var(--paper); }
+
+/* Cegah zoom tak sengaja saat mengetuk menu/tombol (tetap bisa cubit untuk zoom) */
+html, body, a, button, .btn, .icon-btn, .filter-btn, .chip { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.nav-links a, .menu-btn, .icon-btn { min-height: 2.75rem; }
