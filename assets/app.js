@@ -102,6 +102,16 @@ const blogCard = (p, tall) => `
     </div>
   </article>`;
 
+
+const sliderHead = (title, id) => `<div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.5rem"><h2>${title}</h2><div class="slider-nav"><button class="icon-btn" data-slide="${id}" data-dir="-1" aria-label="Geser ke kiri"><i class="fas fa-arrow-left"></i></button><button class="icon-btn" data-slide="${id}" data-dir="1" aria-label="Geser ke kanan"><i class="fas fa-arrow-right"></i></button></div></div>`;
+const moreSlide = (href, label) => `<a href="${href}" class="card hover slide-more" aria-label="${label}"><span class="slide-more-btn"><i class="fas fa-arrow-right"></i></span><b>${label}</b></a>`;
+function wireSliders() {
+  document.querySelectorAll('[data-slide]').forEach(b => b.addEventListener('click', () => {
+    const el = $(b.dataset.slide);
+    el.scrollBy({ left: b.dataset.dir * Math.max(300, el.clientWidth * 0.8), behavior: 'smooth' });
+  }));
+}
+
 function viewTentang() {
   const skills = SKILLS.map(([ic, t, d, chips, col]) => `
     <article class="card hover"><div class="card-body">
@@ -134,12 +144,12 @@ function viewTentang() {
     </div>
   </section>
   <section class="section"><div class="wrap">
-    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:1rem;margin-bottom:2.5rem"><h2>Karya Terpilih</h2><a href="#/proyek" class="btn">Lihat Semua Proyek</a></div>
-    <div class="grid g3">${databaseProyek.slice(0, 3).map(p => proyekCard(p, false)).join('')}</div>
+    ${sliderHead('Karya Terpilih', 'slider-proyek')}
+    <div class="slider" id="slider-proyek">${databaseProyek.map(p => proyekCard(p, false)).join('')}${moreSlide('#/proyek', 'Lihat Semua Proyek')}</div>
   </div></section>
   <section class="section" style="padding-top:0"><div class="wrap">
-    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:1rem;margin-bottom:2.5rem"><h2>Tulisan Terbaru</h2><a href="#/blog" class="btn">Lihat Semua Artikel</a></div>
-    <div class="grid g3">${databaseBlog.slice(0, 3).map(p => blogCard(p, false)).join('')}</div>
+    ${sliderHead('Tulisan Terbaru', 'slider-blog')}
+    <div class="slider" id="slider-blog">${databaseBlog.map(p => blogCard(p, false)).join('')}${moreSlide('#/blog', 'Lihat Semua Artikel')}</div>
   </div></section>`;
 }
 
@@ -272,7 +282,7 @@ function notFound(msg, href, label) {
 /* ================================ ROUTER ================================ */
 const ROUTES = [
   { re: /^\/$/, nav: 'home', home: true, title: 'InuuTyzDev - Portfolio', render: viewHome },
-  { re: /^\/tentang$/, nav: 'tentang', title: 'Tentang Saya | InuuTyzDev', render: viewTentang },
+  { re: /^\/tentang$/, nav: 'tentang', title: 'Tentang Saya | InuuTyzDev', render: viewTentang, after: wireSliders },
   { re: /^\/proyek$/, nav: 'proyek', title: 'Semua Proyek | InuuTyzDev',
     render: () => viewList({ title: 'Semua Proyek', lead: 'Kumpulan proyek terbaru: website, tools, dan utilitas yang saya bangun.', searchLabel: 'Cari proyek', placeholder: 'Cari proyek...', empty: 'Proyek tidak ditemukan. Coba kata kunci lain.', cats: [['Semua', 'Semua'], ['Website', 'Website'], ['Tools', 'Tools & Utility']] }),
     after: () => wireList(databaseProyek, (p, v) => p.nama.toLowerCase().includes(v) || p.layanan.toLowerCase().includes(v), proyekCard) },
