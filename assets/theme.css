@@ -280,3 +280,13 @@ html.dark .lyrics-line.active { color: #a9a0ff; }
 /* Cegah zoom tak sengaja saat mengetuk menu/tombol (tetap bisa cubit untuk zoom) */
 html, body, a, button, .btn, .icon-btn, .filter-btn, .chip { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .nav-links a, .menu-btn, .icon-btn { min-height: 2.75rem; }
+
+/* ---------- Slider geser kiri-kanan ---------- */
+.slider { display: flex; gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 0; padding: .4rem 10px 1.6rem 0; margin-right: -10px; scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+.slider::-webkit-scrollbar { display: none; }
+.slider > * { flex: 0 0 min(340px, 82%); scroll-snap-align: start; }
+.slider > .slide-more { flex-basis: min(240px, 60%); align-items: center; justify-content: center; gap: 1.2rem; text-align: center; padding: 2rem 1rem; background: var(--lemon); color: #14123b; font-family: var(--font-head); font-size: 1.25rem; text-decoration: none; }
+.slide-more-btn { width: 4.5rem; height: 4.5rem; border-radius: 50%; display: grid; place-items: center; font-size: 1.6rem; background: var(--indigo); color: #fff; border: 2px solid #14123b; box-shadow: 3px 3px 0 #14123b; transition: transform .2s; }
+.slide-more:hover .slide-more-btn { transform: translateX(6px); }
+.slider-nav { display: flex; gap: .6rem; }
+@media (hover: none) and (pointer: coarse) { .slider-nav { display: none; } }
